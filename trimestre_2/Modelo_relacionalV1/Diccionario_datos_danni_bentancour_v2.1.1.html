@@ -53,7 +53,7 @@
 <div id="title-sect">
 <h1>danni_bentancour<br> Data Dictionay</h1>
 <p>
-<em>2025-09-29</em>
+<em>2025-10-03</em>
 </p>
 <p class="proj-desc">
 <em></em>
@@ -184,7 +184,7 @@
 <tr>
     <td>id_detalle</td>
     <td>INT(11)</td>
-    <td>&nbsp;</td>
+    <td>&#10004;</td>
     <td>&#10004;</td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
@@ -205,7 +205,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td>Este campo conteine la foranea que da relacion conla tabla citas</td>
+    <td>Este campo contiene la llave foranea de la relacion</td>
 </tr>
 <tr>
     <td>id_servicio</td>
@@ -218,7 +218,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td>Este campo contiene el id de la llave foranea que contiene la relacion entre la tabla servicios</td>
+    <td>Este campo contiene la llave foranea de servicio</td>
 </tr>
 <table id='estado_cita'>
 <caption>estado_cita</caption>
@@ -328,7 +328,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td>Este campo contiene la disponibilidad </td>
+    <td>Este campo cotneine la disponibilidad del barbero </td>
 </tr>
 <table id='notificaciones'>
 <caption>notificaciones</caption>
@@ -409,7 +409,20 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
+    <td>Este campo contiene la llave foranea id_usuario</td>
+</tr>
+<tr>
+    <td>id_cita</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
     <td></td>
+    <td>Este campo contiene la llave foranea que da relacion de la notificacion con la cita </td>
 </tr>
 <table id='pagos'>
 <caption>pagos</caption>
@@ -519,7 +532,7 @@
     <td>&nbsp;</td>
     <td>&#10004;</td>
     <td></td>
-    <td>Este campo contiene la llave primaria de la tabla roles</td>
+    <td>Este campo contiene la llave primaria identificadora de la tabla </td>
 </tr>
 <tr>
     <td>nombre_rol</td>
@@ -602,6 +615,19 @@
     <td></td>
     <td>Este campo contiene la duracion del srvicio</td>
 </tr>
+<tr>
+    <td>id_cita</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Este campo contiene la llave foranea de la relacion entre cita y servicio</td>
+</tr>
 <table id='usuarios'>
 <caption>usuarios</caption>
 <tr><td colspan='11'></td></tr>
@@ -629,7 +655,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td>Este campo contiene la llave primaria el identificador unico de la tabla </td>
+    <td>Este campo contiene la llave primaria identificadora de la tabla</td>
 </tr>
 <tr>
     <td>correo</td>
@@ -655,7 +681,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td>Este campo contiene la contraseña </td>
+    <td>Este campo contiene la contrasena</td>
 </tr>
 <tr>
     <td>id_rol</td>
@@ -681,7 +707,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td>Este campo contiene el primer nombre</td>
+    <td>Este campo conteine el primer nombre</td>
 </tr>
 <tr>
     <td>seg_nombre</td>
@@ -721,6 +747,19 @@
     <td class='attr'>&nbsp;</td>
     <td>NULL</td>
     <td>Este campo contiene el segundo apellido</td>
+</tr>
+<tr>
+    <td>id_servicio</td>
+    <td>INT(11)</td>
+    <td>&nbsp;</td>
+    <td>&#10004;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td class='attr'>&nbsp;</td>
+    <td></td>
+    <td>Este campo contiene la llave foranea de la relacion entre la tabla de usuarios y servicios</td>
 </tr>
 </table>
 </body>
