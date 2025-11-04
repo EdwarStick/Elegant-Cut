@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/styles_form/styles.css">
+    <title>Elegant-cut</title>
+</head>
+<body>
+    <!--Aca esta el contenido del formulario de inicio de sesión y de registro-->
+    <div class="book-container">
+        <div class="book">
+            <!-- Página 1: Iniciar Sesión -->
+            <div class="page active" id="login-page">
+                <div class="form-box">
+                    <h2 class="form-title">Iniciar Sesión</h2>
+                    <form class="login-form">
+                        <div class="form-group">
+                            <input 
+                                type="text" 
+                                name="usuario" 
+                                placeholder="Ingrese su nombre de usuario" 
+                                required
+                                class="form-input"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <input 
+                                type="password" 
+                                name="contrasena" 
+                                placeholder="Ingrese su contraseña" 
+                                required
+                                class="form-input"
+                            >
+                        </div>
+
+                        <button type="submit" class="submit-btn">Ingresar</button>
+                        
+                        <div class="switch-form">
+                            <p>¿No tienes cuenta? <a href="#" class="switch-link" onclick="switchToRegister()">Regístrate aquí</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Página 2: Registro -->
+            <div class="page" id="register-page">
+                <div class="form-box">
+                    <h2 class="form-title">Crear Cuenta</h2>
+                    <form class="register-form">
+                        <div class="form-group">
+                            <input 
+                                type="email" 
+                                name="email" 
+                                placeholder="Ingrese su correo" 
+                                required
+                                class="form-input"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <input 
+                                type="text" 
+                                name="usuario" 
+                                placeholder="Ingrese su nombre de usuario" 
+                                required
+                                class="form-input"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <input 
+                                type="password" 
+                                name="contrasena" 
+                                placeholder="Ingrese su contraseña" 
+                                required
+                                class="form-input"
+                            >
+                        </div>
+
+                        <button type="submit" class="submit-btn">Registrar</button>
+                        
+                        <div class="switch-form">
+                            <p>¿Ya tienes cuenta? <a href="#" class="switch-link" onclick="switchToLogin()">Inicia sesión aquí</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Este contiene la conexion con el java script-->
+    <script src="../scripts/script.js"></script>
+</body>
+</html>
