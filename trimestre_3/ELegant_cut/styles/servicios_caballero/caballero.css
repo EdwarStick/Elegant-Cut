@@ -152,6 +152,29 @@ body.menu-open::before {
     z-index: 999;
 }
 
+.titulo{
+    background-color: #000;
+    color: #f0f0f0; /*Para el color de fondo de la forma*/
+    text-align: center; /*Para el texto centrado*/
+    font-size: 1.5rem; /*Tamaño de letra*/
+    font-weight: 500; /*Grosor de letra*/
+    margin-top: 25px; /*Altura del div*/
+    margin-bottom: 10px; /*Espacio debajo del div*/
+    position: relative;  /*Que la posisicionpuede variar*/
+    display: inline-block;
+}
+
+/*Esto es un pseudoelemento*/
+.titulo::after{
+    content: ""; /*Crea el pseudo-elemento (aunque esté vacío, debe tener “content” para existir).*/
+    display: block; /*Hace que se comporte como un bloque, ocupando espacio debajo del texto*/
+    width: 60%; /*Ancho*/
+    height: 4px; /*Alto*/
+    background-color: antiquewhite; /*Fondo*/
+    margin: 8px auto 0; /*Agrega espacio arriba y la centra (auto centra los bloques).*/
+    border-radius: 10px; /*Esto redondea los bordes*/
+    opacity: 0.7; /*Trasparencia*/
+}
 /*Acá empieza la seccion de cortes*/
 .servicios-cortes {
   display: grid; /*Esta es la forma en como se organizan los recuadros*/
@@ -159,6 +182,7 @@ body.menu-open::before {
   gap: 25px;
   padding: 40px;
 }
+
 
 /*Tarjetas*/
 .tarjeta {
