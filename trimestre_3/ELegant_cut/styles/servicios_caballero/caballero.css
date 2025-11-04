@@ -1,248 +1,412 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-}
+ /* REINICIO GENERAL */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
 
-body {
-  font-family: 'Poppins', sans-serif;
-  background-color: #fff;
-  color: #fff;
-  margin: 0;
-  padding: 0;
-}
+    /* VARIABLES GLOBALES */
+    :root {
+      --Negro: #111205;
+      --NegroMedio: #1F1F1E;
+      --Blanco: #f4f4f4;
+      --RojoVino: #BC2041;
+      --Dorado: #D4AF37;
+      --GrisOscuro: #2A2A2A;
+    }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-}
+    /* ESTILOS DEL BODY */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--Negro);
+      color: var(--Blanco);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-body {
-    background-color: #f8f9fa;
-    color: #333;
-    line-height: 1.6;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
+    /* ---------------- HEADER CON MENÚ HAMBURGUESA ---------------- */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem;
+      background-color: #ffffff;
+      position: relative;
+    }
 
-/* HEADER SUPERIOR CON HIPERVÍNCULOS */
+    .logo {
+      max-width: 5rem;
+      order: 3;
+      margin-left: auto;
+    }
 
-/* HEADER CON MENÚ HAMBURGUESA (TU CÓDIGO) */
-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 2rem;
-    background-color: #ffffff;
-    position: relative;
-}
+    /* OCULTAR NAVEGACIÓN NORMAL */
+    .nav-list {
+      display: none;
+    }
 
-.logo {
-    max-width: 5rem;
-    order: 3; 
-    margin-left: auto;
-}
+    /* BOTÓN HAMBURGUESA */
+    .abrir-menu {
+      border: 0;
+      font-size: 1.5rem;
+      background-color: transparent;
+      cursor: pointer;
+      color: #000;
+    }
 
-/* OCULTAR NAVEGACIÓN NORMAL - Siempre */
-.nav-list {
-    display: none;
-}
+    /* MENÚ DESPLEGABLE */
+    .nav {
+      opacity: 0;
+      visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 70%;
+      max-width: 300px;
+      background-color: #ffffff;
+      padding: 4rem 2rem 2rem 2rem;
+      box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease-in-out;
+      transform: translateX(-100%);
+      z-index: 1000;
+    }
 
-/* MOSTRAR BOTÓN HAMBURGUESA - Siempre  */
-.abrir-menu {
-    
-    border: 0;
-    font-size: 1.5rem;
-    background-color: transparent;
-    cursor: pointer;
-    color: #000;
-    
-   
-}
+    .nav.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
 
-/* ESTILOS DEL MENÚ DESPLEGABLE - Desde la IZQUIERDA */
-.nav {
-    opacity: 0;
-    visibility: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2rem;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 70%;
-    max-width: 300px;
-    background-color: #ffffff;
-    padding: 4rem 2rem 2rem 2rem;
-    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease-in-out;
-    transform: translateX(-100%);
-    z-index: 1000;
-}
+    /* BOTÓN CERRAR MENÚ */
+    .cerrar-menu {
+      display: block;
+      border: 0;
+      font-size: 1.5rem;
+      background-color: transparent;
+      cursor: pointer;
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      z-index: 1001;
+      color: #000;
+    }
 
-.nav.visible {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(0);
-}
+    .cerrar-menu:hover {
+      color: #BC2041;
+      transition: transform 0.3s ease;
+      transform: scale(1.2);
+    }
 
-.cerrar-menu {
-    display: block;
-    border: 0;
-    font-size: 1.5rem;
-    background-color: transparent;
-    cursor: pointer;
-    position: absolute;
-    top: 2rem;
-    right: 2rem;
-    z-index: 1001;
-    color: #000;
-}
+    /* LISTA DEL MENÚ DESPLEGABLE */
+    .nav-list {
+      list-style-type: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.5rem;
+      width: 100%;
+    }
 
-.cerrar-menu :hover{
-    color: #BC2041;
-    transition: transform 0.3s ease;
-    transform: scale(1.2); /* Incrementa el tamaño en un 20% */
+    .nav-list li a {
+      text-decoration: none;
+      color: #000;
+      font-size: 1.1rem;
+      padding: 0.5rem 0;
+      display: block;
+      width: 100%;
+      text-align: left;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
 
-}
+    .nav-list li a:hover {
+      color: #BC2041;
+    }
 
+    /* FONDO OSCURO CUANDO SE ABRE MENÚ */
+    body.menu-open::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
 
+    /* ---------------- TÍTULOS DE SECCIÓN ---------------- */
+    .titulo {
+      background-color: #000;
+      color: #f0f0f0;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin: 40px auto 30px;
+      padding: 15px 40px;
+      position: relative;
+      display: inline-block;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(188, 32, 65, 0.3);
+    }
 
-/* LISTA DEL MENÚ DESPLEGABLE */
-.nav-list {
-    list-style-type: none;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.5rem;
-    width: 100%;
-}
+    /* Línea decorativa debajo del título */
+    .titulo::after {
+      content: "";
+      display: block;
+      width: 80%;
+      height: 4px;
+      background: linear-gradient(to right, transparent, var(--Dorado), transparent);
+      margin: 12px auto 0;
+      border-radius: 10px;
+    }
 
-.nav-list li a {
-    text-decoration: none;
-    color:#000;
-    font-size: 1.1rem;
-    padding: 0.5rem 0;
-    display: block;
-    width: 100%;
-    text-align: left;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
+    /* ---------------- SECCIÓN DE CORTES ---------------- */
+    .servicios-cortes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      padding: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: #fff;
+    }
 
-.nav-list li a:hover {
-    color: #BC2041;
-}
+    /* ---------------- TARJETAS MEJORADAS ---------------- */
+    .flip-card {
+      background-color: transparent;
+      width: 100%;
+      max-width: 280px;
+      height: 380px;
+      perspective: 1000px;
+      font-family: 'Poppins', sans-serif;
+      position: relative;
+      margin: 0 auto;
+      cursor: pointer;
+    }
 
-/* Overlay cuando el menú está abierto */
-body.menu-open::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-}
+    /* CONTENIDO INTERNO GIRATORIO */
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
 
-.titulo{
-    background-color: #000;
-    color: #f0f0f0; /*Para el color de fondo de la forma*/
-    text-align: center; /*Para el texto centrado*/
-    font-size: 1.5rem; /*Tamaño de letra*/
-    font-weight: 500; /*Grosor de letra*/
-    margin-top: 25px; /*Altura del div*/
-    margin-bottom: 10px; /*Espacio debajo del div*/
-    position: relative;  /*Que la posisicionpuede variar*/
-    display: inline-block;
-}
+    .flip-card:hover .flip-card-inner {
+      transform: rotateY(180deg);
+    }
 
-/*Esto es un pseudoelemento*/
-.titulo::after{
-    content: ""; /*Crea el pseudo-elemento (aunque esté vacío, debe tener “content” para existir).*/
-    display: block; /*Hace que se comporte como un bloque, ocupando espacio debajo del texto*/
-    width: 60%; /*Ancho*/
-    height: 4px; /*Alto*/
-    background-color: antiquewhite; /*Fondo*/
-    margin: 8px auto 0; /*Agrega espacio arriba y la centra (auto centra los bloques).*/
-    border-radius: 10px; /*Esto redondea los bordes*/
-    opacity: 0.7; /*Trasparencia*/
-}
-/*Acá empieza la seccion de cortes*/
-.servicios-cortes {
-  display: grid; /*Esta es la forma en como se organizan los recuadros*/
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 25px;
-  padding: 40px;
-}
+    /* CARA FRONTAL Y TRASERA */
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 16px;
+      overflow: hidden;
+    }
 
-/* From Uiverse.io by joe-watson-sbf */ 
-.flip-card {
-  background-color: #fff;
-  width: 190px;
-  height: 254px;
-  perspective: 1000px;
-  font-family: sans-serif;
-}
+    /* FRENTE DE LA TARJETA */
+    .flip-card-front {
+      background: linear-gradient(135deg, #ffffff, #f5f5f5);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0;
+      color: #222;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
 
-.flip-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 10px;
-}
+    .flip-card-front::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+      z-index: 1;
+    }
 
+    .image-container {
+      width: 100%;
+      height: 240px;
+      overflow: hidden;
+      position: relative;
+    }
 
-.title {
-  font-size: 1.5em;
-  font-weight: 900;
-  text-align: center;
-  margin: 0;
-}
+    .flip-card-front img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
 
-.flip-card-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  transition: transform 0.8s;
-  transform-style: preserve-3d;
-}
+    .flip-card:hover .flip-card-front img {
+      transform: scale(1.05);
+    }
 
-.flip-card:hover .flip-card-inner {
-  transform: rotateY(180deg);
-}
+    .card-title {
+      padding: 20px 15px;
+      width: 100%;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.9), #ffffff);
+    }
 
-.flip-card-front, .flip-card-back {
-  box-shadow: 0 8px 14px 0 rgba(0,0,0,0.2);
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  border: 1px solid coral;
-  border-radius: 1rem;
-}
+    .flip-card-front h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--RojoVino);
+      margin-bottom: 5px;
+    }
 
-.flip-card-front {
-  background: linear-gradient(120deg, #fff 60%, #BC2041(255, 231, 222) 88%,
-     rgb(255, 211, 195) 40%, #BC2041(255, 127, 80, 0.603) 48%);
-  color: #000;
-}
+    .flip-card-front .price {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--GrisOscuro);
+    }
 
-.flip-card-back {
-  background: linear-gradient(120deg, rgb(255, 174, 145) 30%, coral 88%,
-     bisque 40%, rgb(255, 185, 160) 78%);
-  color: white;
-  transform: rotateY(180deg);
-}
+    /* REVERSO DE LA TARJETA */
+    .flip-card-back {
+      background: linear-gradient(135deg, var(--GrisOscuro), var(--NegroMedio));
+      color: #fff;
+      transform: rotateY(180deg);
+      padding: 25px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .flip-card-back::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+      z-index: 0;
+    }
+
+    .card-back-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+
+    .flip-card-back h3 {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: var(--Dorado);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .flip-card-back p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      opacity: 0.9;
+      margin-bottom: 20px;
+    }
+
+    .card-features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .feature-tag {
+      background: rgba(188, 32, 65, 0.2);
+      border: 1px solid var(--RojoVino);
+      color: var(--Blanco);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .card-button {
+      background: linear-gradient(135deg, var(--RojoVino), #a01a36);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(188, 32, 65, 0.3);
+      margin-top: 10px;
+    }
+
+    .card-button:hover {
+      background: linear-gradient(135deg, #a01a36, var(--RojoVino));
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(188, 32, 65, 0.4);
+    }
+
+    /* EFECTO BRILLO AL PASAR */
+    .flip-card::before {
+      content: "";
+      position: absolute;
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s;
+      border-radius: 16px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .flip-card:hover::before {
+      opacity: 1;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .servicios-cortes {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        padding: 20px;
+      }
+      
+      .flip-card {
+        height: 350px;
+      }
+      
+      .titulo {
+        font-size: 1.5rem;
+        padding: 12px 30px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .servicios-cortes {
+        grid-template-columns: 1fr;
+      }
+    }
