@@ -26,11 +26,10 @@ header {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* CONTENEDOR DE ÍCONOS CENTRADO */
+/* CONTENEDOR DE ÍCONOS CENTRADO - MEJORADO */
 .button-container {
     display: flex;
     background-color: #ffff;
-    width: 250px;
     height: 40px;
     align-items: center;
     justify-content: space-around;
@@ -38,6 +37,11 @@ header {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    /* NUEVO: Ancho flexible según cantidad de íconos */
+    min-width: 250px;
+    max-width: 320px;
+    padding: 0 10px;
+    gap: 5px; /* Espacio consistente entre íconos */
 }
 
 .button {
@@ -53,6 +57,8 @@ header {
     color: #000;
     transition: all ease-in-out 0.3s;
     cursor: pointer;
+    /* NUEVO: Asegurar que todos los íconos sean iguales */
+    flex-shrink: 0; /* Evita que se encojan */
 }
 
 .button:hover {
@@ -62,6 +68,17 @@ header {
 
 .icon {
     font-size: 20px;
+    /* NUEVO: Forzar tamaño consistente */
+    width: 1em;
+    height: 1em;
+    display: block;
+}
+
+/* Para íconos SVG, asegurar tamaño consistente */
+.button svg {
+    width: 20px;
+    height: 20px;
+    display: block;
 }
 
 /* --- LOGO --- */
@@ -220,132 +237,3 @@ main {
     object-fit: cover; 
 }
 
-/* ESTILOS MEJORADOS PARA EL MENÚ HAMBURGUESA */
-
-/* En pantalla GRANDE: mostrar íconos, ocultar menú hamburguesa */
-@media screen and (min-width: 551px) {
-    .desktop-icons {
-        display: flex !important;
-    }
-    .abrir-menu {
-        display: none !important;
-    }
-    .nav {
-        display: none !important;
-    }
-}
-
-/* En pantalla PEQUEÑA: ocultar íconos, mostrar botón hamburguesa */
-@media screen and (max-width: 550px) {
-    .desktop-icons {
-        display: none !important;
-    }
-    
-    .abrir-menu {
-        display: flex !important;
-        background: none;
-        border: none;
-        font-size: 1.8rem;
-        cursor: pointer;
-        color: #000;
-        position: absolute;
-        right: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 1001;
-        width: 40px;
-        height: 40px;
-        align-items: center;
-        justify-content: center;
-        border-radius: 5px;
-        transition: all 0.3s ease;
-    }
-
-    .abrir-menu:hover {
-        background-color: rgba(0, 0, 0, 0.1);
-    }
-
-    /* Menú hamburguesa */
-    .nav {
-        opacity: 0;
-        visibility: hidden;
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background-color: #ffff;
-        padding: 2rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 2rem;
-        transition: opacity 0.3s ease, visibility 0.3s ease;
-        z-index: 1000;
-    }
-
-    .nav.visible {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    /* Botón cerrar */
-    .cerrar-menu {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        background: none;
-        border: none;
-        color: #ececec;
-        font-size: 2rem;
-        cursor: pointer;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
-    }
-
-    .cerrar-menu:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    /* Contenedor de íconos centrado en el menú */
-    .menu-icons-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 2rem;
-        width: 100%;
-    }
-
-    /* Íconos del menú hamburguesa */
-    .menu-icon {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        background-color: rgba(255, 255, 255, 0.1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #ececec;
-        transition: all ease-in-out 0.3s;
-        cursor: pointer;
-        border: 2px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .menu-icon:hover {
-        transform: translateY(-5px) scale(1.1);
-        background-color: rgba(255, 255, 255, 0.2);
-        color: #ff6b6b;
-        border-color: rgba(255, 255, 255, 0.3);
-    }
-
-    .menu-icon .icon {
-        font-size: 28px;
-    }
-}
