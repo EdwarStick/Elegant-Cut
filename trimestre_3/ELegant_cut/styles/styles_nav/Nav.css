@@ -1,4 +1,4 @@
-/* From Uiverse.io by akshat-patel28 */ 
+/* ESTILOS EXCLUSIVOS PARA EL MENÚ HAMBURGUESA */
 * {
     margin: 0;
     padding: 0;
@@ -6,100 +6,131 @@
     font-family: 'Inter', sans-serif;
 }
 
-body {
-    background-color: #f8f9fa;
-    color: #333;
-    line-height: 1.6;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+/* VARIABLES GLOBALES */
+:root {
+    --Negro: #111205;
+    --NegroMedio: #1F1F1E;
+    --Blanco: #f4f4f4;
+    --RojoVino: #BC2041;
+    --Dorado: #D4AF37;
+    --GrisOscuro: #2A2A2A;
 }
 
-/* HEADER */
+/* ---------------- HEADER CON MENÚ HAMBURGUESA ---------------- */
 header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem 2rem;
+    padding: 2rem;
     background-color: #ffffff;
     position: relative;
-    height: 80px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* CONTENEDOR DE ÍCONOS CENTRADO - MEJORADO */
-.button-container {
-    display: flex;
-    background-color: #ffff;
-    height: 40px;
-    align-items: center;
-    justify-content: space-around;
-    border-radius: 10px;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    /* NUEVO: Ancho flexible según cantidad de íconos */
-    min-width: 250px;
-    max-width: 320px;
-    padding: 0 10px;
-    gap: 5px; /* Espacio consistente entre íconos */
-}
-
-.button {
-    outline: 0 !important;
-    border: 0 !important;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #000;
-    transition: all ease-in-out 0.3s;
-    cursor: pointer;
-    /* NUEVO: Asegurar que todos los íconos sean iguales */
-    flex-shrink: 0; /* Evita que se encojan */
-}
-
-.button:hover {
-    transform: translateY(-3px);
-    color: red;
-}
-
-.icon {
-    font-size: 20px;
-    /* NUEVO: Forzar tamaño consistente */
-    width: 1em;
-    height: 1em;
-    display: block;
-}
-
-/* Para íconos SVG, asegurar tamaño consistente */
-.button svg {
-    width: 20px;
-    height: 20px;
-    display: block;
-}
-
-/* --- LOGO --- */
 .logo {
     max-width: 5rem;
+    order: 3;
+    margin-left: auto;
 }
 
-/* --- LISTA DE NAVEGACIÓN (MODO ESCRITORIO) --- */
+/* OCULTAR NAVEGACIÓN NORMAL */
+.nav-list {
+    display: none;
+}
+
+/* BOTÓN HAMBURGUESA */
+.abrir-menu {
+    border: 0;
+    font-size: 1.5rem;
+    background-color: transparent;
+    cursor: pointer;
+    color: #000;
+}
+
+/* MENÚ DESPLEGABLE */
+.nav {
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 70%;
+    max-width: 300px;
+    background-color: #ffffff;
+    padding: 4rem 2rem 2rem 2rem;
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    transform: translateX(-100%);
+    z-index: 1000;
+}
+
+.nav.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+/* BOTÓN CERRAR MENÚ */
+.cerrar-menu {
+    display: block;
+    border: 0;
+    font-size: 1.5rem;
+    background-color: transparent;
+    cursor: pointer;
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    z-index: 1001;
+    color: #000;
+}
+
+.cerrar-menu:hover {
+    color: #BC2041;
+    transition: transform 0.3s ease;
+    transform: scale(1.2);
+}
+
+/* LISTA DEL MENÚ DESPLEGABLE */
 .nav-list {
     list-style-type: none;
     display: flex;
-    gap: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    width: 100%;
 }
 
 .nav-list li a {
     text-decoration: none;
-    color: #1c1c1c;
+    color: #000;
+    font-size: 1.1rem;
+    padding: 0.5rem 0;
+    display: block;
+    width: 100%;
+    text-align: left;
     font-weight: 500;
+    transition: color 0.3s ease;
 }
 
+.nav-list li a:hover {
+    color: #BC2041;
+}
+
+/* FONDO OSCURO CUANDO SE ABRE MENÚ */
+body.menu-open::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
 
 
 
