@@ -6,27 +6,94 @@
   <title>Barbería - Cortes Estilizados</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
    <link rel="stylesheet" href="../styles/servicios_caballero/caballero.css">
+   <link rel="stylesheet" href="../styles/Menu_hamburguesa/menu.css">
+   <link rel="stylesheet" href="../styles/styles_nav/Nav.css">
 </head>
 <body>
-<<<<<<< HEAD
-  <header>
+   <header>
     <button class="abrir-menu" id="abrir"><i class="fas fa-bars"></i></button>
-    <img src="../images/logo.png" alt="Logo Barbería" class="logo">
-=======
-
-    <!-- Header con menú hamburguesa (tu código existente) -->
+    <img src="../images/logo.png" alt="Logo Barbería" class="logo"> 
+     <!-- Header con menú hamburguesa -->
     <header>
-        <button id="abrir" class="abrir-menu"><i class="bi bi-list"></i></button>
-        <img class="logo" src="../images/logo.png" alt="Logo">
+        <!-- Contenedor de íconos visible en escritorio -->
+        <div class="button-container desktop-icons">
+            <button class="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 1024 1024"
+                    stroke-width="0" fill="currentColor" stroke="currentColor" class="icon">
+                    <path
+                        d="M946.5 505L560.1 118.8l-25.9-25.9a31.5 31.5 0 0 0-44.4 0L77.5 505a63.9 63.9 0 0 0-18.8 46c.4 35.2 29.7 63.3 64.9 63.3h42.5V940h691.8V614.3h43.4c17.1 0 33.2-6.7 45.3-18.8a63.6 63.6 0 0 0 18.7-45.3c0-17-6.7-33.1-18.8-45.2zM568 868H456V664h112v204zm217.9-325.7V868H632V640c0-22.1-17.9-40-40-40H432c-22.1 0-40 17.9-40 40v228H238.1V542.3h-96l370-369.7 23.1 23.1L882 542.3h-96.1z">
+                    </path>
+                </svg>
+            </button>
+            <button class="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" aria-hidden="true" viewBox="0 0 24 24"
+                    stroke-width="2" fill="none" stroke="currentColor" class="icon">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round"
+                        stroke-linecap="round"></path>
+                </svg>
+            </button>
+            <button class="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="0"
+                    fill="currentColor" stroke="currentColor" class="icon">
+                    <path
+                        d="M12 2.5a5.5 5.5 0 0 1 3.096 10.047 9.005 9.005 0 0 1 5.9 8.181.75.75 0 1 1-1.499.044 7.5 7.5 0 0 0-14.993 0 .75.75 0 0 1-1.5-.045 9.005 9.005 0 0 1 5.9-8.18A5.5 5.5 0 0 1 12 2.5ZM8 8a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z">
+                    </path>
+                </svg>
+            </button>
+            <button class="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
+                    class="bi bi-scissors" viewBox="0 0 16 16">
+                    <path
+                        d="M3.5 3.5c-.614-.884-.074-1.962.858-2.5L8 7.226 11.642 1c.932.538 1.472 1.616.858 2.5L8.81 8.61l1.556 2.661a2.5 2.5 0 1 1-.794.637L8 9.73l-1.572 2.177a2.5 2.5 0 1 1-.794-.637L7.19 8.61zm2.5 10a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0m7 0a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Botón abrir menú hamburguesa (solo visible en móvil) -->
+        <button id="abrir" class="abrir-menu" aria-label="Abrir menú">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <!-- Menú hamburguesa -->
         <nav class="nav" id="nav">
-            <button class="cerrar-menu" id="cerrar"><i class="bi bi-x"></i></button>
-            <ul class="nav-list">
-                <li><a href="#" class="nav-link">Inicio</a></li>
-                <li><a href="#" class="nav-link">Quiénes somos</a></li>
-                <li><a href="#" class="nav-link">Servicios</a></li>
-                <li><a href="#" class="nav-link">Qué hacemos</a></li>
-                <li><a href="#" class="nav-link">Contacto</a></li>
-            </ul>
+            <!-- Botón cerrar -->
+            <button id="cerrar" class="cerrar-menu" aria-label="Cerrar menú">
+                <i class="bi bi-x"></i>
+            </button>
+
+            <!-- MISMOS ÍCONOS pero centrados en el menú hamburguesa -->
+            <div class="menu-icons-container">
+                <button class="button menu-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 1024 1024"
+                        stroke-width="0" fill="currentColor" stroke="currentColor" class="icon">
+                        <path
+                            d="M946.5 505L560.1 118.8l-25.9-25.9a31.5 31.5 0 0 0-44.4 0L77.5 505a63.9 63.9 0 0 0-18.8 46c.4 35.2 29.7 63.3 64.9 63.3h42.5V940h691.8V614.3h43.4c17.1 0 33.2-6.7 45.3-18.8a63.6 63.6 0 0 0 18.7-45.3c0-17-6.7-33.1-18.8-45.2zM568 868H456V664h112v204zm217.9-325.7V868H632V640c0-22.1-17.9-40-40-40H432c-22.1 0-40 17.9-40 40v228H238.1V542.3h-96l370-369.7 23.1 23.1L882 542.3h-96.1z">
+                        </path>
+                    </svg>
+                </button>
+                <button class="button menu-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" aria-hidden="true"
+                        viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" class="icon">
+                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round"
+                            stroke-linecap="round"></path>
+                    </svg>
+                </button>
+                <button class="button menu-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                        stroke-width="0" fill="currentColor" stroke="currentColor" class="icon">
+                        <path
+                            d="M12 2.5a5.5 5.5 0 0 1 3.096 10.047 9.005 9.005 0 0 1 5.9 8.181.75.75 0 1 1-1.499.044 7.5 7.5 0 0 0-14.993 0 .75.75 0 0 1-1.5-.045 9.005 9.005 0 0 1 5.9-8.18A5.5 5.5 0 0 1 12 2.5ZM8 8a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z">
+                        </path>
+                    </svg>
+                </button>
+                <button class="button menu-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" stroke-width="0"
+                        viewBox="0 0 24 24" fill="currentColor" class="bi bi-scissors">
+                        <path
+                            d="M3.5 3.5c-.614-.884-.074-1.962.858-2.5L8 7.226 11.642 1c.932.538 1.472 1.616.858 2.5L8.81 8.61l1.556 2.661a2.5 2.5 0 1 1-.794.637L8 9.73l-1.572 2.177a2.5 2.5 0 1 1-.794-.637L7.19 8.61zm2.5 10a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0m7 0a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0" />
+                    </svg>
+                </button>
+            </div>
         </nav>
     </header>
 
@@ -50,7 +117,8 @@
   </header>
 
   <main>
-    <h1 class="titulo">Nuestros Cortes Estilizados</h1>
+    <!--Titulo de cada section-->
+    <h1 class="titulo">Area de cortes</h1>
     
     <section class="servicios-cortes">
       <!-- Tarjeta 1 -->
@@ -58,20 +126,19 @@
         <div class="flip-card-inner">
           <div class="flip-card-front">
             <div class="image-container">
-              <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Corte Clásico">
+              <img src="../images/servicios_caballeros/cortes/buzzz cut.png" alt="buzz cut">
             </div>
             <div class="card-title">
-              <h3>Corte Clásico</h3>
+              <h3>Buzz cut</h3>
               <div class="price">$25.000</div>
             </div>
           </div>
           <div class="flip-card-back">
             <div class="card-back-content">
-              <h3>Corte Clásico</h3>
-              <p>Un corte atemporal que nunca pasa de moda. Perfecto para el caballero moderno que valora la elegancia y el estilo tradicional.</p>
+              <h3>Buzz cut</h3>
+              <p>Un corte limpio, rápido y versátil. Ideal para quienes buscan un look moderno y sin complicaciones. Resalta las facciones del rostro y ofrece un estilo fresco y de fácil mantenimiento.</p>
               <div class="card-features">
-                <span class="feature-tag">Tijera</span>
-                <span class="feature-tag">Navaja</span>
+                <span class="feature-tag">Máquina</span>
                 <span class="feature-tag">45 min</span>
               </div>
               <button class="card-button">Reservar Ahora</button>
@@ -85,21 +152,20 @@
         <div class="flip-card-inner">
           <div class="flip-card-front">
             <div class="image-container">
-              <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Fade Moderno">
+              <img src="../images/servicios_caballeros/cortes/Corte Militar (Bascot).png" alt="Bascut">
             </div>
             <div class="card-title">
-              <h3>Fade Moderno</h3>
-              <div class="price">$30.000</div>
+              <h3>Corte militar (bascut)</h3>
+              <div class="price">$25.000</div>
             </div>
           </div>
           <div class="flip-card-back">
             <div class="card-back-content">
-              <h3>Fade Moderno</h3>
-              <p>Degradado perfecto que combina estilo urbano y sofisticación. Un look contemporáneo que destaca por su limpieza y definición.</p>
+              <h3>Bascut</h3>
+              <p>Corte ultra corto, limpio y práctico. Inspirado en el estilo militar, ofrece frescura y una apariencia firme y ordenada todo el día.</p>
               <div class="card-features">
                 <span class="feature-tag">Máquina</span>
-                <span class="feature-tag">Tijera</span>
-                <span class="feature-tag">60 min</span>
+                <span class="feature-tag">30 min</span>
               </div>
               <button class="card-button">Reservar Ahora</button>
             </div>
@@ -112,21 +178,21 @@
         <div class="flip-card-inner">
           <div class="flip-card-front">
             <div class="image-container">
-              <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Barba Estilizada">
+              <img src="../images/servicios_caballeros/cortes/corte con figuras.png" alt="Corte con figuras">
             </div>
             <div class="card-title">
-              <h3>Barba Estilizada</h3>
-              <div class="price">$20.000</div>
+              <h3>Corte con figuras</h3>
+              <div class="price">$30.000</div>
             </div>
           </div>
           <div class="flip-card-back">
             <div class="card-back-content">
-              <h3>Barba Estilizada</h3>
-              <p>Dale forma y definición a tu barba con nuestro servicio especializado. Incluye recorte, perfilado y acabado profesional.</p>
+              <h3>Corte con figuras</h3>
+              <p>Un estilo atrevido y personalizado. Diseños únicos trazados con precisión para destacar tu personalidad y creatividad. Ideal para quienes marcan tendencia.</p>
               <div class="card-features">
-                <span class="feature-tag">Navaja</span>
-                <span class="feature-tag">Tijera</span>
-                <span class="feature-tag">30 min</span>
+                <span class="feature-tag">Máquina</span>
+                <span class="feature-tag">Diseño</span>
+                <span class="feature-tag">50 min</span>
               </div>
               <button class="card-button">Reservar Ahora</button>
             </div>
@@ -139,27 +205,441 @@
         <div class="flip-card-inner">
           <div class="flip-card-front">
             <div class="image-container">
-              <img src="https://images.unsplash.com/photo-1593705114312-a0ee03a3f7c8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Corte + Barba">
+              <img src="../images/servicios_caballeros/cortes/crop top.png" alt="Crop top">
             </div>
             <div class="card-title">
-              <h3>Corte + Barba</h3>
-              <div class="price">$40.000</div>
+              <h3>Crop top</h3>
+              <div class="price">$28.000</div>
             </div>
           </div>
           <div class="flip-card-back">
             <div class="card-back-content">
-              <h3>Corte + Barba</h3>
-              <p>El paquete completo para el caballero exigente. Incluye corte de cabello y arreglo de barba para un look impecable.</p>
+              <h3>Crop top</h3>
+              <p>Moderno y juvenil, con el cabello corto en los lados y un acabado texturizado en la parte superior. Perfecto para un look fresco y contemporáneo.</p>
               <div class="card-features">
-                <span class="feature-tag">Completo</span>
-                <span class="feature-tag">Premium</span>
-                <span class="feature-tag">75 min</span>
+                <span class="feature-tag">Tijera</span>
+                <span class="feature-tag">Máquina</span>
+                <span class="feature-tag">40.000</span>
               </div>
               <button class="card-button">Reservar Ahora</button>
             </div>
           </div>
         </div>
       </div>
+
+      <!--Tarjeta 5-->
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="image-container">
+              <img src="../images/servicios_caballeros/cortes/low fade.png" alt="Low fade">
+            </div>
+            <div class="card-title">
+              <h3>Low fade</h3>
+              <div class="price">$30.000</div>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="card-back-content">
+              <h3>Low fade</h3>
+              <p>Un degradado sutil y elegante que comienza bajo y se mezcla perfectamente con la parte superior. Ideal para un estilo pulido y moderno.</p>
+              <div class="card-features">
+                <span class="feature-tag">Máquina</span>
+                <span class="feature-tag">Tijera</span>
+                <span class="feature-tag">45 min</span>
+              </div>
+              <button class="card-button">Reservar Ahora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Tarjeta 6-->
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="image-container">
+              <img src="../images/servicios_caballeros/cortes/Mullet.png" alt="Mullet">
+            </div>
+            <div class="card-title">
+              <h3>Mullet</h3>
+              <div class="price">$32.000</div>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="card-back-content">
+              <h3>Mullet</h3>
+              <p>Un clásico rebelde que ha vuelto con fuerza. Corto al frente y largo atrás, combina estilo retro y actitud moderna.</p>
+              <div class="card-features">
+                <span class="feature-tag">Máquina</span>
+                <span class="feature-tag">Tijera</span>
+                <span class="feature-tag">50 min</span>
+              </div>
+              <button class="card-button">Reservar Ahora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Tarjeta 7-->
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="image-container">
+              <img src="../images/servicios_caballeros/cortes/Slick Back.png" alt="Slick back">
+            </div>
+            <div class="card-title">
+              <h3>Slick back</h3>
+              <div class="price">$35.000</div>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="card-back-content">
+              <h3>Slick back</h3>
+              <p>Un corte sofisticado y elegante. El cabello se peina hacia atrás con precisión, logrando un acabado limpio y brillante. Perfecto para un look formal o ejecutivo.</p>
+              <div class="card-features">
+                <span class="feature-tag">Máquina</span>
+                <span class="feature-tag">40 min</span>
+              </div>
+              <button class="card-button">Reservar Ahora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Tarjeta 8-->
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="image-container">
+              <img src="../images/servicios_caballeros/cortes/undercut.png" alt="Undercut">
+            </div>
+            <div class="card-title">
+              <h3>Undercut</h3>
+              <div class="price">$30.000</div>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="card-back-content">
+              <h3>Undercut</h3>
+              <p>Lados rapados y parte superior más larga para un contraste marcado y moderno. Versátil y fácil de peinar para cualquier ocasión.</p>
+              <div class="card-features">
+                <span class="feature-tag">Máquina</span>
+                <span class="feature-tag">Tijera</span>
+                <span class="feature-tag">40 min</span>
+              </div>
+              <button class="card-button">Reservar Ahora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--------Acá comienza la area de la barba------->
+
+      <h1 class="titulo">Area de barbería y afeitado</h1>
+
+      <!--Tarjeta 9-->
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="image-container">
+              <img src="../images/servicios_caballeros/barba/afeitado tradicional.png" alt="Afeitado tradicional">
+            </div>
+            <div class="card-title">
+              <h3>Afeitado tradicional</h3>
+              <div class="price">$25.000</div>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="card-back-content">
+              <h3>Afeitado tradicional</h3>
+              <p>La experiencia clásica de barbería. Un afeitado al ras con toalla caliente, espuma y navaja, brindando suavidad y frescura total.</p>
+              <div class="card-features">
+                <span class="feature-tag">Toalla caliente</span>
+                <span class="feature-tag">Navaja</span>
+                <span class="feature-tag">40 min</span>
+              </div>
+              <button class="card-button">Reservar Ahora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Tarjeta 10-->
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="image-container">
+              <img src="../images/servicios_caballeros/barba/baraba tinturacion .png" alt="Tinturacion">
+            </div>
+            <div class="card-title">
+              <h3>Tinturacion de barba</h3>
+              <div class="price">$35.000</div>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="card-back-content">
+              <h3>Tinturacion de barba</h3>
+              <p>Resalta y define tu estilo con una coloración profesional que cubre canas y realza el tono natural de tu barba.</p>
+              <div class="card-features">
+                <span class="feature-tag">Brocha</span>
+                <span class="feature-tag">Tinte</span>
+                <span class="feature-tag">45 min</span>
+              </div>
+              <button class="card-button">Reservar Ahora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Tarjeta 11-->
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="image-container">
+              <img src="../images/servicios_caballeros/barba/barba express.png" alt="Barba express">
+            </div>
+            <div class="card-title">
+              <h3>Barba express</h3>
+              <div class="price">$18.000</div>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="card-back-content">
+              <h3>Barba express</h3>
+              <p>Ideal para quienes buscan rapidez y precisión. Recorte y perfilado básico que mantiene tu barba limpia y con forma.</p>
+              <div class="card-features">
+                <span class="feature-tag">Máquina</span>
+                <span class="feature-tag">Navaja</span>
+                <span class="feature-tag">25 min</span>
+              </div>
+              <button class="card-button">Reservar Ahora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Tarjeta 12-->
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="image-container">
+              <img src="../images/servicios_caballeros/barba/barba tratamiento .png" alt="Tratamiento de barba">
+            </div>
+            <div class="card-title">
+              <h3>Tratamiento de barba</h3>
+              <div class="price">$30.000</div>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="card-back-content">
+              <h3>Tratamiento de barba</h3>
+              <p>Limpieza profunda, exfoliación y aceites nutritivos para hidratar y revitalizar la barba. Ideal para mantenerla suave y saludable.</p>
+              <div class="card-features">
+                <span class="feature-tag">Aceites</span>
+                <span class="feature-tag">Toalla caliente</span>
+                <span class="feature-tag">45 min</span>
+              </div>
+              <button class="card-button">Reservar Ahora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Tarjeta 13-->
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="image-container">
+              <img src="../images/servicios_caballeros/barba/depilacion con cera.png" alt="Depilacion con cera">
+            </div>
+            <div class="card-title">
+              <h3>Depilacion con cera</h3>
+              <div class="price">$20.000</div>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="card-back-content">
+              <h3>Depilacion con cera</h3>
+              <p>Elimina vellos no deseados con precisión, dejando la piel limpia y suave por más tiempo. Perfecto para contornos de barba o cuello.</p>
+              <div class="card-features">
+                <span class="feature-tag">Cera</span>
+                <span class="feature-tag">Pinza</span>
+                <span class="feature-tag">30 min</span>
+              </div>
+              <button class="card-button">Reservar Ahora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Tarjeta 14-->
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="image-container">
+              <img src="../images/servicios_caballeros/barba/perfilado de barba.png" alt="Perfilado de barba">
+            </div>
+            <div class="card-title">
+              <h3>Perfilado de barba</h3>
+              <div class="price">$22.000</div>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="card-back-content">
+              <h3>Perfilado de barba</h3>
+              <p>Definición precisa de líneas y contornos para una barba limpia, simétrica y bien cuidada.</p>
+              <div class="card-features">
+                <span class="feature-tag">Navaja</span>
+                <span class="feature-tag">Máquina</span>
+                <span class="feature-tag">35 min</span>
+              </div>
+              <button class="card-button">Reservar Ahora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--------Acá comienza el areav de otros servicios------->
+
+      
+
+      <!--Tarjeta 15-->
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="image-container">
+              <img src="../images/servicios_caballeros/otros_servicios/depilacion.png" alt="Depilación">
+            </div>
+            <div class="card-title">
+              <h3>Depilación</h3>
+              <div class="price">$20.000</div>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="card-back-content">
+              <h3>Depilación</h3>
+              <p>Elimina el vello no deseado con precisión, dejando la piel suave y limpia. Ideal para cejas, cuello o pómulos.</p>
+              <div class="card-features">
+                <span class="feature-tag">Cera</span>
+                <span class="feature-tag">Pinza</span>
+                <span class="feature-tag">25 min</span>
+              </div>
+              <button class="card-button">Reservar Ahora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Tarjeta 16-->
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="image-container">
+              <img src="../images/servicios_caballeros/otros_servicios/figuras.png" alt="Figuras">
+            </div>
+            <div class="card-title">
+              <h3>Figuras</h3>
+              <div class="price">$30.000</div>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="card-back-content">
+              <h3>Figuras</h3>
+              <p>Diseños personalizados y creativos realizados con máquina o navaja. Dale a tu estilo un toque único y original.</p>
+              <div class="card-features">
+                <span class="feature-tag">Navaja</span>
+                <span class="feature-tag">Máquina</span>
+                <span class="feature-tag">40 min</span>
+              </div>
+              <button class="card-button">Reservar Ahora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Tarjeta 17-->
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="image-container">
+              <img src="../images/servicios_caballeros/otros_servicios/keratina capilar.png" alt="keratina capilar">
+            </div>
+            <div class="card-title">
+              <h3>keratina capilar</h3>
+              <div class="price">$70.000</div>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="card-back-content">
+              <h3>keratina capilar</h3>
+              <p>Tratamiento que repara y alisa el cabello, reduciendo el frizz y aportando brillo intenso. Ideal para mantener un look prolijo y saludable.</p>
+              <div class="card-features">
+                <span class="feature-tag">Brocha</span>
+                <span class="feature-tag">Secador</span>
+                <span class="feature-tag">90 min</span>
+              </div>
+              <button class="card-button">Reservar Ahora</button>
+            </div>
+          </div>
+        </div>
+
+        <!--Tarjeta 18-->
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="image-container">
+              <img src="../images/servicios_caballeros/otros_servicios/mascarilla.png" alt="Mascarilla">
+            </div>
+            <div class="card-title">
+              <h3>Mascarilla</h3>
+              <div class="price">$25.000</div>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="card-back-content">
+              <h3>Mascarilla</h3>
+              <p>Limpieza profunda que elimina impurezas, hidrata la piel y mejora su aspecto. Perfecta para complementar un corte o afeitado.</p>
+              <div class="card-features">
+                <span class="feature-tag">Toalla caliente</span>
+                <span class="feature-tag">Mascarilla</span>
+                <span class="feature-tag">60 min</span>
+              </div>
+              <button class="card-button">Reservar Ahora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Tarjeta 19-->
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="image-container">
+              <img src="../images/servicios_caballeros/otros_servicios/tinturacion.png" alt="Tinturación capilar">
+            </div>
+            <div class="card-title">
+              <h3>Tinturación capilar</h3>
+              <div class="price">$40.000</div>
+            </div>
+          </div>
+          <div class="flip-card-back">
+            <div class="card-back-content">
+              <h3>Tinturación capilar</h3>
+              <p>Coloración profesional para renovar tu imagen o cubrir canas. Logra un tono uniforme y brillante con productos de alta calidad.</p>
+              <div class="card-features">
+                <span class="feature-tag">Brocha</span>
+                <span class="feature-tag">Tinte</span>
+                <span class="feature-tag">60 min</span>
+              </div>
+              <button class="card-button">Reservar Ahora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    
+
     </section>
   </main>
 

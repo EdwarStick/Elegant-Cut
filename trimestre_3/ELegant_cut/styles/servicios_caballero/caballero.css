@@ -145,29 +145,35 @@
 
     /* ---------------- TÍTULOS DE SECCIÓN ---------------- */
     .titulo {
-      background-color: #000;
-      color: #f0f0f0;
-      text-align: center;
-      font-size: 1.8rem;
-      font-weight: 600;
-      margin: 40px auto 30px;
-      padding: 15px 40px;
-      position: relative;
-      display: inline-block;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(188, 32, 65, 0.3);
-    }
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-top: 15px;
+  padding: 15px;
+  position: relative;
+  display: flex;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(188, 32, 65, 0.3);
+}
 
-    /* Línea decorativa debajo del título */
-    .titulo::after {
-      content: "";
-      display: block;
-      width: 80%;
-      height: 4px;
-      background: linear-gradient(to right, transparent, var(--Dorado), transparent);
-      margin: 12px auto 0;
-      border-radius: 10px;
-    }
+/* Línea decorativa debajo del título - CORREGIDA */
+.titulo::after {
+  content: "";
+  display: block;
+  width: 55%;
+  height: 3px;
+  background: linear-gradient(to right, transparent, var(--Blanco), transparent);
+  margin-top: 30px;
+  margin-left: auto;    /* ← NUEVO */
+  margin-right: auto;   /* ← NUEVO */
+  border-radius: 10px;
+  position: absolute;   /* ← RECOMENDADO */
+  bottom: 10px;         /* ← RECOMENDADO */
+  left: 0;
+  right: 0;
+}
 
     /* ---------------- SECCIÓN DE CORTES ---------------- */
     .servicios-cortes {
