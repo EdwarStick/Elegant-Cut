@@ -43,7 +43,7 @@ header {
     font-size: 1.5rem;
     background-color: transparent;
     cursor: pointer;
-    color: #000;
+    
 }
 
 /* MENÚ DESPLEGABLE */
@@ -60,9 +60,8 @@ header {
     bottom: 0;
     width: 70%;
     max-width: 300px;
-    background-color: #ffffff;
+    
     padding: 4rem 2rem 2rem 2rem;
-    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease-in-out;
     transform: translateX(-100%);
     z-index: 1000;
@@ -106,7 +105,7 @@ header {
 
 .nav-list li a {
     text-decoration: none;
-    color: #000;
+    
     font-size: 1.1rem;
     padding: 0.5rem 0;
     display: block;
@@ -128,7 +127,6 @@ body.menu-open::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
     z-index: 999;
 }
 
@@ -141,7 +139,7 @@ body.menu-open::before {
 
 .button-container {
   display: flex;
-  background-color: #ffff;
+  
   width: 250px;
   height: 40px;
   align-items: center;
