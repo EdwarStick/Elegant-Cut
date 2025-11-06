@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sitio Web Moderno</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/servicios_dama/servicios.css">
+  <link rel="stylesheet" href="../styles/styles_nav/Nav.css">
+  <link rel="stylesheet" href="../styles/Menu_hamburguesa/menu.css">
+  <link rel="stylesheet" href="../styles/Footer/Footer.css">
+</head>
+
+<body>
+<!-- Header con menú hamburguesa -->
+    <header>
+        <!-- Logo y nombre de la marca -->
+        <div class="brand-container">
+            <div class="logo">
+                <img src="../images/logo.png" alt="ElegantCut Barbería" class="logo-img">
+            </div>
+            <div class="brand-name">
+                <span class="brand-text">ELEGANTCUT</span>
+            </div>
+        </div>
+
+        <!-- Contenedor de íconos visible en escritorio -->
+        <div class="button-container desktop-icons">
+            <a href="index.html" class="button nav-button" aria-label="Inicio">
+                <i class="bi bi-house-door"></i>
+                <span class="nav-label">Inicio</span>
+            </a>
+            <a href="reseñas.html" class="button nav-button" aria-label="Reseñas">
+                <i class="bi bi-star"></i>
+                <span class="nav-label">Reseñas</span>
+            </a>
+            <a href="../pages/profile.html" class="button nav-button" aria-label="Perfil">
+                <i class="bi bi-person"></i>
+                <span class="nav-label">Perfil</span>
+            </a>
+            <a href="../pages/services.html" class="button nav-button" aria-label="Servicios">
+                <i class="bi bi-scissors"></i>
+                <span class="nav-label">Servicios</span>
+            </a>
+        </div>
+
+        <!-- Botón abrir menú hamburguesa (solo visible en móvil) -->
+        <button id="abrir" class="abrir-menu" aria-label="Abrir menú">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <!-- Menú hamburguesa -->
+        <nav class="nav" id="nav">
+            <!-- Botón cerrar -->
+            <button id="cerrar" class="cerrar-menu" aria-label="Cerrar menú">
+                <i class="bi bi-x"></i>
+            </button>
+
+            <!-- Logo en menú hamburguesa -->
+            <div class="mobile-brand">
+                <img src="../images/logo.png" alt="ElegantCut Barbería" class="mobile-logo">
+                <span class="mobile-brand-text">ELEGANTCUT</span>
+            </div>
+
+            <!-- Íconos del menú hamburguesa -->
+            <div class="menu-icons-container">
+                <a href="../index.html" class="button menu-nav-button">
+                    <i class="bi bi-house-door"></i>
+                    <span class="menu-nav-label">Inicio</span>
+                </a>
+                <a href="../pages/reviews.html" class="button menu-nav-button">
+                    <i class="bi bi-star"></i>
+                    <span class="menu-nav-label">Reseñas</span>
+                </a>
+                <a href="../pages/profile.html" class="button menu-nav-button">
+                    <i class="bi bi-person"></i>
+                    <span class="menu-nav-label">Mi Perfil</span>
+                </a>
+                <a href="../pages/services.html" class="button menu-nav-button">
+                    <i class="bi bi-scissors"></i>
+                    <span class="menu-nav-label">Servicios</span>
+                </a>
+            </div>
+
+            <!-- Información de contacto en menú hamburguesa -->
+            <div class="mobile-contact">
+                <div class="contact-item">
+                    <i class="bi bi-telephone"></i>
+                    <span>+1 234 567 890</span>
+                </div>
+                <div class="contact-item">
+                    <i class="bi bi-clock"></i>
+                    <span>Lun-Sáb: 9am - 8pm</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+          <div class="carousel">
+        <div class="slides">
+          <div class="slide">
+            <img src="../images/servicios_dama/Mujer/Carrusel1.jpg" alt="Imagen 1">
+      </div>
+      <div class="slide">
+        <img src="../images/servicios_dama/Mujer/Carrusel2.jpg" alt="Imagen 2">
+      </div>
+      <div class="slide">
+        <img src="../imagenes/Mujer/Carrusel2.jpg" alt="Imagen 3">
+      </div>
+      <div class="slide">
+        <img src="../imagenes/Mujer/Carrusel2.jpg" alt="Imagen 4">
+      </div>
+    </div>
+    <main>
+  </div>
+      <div class="content-grid">
+        <section class="product-grid">
+
+          <!--Icono flotante del carrito -->
+          <div class="cart-icon" id="cart-icon"> <i class="bi bi-cart3"></i>
+            <span id="cart-count">0</span>
+          </div>
+          <!-- Contenedor desplegable del carrito -->
+          <div class="cart" id="cart">
+            <h3>🛒 Carrito</h3>
+            <ul id="cart-items"></ul>
+            <p class="total">Total: <span id="total-price">$0</span></p>
+            <a href="../html/agenda.html"><button id="agendar-btn" class="cta-button">Agendar</button></a>
+          </div>
+
+
+          <!--Catalogo-->
+          <div class="cart" id="cart">
+            <h3>Carrito</h3>
+            <ul id="cart-items"></ul>
+            <p class="total">Total: <span id="total-price">$0</span></p>
+            <a href="../html/agenda.html"><button id="agendar-btn" class="cta-button">Agendar</button></a>
+          </div>
+
+          <!-- Catálogo moderno -->
+          <div class="catalog-grid">
+
+            <!-- Producto 1 -->
+            <div class="product-card" data-name="Corte Bob" data-price="15000">
+              <div class="thumb">
+                <img src="../imagenes/Mujer/Bob Clasico.png" alt="Corte Clásico" class="product-img">
+                <div class="badge">-25%</div>
+              </div>
+              <div class="info">
+                <h3 class="title">Corte Bob</h3>
+                <p class="desc">Estilo tradicional con acabado profesional.</p>
+                <div class="price-box">
+                  <span class="old-price">$20.000</span>
+                  <span class="price">$15.000</span>
+                </div>
+                <div class="rating">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star"></i>
+                  <i class="bi bi-star"></i>
+                  <span class="reviews">Sin reseñas</span>
+                </div>
+                <button class="add-btn"><i class="bi bi-plus-circle"></i> Agregar</button>
+              </div>
+            </div>
+
+            <!-- Producto 2 -->
+            <div class="product-card" data-name="Corte Degradado" data-price="25000">
+              <div class="thumb">
+                <img src="../imagenes/Mujer/Pixie.png" alt="Corte Degradado" class="product-img">
+                <div class="badge">Nuevo</div>
+              </div>
+              <div class="info">
+                <h3 class="title">Corte Degradado</h3>
+                <p class="desc">Moderno y limpio, ideal para cualquier ocasión.</p>
+                <div class="price-box">
+                  <span class="price">$25.000</span>
+                </div>
+                <div class="rating">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-half"></i>
+                  <span class="reviews">4.5</span>
+                </div>
+                <button class="add-btn"><i class="bi bi-plus-circle"></i> Agregar</button>
+              </div>
+            </div>
+
+            <!-- Producto 3 -->
+            <div class="product-card" data-name="Corte Juvenil" data-price="18000">
+              <div class="thumb">
+                <img src="../imagenes/Mujer/Corte Pariposa.png" alt="Corte Juvenil" class="product-img">
+              </div>
+              <div class="info">
+                <h3 class="title">Corte Juvenil</h3>
+                <p class="desc">Diseño fresco y con estilo, perfecto para jóvenes.</p>
+                <div class="price-box">
+                  <span class="price">$18.000</span>
+                </div>
+                <div class="rating">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star"></i>
+                  <i class="bi bi-star"></i>
+                  <i class="bi bi-star"></i>
+                  <span class="reviews">Sin reseñas</span>
+                </div>
+                <button class="add-btn"><i class="bi bi-plus-circle"></i> Agregar</button>
+              </div>
+            </div>
+
+            <!-- Producto 4 -->
+            <div class="product-card" data-name="Corte Juvenil" data-price="18000">
+              <div class="thumb">
+                <img src="../imagenes/Mujer/Corte v.png" alt="Corte Juvenil" class="product-img">
+              </div>
+              <div class="info">
+                <h3 class="title">Corte Juvenil</h3>
+                <p class="desc">Diseño fresco y con estilo, perfecto para jóvenes.</p>
+                <div class="price-box">
+                  <span class="price">$18.000</span>
+                </div>
+                <div class="rating">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star"></i>
+                  <i class="bi bi-star"></i>
+                  <i class="bi bi-star"></i>
+                  <span class="reviews">Sin reseñas</span>
+                </div>
+                <button class="add-btn"><i class="bi bi-plus-circle"></i> Agregar</button>
+              </div>
+            </div>
+            
+            <!-- Producto 5 -->
+            <div class="product-card" data-name="Corte Juvenil" data-price="18000">
+              <div class="thumb">
+                <img src="../imagenes/Mujer/Corte Recto.png" alt="Corte Juvenil" class="product-img">
+              </div>
+              <div class="info">
+                <h3 class="title">Corte Juvenil</h3>
+                <p class="desc">Diseño fresco y con estilo, perfecto para jóvenes.</p>
+                <div class="price-box">
+                  <span class="price">$18.000</span>
+                </div>
+                <div class="rating">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star"></i>
+                  <i class="bi bi-star"></i>
+                  <i class="bi bi-star"></i>
+                  <span class="reviews">Sin reseñas</span>
+                </div>
+                <button class="add-btn"><i class="bi bi-plus-circle"></i> Agregar</button>
+              </div>
+            </div>
+          </div>
+      </div>
+      </section>
+    </main>
+<!-- FOOTER - ANCHO COMPLETO -->
+    <footer class="footer-full">
+        <div class="footer-content">
+            <!-- Columna 1 - Brand -->
+            <div class="footer-brand">
+                <h3>ELEGANTCUT</h3>
+                <p>Donde el estilo se encuentra con la elegancia. Transformamos tu look con pasión y profesionalismo.
+                </p>
+                <div class="social-links">
+                    <a href="#" class="social-link">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="bi bi-tiktok"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="bi bi-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Columna 2 - Enlaces rápidos -->
+            <div class="footer-links">
+                <h4>Enlaces Rápidos</h4>
+                <ul>
+                    <li><a href="#">Inicio</a></li>
+                    <li><a href="#">Servicios</a></li>
+                    <li><a href="#">Galería</a></li>
+                    <li><a href="#">Testimonios</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </div>
+
+            <!-- Columna 3 - Servicios -->
+            <div class="footer-links">
+                <h4>Nuestros Servicios</h4>
+                <ul>
+                    <li><a href="#">Cortes de Cabello</a></li>
+                    <li><a href="#">Coloración</a></li>
+                    <li><a href="#">Maquillaje</a></li>
+                    <li><a href="#">Cuidado Facial</a></li>
+                    <li><a href="#">Manicure & Pedicure</a></li>
+                </ul>
+            </div>
+
+            <!-- Columna 4 - Contacto -->
+            <div class="footer-contact">
+                <h4>Contacto</h4>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="bi bi-geo-alt"></i>
+                        <span>Tu dirección aquí</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-telephone"></i>
+                        <span>+1 234 567 890</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-envelope"></i>
+                        <span>info@elegantcut.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-clock"></i>
+                        <span>Lun-Sáb: 9am - 8pm</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 ELEGANTCUT Barbería & Beauty Salon. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+
+    <script src="../js/servicios.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"></script>
+</body>
+<script src="../scripts/menu.js"></script>
+</html>
