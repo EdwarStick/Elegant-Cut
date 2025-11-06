@@ -5,6 +5,12 @@
     font-family: 'Inter', sans-serif;
 }
 
+
+html {
+    scroll-behavior: smooth;
+}
+
+
 body {
     background-color: #f8f9fa;
     color: #333;
@@ -37,11 +43,10 @@ header {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    /* NUEVO: Ancho flexible según cantidad de íconos */
     min-width: 250px;
     max-width: 320px;
     padding: 0 10px;
-    gap: 5px; /* Espacio consistente entre íconos */
+    gap: 5px;
 }
 
 .button {
@@ -57,8 +62,7 @@ header {
     color: #000;
     transition: all ease-in-out 0.3s;
     cursor: pointer;
-    /* NUEVO: Asegurar que todos los íconos sean iguales */
-    flex-shrink: 0; /* Evita que se encojan */
+    flex-shrink: 0;
 }
 
 .button:hover {
@@ -68,13 +72,11 @@ header {
 
 .icon {
     font-size: 20px;
-    /* NUEVO: Forzar tamaño consistente */
     width: 1em;
     height: 1em;
     display: block;
 }
 
-/* Para íconos SVG, asegurar tamaño consistente */
 .button svg {
     width: 20px;
     height: 20px;
@@ -95,7 +97,6 @@ header {
 
 .nav-list li a {
     text-decoration: none;
-    color: #1c1c1c;
     font-weight: 500;
 }
 
@@ -108,15 +109,16 @@ main {
     width: 100%;
 }
 
+/* SECCIÓN 1 - MANTENIDA INTACTA */
 .content-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
     align-items: center;
     min-height: 400px;
+    margin-bottom: 4rem;
 }
 
-/* ZONA IZQUIERDA - CONTENEDOR DE IMAGEN */
 .image-container {
     background-color: #e2e8f0;
     border-radius: 12px;
@@ -144,7 +146,6 @@ main {
     font-weight: 500;
 }
 
-/* ZONA DERECHA - MENSAJE CON TIPOGRAFÍA MODERNA */
 .message-container {
     padding: 2rem;
     background-color: #ffffff;
@@ -208,32 +209,455 @@ main {
     background-color: #f51d4c;
 }
 
-/*Css del contenedor de las cards*/
-.container-content {
-    padding: 2rem;
+/* SECCIÓN 2 - NUEVO DISEÑO (EXACTO COMO LA IMAGEN) */
+.about-section {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: white;
+    padding: 5rem 2rem;
+    border-radius: 20px;
+    margin: 2rem 0;
+}
+
+.about-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.about-header .subtitle {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #BC2041;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.about-header h2 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #ffffff, #BC2041);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.about-header .section-description {
+    font-size: 1.2rem;
+    color: #cccccc;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.about-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.about-text {
+    padding-right: 2rem;
+}
+
+.about-text h3 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #ffffff;
+}
+
+.about-text p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #e0e0e0;
+    margin-bottom: 2rem;
+}
+
+.about-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #BC2041;
+    display: block;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #cccccc;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.about-image {
+    background: linear-gradient(135deg, #BC2041, #ff6b8b);
+    border-radius: 15px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.about-image .image-placeholder {
+    position: relative;
+    z-index: 2;
+    color: white;
+}
+
+/* SECCIÓN 3 - TESTIMONIOS (BLANCO) */
+.testimonials-section {
     background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 5rem 2rem;
+    border-radius: 20px;
+    margin: 2rem 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-.card-row {
-    display: flex;      
-    flex-wrap: wrap;     
-    justify-content: center; 
-    margin-top: 20px;    
+.testimonials-header {
+    text-align: center;
+    margin-bottom: 4rem;
 }
 
-/* Estilos de espaciado para las tarjetas individuales */
-.card {
-    margin: 10px; 
-    width: 18rem;
-    height: 300px; 
-    overflow: hidden; 
+.testimonials-header .subtitle {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #BC2041;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: block;
 }
 
-.card-img-top{
-    width: 100%;  
-    height: 180px; 
-    object-fit: cover; 
+.testimonials-header h2 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #1a202c;
 }
 
+.testimonials-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.stat-box {
+    text-align: center;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    min-width: 150px;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #BC2041;
+    display: block;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #4a5568;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.testimonial-card {
+    background: #f8f9fa;
+    padding: 2.5rem;
+    border-radius: 15px;
+    text-align: center;
+    border-left: 4px solid #BC2041;
+    transition: transform 0.3s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+}
+
+.testimonial-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #4a5568;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.testimonial-text::before {
+    content: '"';
+    font-size: 4rem;
+    color: #BC2041;
+    position: absolute;
+    top: -2rem;
+    left: -1rem;
+    opacity: 0.3;
+    font-family: serif;
+}
+
+.client-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 0.5rem;
+}
+
+.client-info {
+    font-size: 0.9rem;
+    color: #718096;
+    font-weight: 500;
+}
+
+/* SECCIÓN 4 - NUESTROS EXPERTOS CON CAROUSEL RESPONSIVE */
+.experts-section {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: white;
+    padding: 5rem 2rem;
+    border-radius: 20px;
+    margin: 2rem 0;
+    overflow: hidden;
+}
+
+.experts-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.experts-header .subtitle {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #BC2041;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.experts-header h2 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #ffffff, #BC2041);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ESCRITORIO: Grid normal */
+.experts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.expert-card {
+    background: #2a2a2a;
+    border-radius: 15px;
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.3s ease;
+    border: 1px solid #3a3a3a;
+    flex-shrink: 0;
+}
+
+.expert-card:hover {
+    transform: translateY(-10px);
+}
+
+.expert-image {
+    width: 100%;
+    height: 300px;
+    background: linear-gradient(135deg, #BC2041, #ff6b8b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.expert-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.expert-image .image-placeholder {
+    position: relative;
+    z-index: 2;
+    color: white;
+}
+
+.expert-info {
+    padding: 2rem 1.5rem;
+}
+
+.expert-name {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+}
+
+.expert-role {
+    font-size: 1rem;
+    color: #BC2041;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+
+
+/* Agrega esto a tu CSS */
+.expert-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Para quitar el fondo gradiente cuando uses imágenes reales */
+.expert-image {
+    background: transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.expert-image::before {
+    display: none; /* Oculta el overlay gradiente */
+}
+
+/* MÓVIL: Carousel */
+@media (max-width: 768px) {
+    .experts-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 1.5rem;
+        padding: 1rem 0.5rem;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        scroll-behavior: smooth;
+    }
+    
+    .experts-grid::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .expert-card {
+        scroll-snap-align: start;
+        min-width: 280px;
+        flex: 0 0 auto;
+    }
+    
+    .expert-image {
+        height: 250px;
+    }
+    
+    .experts-header h2 {
+        font-size: 2.5rem;
+    }
+    
+    /* Indicadores del carousel */
+    .carousel-indicators {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+    
+    .carousel-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #4a4a4a;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    
+    .carousel-indicator.active {
+        background: #BC2041;
+    }
+}
+
+
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .about-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .about-text {
+        padding-right: 0;
+        text-align: center;
+    }
+    
+    .about-header h2 {
+        font-size: 2.5rem;
+    }
+    
+    .about-stats {
+        justify-content: center;
+    }
+
+    .testimonials-stats {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+    
+    .stat-box {
+        min-width: 120px;
+    }
+    
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .testimonials-header h2 {
+        font-size: 2.5rem;
+    }
+}
