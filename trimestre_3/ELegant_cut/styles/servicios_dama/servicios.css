@@ -1,3 +1,6 @@
+/* --------------------------------------------------
+   IMPORTANTE & VARIABLES
+-------------------------------------------------- */
 @import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap");
 
 :root {
@@ -6,6 +9,10 @@
   --Blanco: #f4f4f4;
   --Rojo: #bc2041;
 }
+
+/* --------------------------------------------------
+   RESETEO Y BASE
+-------------------------------------------------- */
 * {
   margin: 0;
   padding: 0;
@@ -21,12 +28,10 @@ body {
   display: flex;
   flex-direction: column;
 }
-.logo {
-  max-width: 5rem;
-  order: 3;
-  margin-left: auto;
-}
 
+/* --------------------------------------------------
+   HEADER & LOGO
+-------------------------------------------------- */
 .header {
   display: flex;
   align-items: center;
@@ -39,14 +44,14 @@ body {
   top: 0;
   left: 0;
   z-index: 10;
-}
-
-.header {
   font-size: 18px;
   margin-left: 10px;
-  .slide img {
-  object-fit: cover;         /* rellena sin dejar espacios */
 }
+
+.logo {
+  max-width: 5rem;
+  order: 3;
+  margin-left: auto;
 }
 
 .menu-btn {
@@ -56,12 +61,15 @@ body {
   cursor: pointer;
 }
 
-.title h1{
+.title h1 {
   margin-top: 200px;
   color: var(--Rojo);
   width: flex;
 }
-/* SIDEBAR */
+
+/* --------------------------------------------------
+   SIDEBAR
+-------------------------------------------------- */
 .sidebar {
   position: fixed;
   top: 0;
@@ -97,7 +105,27 @@ body {
   color: var(--Rojo);
 }
 
-/* MODAL */
+/* Botón cerrar */
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--Negro);
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.3s ease;
+}
+
+.close-btn:hover {
+  color: var(--Rojo);
+  transform: scale(1.2);
+}
+
+/* --------------------------------------------------
+   MODAL
+-------------------------------------------------- */
 .overlay {
   position: fixed;
   top: 0;
@@ -138,45 +166,16 @@ body {
 
 .btn {
   border: none;
-  padding: 8px 20px;
+  padding: 0.7em 1.4em;
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
   font-size: 1em;
-  padding: 0.7em 1.4em;
 }
 
-/* Botón de cierre del menú */
-.close-btn {
-  position: absolute;
-  top: 15px;
-  /* Baja o sube el botón */
-  right: 15px;
-  /* Mueve el botón hacia la derecha o izquierda */
-  background: none;
-  /* Sin fondo */
-  border: none;
-  /* Sin borde */
-  font-size: 24px;
-  /* Tamaño del ícono o texto */
-  color: var(--Negro);
-  /* Color del botón */
-  cursor: pointer;
-  /* Cambia el cursor al pasar */
-  transition: transform 0.2s ease, color 0.3s ease;
-}
-
-.close-btn:hover {
-  color: var(--Rojo);
-  /* Cambia el color al pasar el mouse */
-  transform: scale(1.2);
-  /* Efecto de agrandar */
-}
-.blur {
-  filter: blur(2px);
-}
-
-/* CONTENIDO PRINCIPAL */
+/* --------------------------------------------------
+   MAIN CONTENIDO
+-------------------------------------------------- */
 main {
   flex: 1;
   padding: 2rem;
@@ -186,6 +185,7 @@ main {
   justify-content: center;
   align-items: center;
 }
+
 .content-grid {
   display: flex;
   grid-template-columns: 1fr 1fr;
@@ -194,7 +194,9 @@ main {
   min-height: 800px;
 }
 
-/*CARRITO FLOTANTE*/
+/* --------------------------------------------------
+   CARRITO
+-------------------------------------------------- */
 .cart-icon {
   position: fixed;
   top: 70px;
@@ -219,7 +221,6 @@ main {
   transform: scale(1.05);
 }
 
-/*Contador del carrito */
 #cart-count {
   position: absolute;
   top: 5px;
@@ -232,7 +233,6 @@ main {
   font-weight: bold;
 }
 
-/*Carrito desplegable */
 .cart {
   position: fixed;
   top: 130px;
@@ -252,29 +252,20 @@ main {
   display: block;
 }
 
-/* Animación */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Estilo interno */
+/* Lista interna del carrito */
 .cart h3 {
-  color: #cdcfd4;
+  color: var(--Rojo);
   text-align: center;
   margin-bottom: 10px;
 }
 
 #cart-items {
   list-style: none;
-  padding: 0;
-  margin: 0;
 }
 
 #cart-items li {
@@ -301,8 +292,8 @@ main {
 }
 
 .cta-button {
-  background: #1e3a8a;
-  color: rgb(139, 0, 0);
+  background: var(--NegroMedio);
+  color: white;
   border: none;
   padding: 8px 15px;
   border-radius: 6px;
@@ -313,19 +304,22 @@ main {
 }
 
 .cta-button:hover {
-  background: #ced4ea;
+  background: var(--Rojo);
 }
 
-/*Catalogo-Productos_Mujer*/
+/* --------------------------------------------------
+   CATÁLOGO - PRODUCTOS
+-------------------------------------------------- */
 .catalog-grid {
-  display: grid ;
+  display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 40px;
-  padding: 100px 100px;
+  padding: 50px 50px;
   justify-content: center;
 }
+
 .product-card {
-  background: #fff;
+  background: var(--Blanco);
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
@@ -333,6 +327,7 @@ main {
   display: flex;
   flex-direction: column;
 }
+
 .product-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
@@ -341,14 +336,16 @@ main {
 .thumb {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 4/5;
+  aspect-ratio: 4/5; /* mantiene proporción fija */
 }
+
 .thumb img {
-  width: 400px;
-  height: auto;
-  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* recorta sin deformar */
   transition: transform 0.4s ease;
 }
+
 .product-card:hover .thumb img {
   transform: scale(1.05);
 }
@@ -366,55 +363,22 @@ main {
 }
 
 .info {
+  flex: 1;
   padding: 15px 18px 20px;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.title {
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0;
-}
-
-.desc {
-  font-size: 14px;
-  color: #666;
-  margin: 0 0 8px;
-}
-
-.price-box {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-.price {
-  color: #e63946;
-  font-weight: 700;
-  font-size: 18px;
-}
-.old-price {
-  text-decoration: line-through;
-  color: #999;
-  font-size: 14px;
-}
-
-.rating {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: #f5b50a;
-  font-size: 14px;
-}
-.reviews {
-  color: #777;
-  font-size: 13px;
-  margin-left: 4px;
-}
+.title { font-size: 16px; font-weight: 600; }
+.desc { font-size: 14px; color: #666; }
+.price-box { display: flex; gap: 8px; align-items: baseline; }
+.price { color: #e63946; font-weight: 700; font-size: 18px; }
+.old-price { text-decoration: line-through; color: #999; font-size: 14px; }
+.rating { display: flex; align-items: center; gap: 4px; color: #f5b50a; }
+.reviews { color: #777; font-size: 13px; }
 
 .add-btn {
-  margin-top: 10px;
   background: #222;
   color: #fff;
   border: none;
@@ -423,20 +387,21 @@ main {
   font-weight: 500;
   cursor: pointer;
   transition: background 0.2s ease;
-}
-.add-btn:hover {
-  background: #e63946;
+  margin-top: auto; /* botón siempre pegado abajo */
 }
 
-/*Carrusel*/
+.add-btn:hover { background: #e63946; }
+
+/* --------------------------------------------------
+   CARRUSEL
+-------------------------------------------------- */
 .carousel {
   display: inline-block;
   width: flex;
   height: 500px;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  margin-top: 50px;
+  margin-top: 0px;
 }
 
 .slides {
@@ -446,36 +411,57 @@ main {
   animation: slide 15s infinite;
 }
 
-.slide {
-  width: 100%;
-  transition: 0.6s;
-}
+.slide { width: 100%; transition: 0.6s; }
 
 .slide img {
   width: 100%;
   height: 100%;
-  object-fit: cover;         /* rellena sin dejar espacios */
-  display: block;
+  object-fit: cover;
 }
 
-/* Animación automática */
+/* Animación carrusel */
 @keyframes slide {
   0% { margin-left: 0; }
   20% { margin-left: 0; }
-
   25% { margin-left: -100%; }
   45% { margin-left: -100%; }
-
   50% { margin-left: -200%; }
   70% { margin-left: -200%; }
-
   75% { margin-left: -300%; }
   95% { margin-left: -300%; }
-
   100% { margin-left: 0; }
 }
 
-/* RESPONSIVE DESIGN */
+/* --------------------------------------------------
+   SELECCIÓN DE CATEGORÍAS
+-------------------------------------------------- */
+.category-menu {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 18px 0;
+  background-color: white;
+}
+
+.category-menu button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 20px;
+  color: var(--Negro);
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.category-menu button:hover {
+  background: var(--Rojo);
+  color: #fff;
+}
+
+/* --------------------------------------------------
+   RESPONSIVE
+-------------------------------------------------- */
 @media screen and (max-width: 768px) {
   .content-grid {
     grid-template-columns: 1fr;
@@ -509,24 +495,12 @@ main {
 }
 
 @media screen and (max-width: 480px) {
-  .message-container h1 {
-    font-size: 1.75rem;
-  }
-
-  .message-container p {
-    font-size: 1rem;
-  }
-
-  .features {
-    gap: 0.75rem;
-  }
-
-  .feature {
-    font-size: 0.9rem;
-  }
+  .message-container h1 { font-size: 1.75rem; }
+  .message-container p { font-size: 1rem; }
+  .features { gap: 0.75rem; }
+  .feature { font-size: 0.9rem; }
 }
 
-/* VISTA DE ESCRITORIO - con ajustes para que se vea el menú en pantallas pequeñas no se que tan bien queda */
 @media screen and (min-width: 769px) {
   .nav {
     width: 40%;
