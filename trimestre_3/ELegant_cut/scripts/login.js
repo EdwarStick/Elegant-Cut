@@ -37,10 +37,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     mostrarMensaje('¡Login exitoso! Redirigiendo...', 'success');
                     
-                    // Redirigir después de 1 segundo
+                    //  REDIRECCIÓN SEGÚN ROL 
                     setTimeout(() => {
-                        window.location.href = '../profile.html';
+                        if (datos.user.role === 'admin') {
+                            window.location.href = '../page/admin.html'; // Admin va a admin.html
+                        } else {
+                            window.location.href = '../page/index.html'; // Usuarios van a index.html
+                        }
                     }, 1000);
+                    //  HASTA AQUÍ 
                     
                 } else {
                     // Login fallido
