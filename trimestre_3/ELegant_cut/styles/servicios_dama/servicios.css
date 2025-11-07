@@ -130,13 +130,13 @@ header {
 
 .slides {
   display: flex;
-  width: 400%;
+  width: 100%; /* 6 imágenes */
   height: 100%;
-  animation: slide 15s infinite;
+  animation: slide 18s infinite;
 }
 
 .slide {
-  width: 100%;
+  flex: 0 0 100%; /* <- IMPORTANTE */
 }
 
 .slide img {
@@ -146,30 +146,13 @@ header {
 }
 
 @keyframes slide {
-
-  0%,
-  20% {
-    margin-left: 0;
-  }
-
-  25%,
-  45% {
-    margin-left: -100%;
-  }
-
-  50%,
-  70% {
-    margin-left: -200%;
-  }
-
-  75%,
-  95% {
-    margin-left: -300%;
-  }
-
-  100% {
-    margin-left: 0;
-  }
+  0%, 13% { transform: translateX(0); }
+  16%, 29% { transform: translateX(-100%); }
+  32%, 45% { transform: translateX(-200%); }
+  48%, 61% { transform: translateX(-300%); }
+  64%, 77% { transform: translateX(-400%); }
+  80%, 93% { transform: translateX(-500%); }
+  100% { transform: translateX(0); }
 }
 
 /* --------------------------------------------------
@@ -258,7 +241,7 @@ header {
 -------------------------------------------------- */
 .catalog-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1.5rem;
   padding: 2rem;
 
