@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElegantCut - Nuestros Barberos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <!-- Enlace a Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Enlaces a CSS propios -->
+    <link rel="stylesheet" href="../styles/styles_nav/Nav.css">
+    <link rel="stylesheet" href="../styles/Menu_hamburguesa/menu.css">
+    <link rel="stylesheet" href="../styles/Footer/Footer.css">
+    <link rel="stylesheet" href="../styles/card barbero/card_barberos.css">
+</head>
+
+<body>
+
+    <!-- Header con menú hamburguesa -->
+    <header>
+        <!-- Logo y nombre de la marca -->
+        <div class="brand-container">
+            <div class="logo">
+                <img src="../images/logo.png" alt="ElegantCut Barbería" class="logo-img">
+            </div>
+            <div class="brand-name">
+                <span class="brand-text">ELEGANTCUT</span>
+            </div>
+        </div>
+
+        <!-- Contenedor de íconos visible en escritorio -->
+        <div class="button-container desktop-icons">
+            <a href="index.html" class="button nav-button" aria-label="Inicio">
+                <i class="bi bi-house-door"></i>
+                <span class="nav-label">Inicio</span>
+            </a>
+            <a href="reseñas.html" class="button nav-button" aria-label="Reseñas">
+                <i class="bi bi-star"></i>
+                <span class="nav-label">Reseñas</span>
+            </a>
+            <a href="../pages/profile.html" class="button nav-button" aria-label="Perfil">
+                <i class="bi bi-person"></i>
+                <span class="nav-label">Perfil</span>
+            </a>
+            <a href="../pages/services.html" class="button nav-button" aria-label="Servicios">
+                <i class="bi bi-scissors"></i>
+                <span class="nav-label">Servicios</span>
+            </a>
+        </div>
+
+        <!-- Botón abrir menú hamburguesa (solo visible en móvil) -->
+        <button id="abrir" class="abrir-menu" aria-label="Abrir menú">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <!-- Menú hamburguesa -->
+        <nav class="nav" id="nav">
+            <!-- Botón cerrar -->
+            <button id="cerrar" class="cerrar-menu" aria-label="Cerrar menú">
+                <i class="bi bi-x"></i>
+            </button>
+
+            <!-- Logo en menú hamburguesa -->
+            <div class="mobile-brand">
+                <img src="../images/logo.png" alt="ElegantCut Barbería" class="mobile-logo">
+                <span class="mobile-brand-text">ELEGANTCUT</span>
+            </div>
+
+            <!-- Íconos del menú hamburguesa -->
+            <div class="menu-icons-container">
+                <a href="../index.html" class="button menu-nav-button">
+                    <i class="bi bi-house-door"></i>
+                    <span class="menu-nav-label">Inicio</span>
+                </a>
+                <a href="../pages/reviews.html" class="button menu-nav-button">
+                    <i class="bi bi-star"></i>
+                    <span class="menu-nav-label">Reseñas</span>
+                </a>
+                <a href="../pages/profile.html" class="button menu-nav-button">
+                    <i class="bi bi-person"></i>
+                    <span class="menu-nav-label">Mi Perfil</span>
+                </a>
+                <a href="../pages/services.html" class="button menu-nav-button">
+                    <i class="bi bi-scissors"></i>
+                    <span class="menu-nav-label">Servicios</span>
+                </a>
+            </div>
+
+            <!-- Información de contacto en menú hamburguesa -->
+            <div class="mobile-contact">
+                <div class="contact-item">
+                    <i class="bi bi-telephone"></i>
+                    <span>+1 234 567 890</span>
+                </div>
+                <div class="contact-item">
+                    <i class="bi bi-clock"></i>
+                    <span>Lun-Sáb: 9am - 8pm</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section Mejorada para Equipo -->
+    <section class="team-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Nuestro Equipo de Expertos</h1>
+                <p class="hero-subtitle">Conoce a los profesionales que harán realidad el estilo que mereces</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">Años de Experiencia Colectiva</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">5,000+</div>
+                        <div class="stat-label">Clientes Satisfechos</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">98%</div>
+                        <div class="stat-label">Rating de Clientes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filtros de Especialidad -->
+    <section class="specialties-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Encuentra tu Barbero Ideal</h2>
+                <p>Filtra por especialidad y encuentra el profesional perfecto para tu estilo</p>
+            </div>
+            <div class="specialties-filter">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <button class="filter-btn" data-filter="classic">Cortes Clásicos</button>
+                <button class="filter-btn" data-filter="modern">Estilos Modernos</button>
+                <button class="filter-btn" data-filter="beard">Especialista en Barbas</button>
+                <button class="filter-btn" data-filter="fade">Degradados Expertos</button>
+                <button class="filter-btn" data-filter="senior">Barberos Senior</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Barberos Unificada -->
+    <section class="barbers-section">
+        <div class="container">
+            <div class="barbers-grid" id="barbers-container">
+                
+                <!-- Barbero 1 - Carlos Mendoza -->
+                <div class="barber-card" data-category="senior classic">
+                    <div class="barber-header">
+                        <div class="barber-badge senior">Senior</div>
+                        <div class="barber-experience">18 años</div>
+                    </div>
+                    <div class="barber-image">
+                        <img src="../images/barberos/barbero-senior1.jpg" alt="Carlos Mendoza - Barbero Master">
+                        <div class="barber-overlay">
+                            <div class="specialties">
+                                <span class="specialty-tag">Clásico</span>
+                                <span class="specialty-tag">Afeitado</span>
+                                <span class="specialty-tag">Barbas</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="barber-info">
+                        <h3 class="barber-name">Carlos Mendoza</h3>
+                        <p class="barber-title">Barbero Master & Fundador</p>
+                        <div class="barber-rating">
+                            <div class="stars">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <span>5.0 (328)</span>
+                            </div>
+                        </div>
+                        <p class="barber-bio">Especialista en cortes clásicos y afeitado tradicional. Más de 18 años transformando estilos con precisión y elegancia.</p>
+                        <div class="barber-stats">
+                            <div class="stat">
+                                <strong>2,500+</strong>
+                                <span>Clientes</span>
+                            </div>
+                            <div class="stat">
+                                <strong>98%</strong>
+                                <span>Recomiendan</span>
+                            </div>
+                        </div>
+                        <div class="barber-actions">
+                            <button class="btn-primary">Ver Portafolio</button>
+                            <button class="btn-secondary">Reservar Cita</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barbero 2 - Miguel Torres -->
+                <div class="barber-card" data-category="modern fade beard">
+                    <div class="barber-header">
+                        <div class="barber-badge trending">Trending</div>
+                        <div class="barber-experience">8 años</div>
+                    </div>
+                    <div class="barber-image">
+                        <img src="../images/barberos/barbero2.jpg" alt="Miguel Torres - Especialista en Barbas">
+                        <div class="barber-overlay">
+                            <div class="specialties">
+                                <span class="specialty-tag">Barbas</span>
+                                <span class="specialty-tag">Afeitado</span>
+                                <span class="specialty-tag">Clásico</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="barber-info">
+                        <h3 class="barber-name">Miguel Torres</h3>
+                        <p class="barber-title">Especialista en Barbas</p>
+                        <div class="barber-rating">
+                            <div class="stars">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <span>5.0 (415)</span>
+                            </div>
+                        </div>
+                        <p class="barber-bio">Maestro en afeitado tradicional y diseño de barbas. Transforma tu estilo facial con técnicas ancestrales y productos premium.</p>
+                        <div class="barber-stats">
+                            <div class="stat">
+                                <strong>1,800+</strong>
+                                <span>Clientes</span>
+                            </div>
+                            <div class="stat">
+                                <strong>99%</strong>
+                                <span>Recomiendan</span>
+                            </div>
+                        </div>
+                        <div class="barber-actions">
+                            <button class="btn-primary">Ver Portafolio</button>
+                            <button class="btn-secondary">Reservar Cita</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barbero 3 - Javier López -->
+                <div class="barber-card" data-category="modern fade">
+                    <div class="barber-header">
+                        <div class="barber-badge creative">Creativo</div>
+                        <div class="barber-experience">6 años</div>
+                    </div>
+                    <div class="barber-image">
+                        <img src="../images/barberos/barbero3.jpg" alt="Javier López - Estilista Creativo">
+                        <div class="barber-overlay">
+                            <div class="specialties">
+                                <span class="specialty-tag">Moderno</span>
+                                <span class="specialty-tag">Diseños</span>
+                                <span class="specialty-tag">Color</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="barber-info">
+                        <h3 class="barber-name">Javier López</h3>
+                        <p class="barber-title">Estilista Creativo</p>
+                        <div class="barber-rating">
+                            <div class="stars">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star"></i>
+                                <span>4.0 (187)</span>
+                            </div>
+                        </div>
+                        <p class="barber-bio">Especialista en cortes modernos y diseños personalizados. Lleva tu estilo al siguiente nivel con técnicas vanguardistas.</p>
+                        <div class="barber-stats">
+                            <div class="stat">
+                                <strong>900+</strong>
+                                <span>Clientes</span>
+                            </div>
+                            <div class="stat">
+                                <strong>94%</strong>
+                                <span>Recomiendan</span>
+                            </div>
+                        </div>
+                        <div class="barber-actions">
+                            <button class="btn-primary">Ver Portafolio</button>
+                            <button class="btn-secondary">Reservar Cita</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barbero 4 - Andrés Mendoza -->
+                <div class="barber-card" data-category="modern">
+                    <div class="barber-header">
+                        <div class="barber-badge expert">Colorista</div>
+                        <div class="barber-experience">9 años</div>
+                    </div>
+                    <div class="barber-image">
+                        <img src="../images/barberos/barbero4.jpg" alt="Andrés Mendoza - Colorista Profesional">
+                        <div class="barber-overlay">
+                            <div class="specialties">
+                                <span class="specialty-tag">Color</span>
+                                <span class="specialty-tag">Tratamientos</span>
+                                <span class="specialty-tag">Moderno</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="barber-info">
+                        <h3 class="barber-name">Andrés Mendoza</h3>
+                        <p class="barber-title">Colorista Profesional</p>
+                        <div class="barber-rating">
+                            <div class="stars">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-half"></i>
+                                <span>4.5 (256)</span>
+                            </div>
+                        </div>
+                        <p class="barber-bio">Especialista en coloración y tratamientos capilares. Renueva tu imagen con técnicas de coloración avanzadas y productos de calidad.</p>
+                        <div class="barber-stats">
+                            <div class="stat">
+                                <strong>1,100+</strong>
+                                <span>Clientes</span>
+                            </div>
+                            <div class="stat">
+                                <strong>96%</strong>
+                                <span>Recomiendan</span>
+                            </div>
+                        </div>
+                        <div class="barber-actions">
+                            <button class="btn-primary">Ver Portafolio</button>
+                            <button class="btn-secondary">Reservar Cita</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barbero 5 - Ricardo Silva -->
+                <div class="barber-card" data-category="senior classic beard">
+                    <div class="barber-header">
+                        <div class="barber-badge veteran">Veterano</div>
+                        <div class="barber-experience">22 años</div>
+                    </div>
+                    <div class="barber-image">
+                        <img src="../images/barberos/barbero5.jpg" alt="Ricardo Silva - Barbero Senior">
+                        <div class="barber-overlay">
+                            <div class="specialties">
+                                <span class="specialty-tag">Tradicional</span>
+                                <span class="specialty-tag">Clásico</span>
+                                <span class="specialty-tag">Senior</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="barber-info">
+                        <h3 class="barber-name">Ricardo Silva</h3>
+                        <p class="barber-title">Barbero Senior</p>
+                        <div class="barber-rating">
+                            <div class="stars">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <span>5.0 (512)</span>
+                            </div>
+                        </div>
+                        <p class="barber-bio">Más de 15 años de experiencia en barbería clásica. Guardián de las técnicas tradicionales con acabados impecables.</p>
+                        <div class="barber-stats">
+                            <div class="stat">
+                                <strong>3,200+</strong>
+                                <span>Clientes</span>
+                            </div>
+                            <div class="stat">
+                                <strong>99%</strong>
+                                <span>Recomiendan</span>
+                            </div>
+                        </div>
+                        <div class="barber-actions">
+                            <button class="btn-primary">Ver Portafolio</button>
+                            <button class="btn-secondary">Reservar Cita</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barbero 6 - Diego Herrera -->
+                <div class="barber-card" data-category="modern fade">
+                    <div class="barber-header">
+                        <div class="barber-badge popular">Popular</div>
+                        <div class="barber-experience">7 años</div>
+                    </div>
+                    <div class="barber-image">
+                        <img src="../images/barberos/barbero6.jpg" alt="Diego Herrera - Especialista en Cortes Urbanos">
+                        <div class="barber-overlay">
+                            <div class="specialties">
+                                <span class="specialty-tag">Urbanos</span>
+                                <span class="specialty-tag">Degradados</span>
+                                <span class="specialty-tag">Moderno</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="barber-info">
+                        <h3 class="barber-name">Diego Herrera</h3>
+                        <p class="barber-title">Especialista en Cortes Urbanos</p>
+                        <div class="barber-rating">
+                            <div class="stars">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star"></i>
+                                <span>4.0 (336)</span>
+                            </div>
+                        </div>
+                        <p class="barber-bio">Cortes modernos, degradados y estilos vanguardistas. Especialista en looks urbanos que definen personalidad.</p>
+                        <div class="barber-stats">
+                            <div class="stat">
+                                <strong>1,500+</strong>
+                                <span>Clientes</span>
+                            </div>
+                            <div class="stat">
+                                <strong>95%</strong>
+                                <span>Recomiendan</span>
+                            </div>
+                        </div>
+                        <div class="barber-actions">
+                            <button class="btn-primary">Ver Portafolio</button>
+                            <button class="btn-secondary">Reservar Cita</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>¿Listo para tu Transformación?</h2>
+                <p>Agenda tu cita con el barbero perfecto para tu estilo</p>
+                <div class="cta-buttons">
+                    <button class="btn-primary large">Reservar Cita Ahora</button>
+                    <button class="btn-secondary large">Llamar para Consulta</button>
+                </div>
+                <div class="cta-features">
+                    <div class="feature">
+                        <i class="bi bi-clock"></i>
+                        <span>Reservas 24/7</span>
+                    </div>
+                    <div class="feature">
+                        <i class="bi bi-credit-card"></i>
+                        <span>Múltiples Pagos</span>
+                    </div>
+                    <div class="feature">
+                        <i class="bi bi-star"></i>
+                        <span>Garantía de Satisfacción</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-full">
+        <div class="footer-content">
+            <!-- Columna 1 - Brand -->
+            <div class="footer-brand">
+                <h3>ELEGANTCUT</h3>
+                <p>Donde el estilo se encuentra con la elegancia. Transformamos tu look con pasión y profesionalismo.
+                </p>
+                <div class="social-links">
+                    <a href="#" class="social-link">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="bi bi-tiktok"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="bi bi-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Columna 2 - Enlaces rápidos -->
+            <div class="footer-links">
+                <h4>Enlaces Rápidos</h4>
+                <ul>
+                    <li><a href="#">Inicio</a></li>
+                    <li><a href="#">Servicios</a></li>
+                    <li><a href="#">Galería</a></li>
+                    <li><a href="#">Testimonios</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </div>
+
+            <!-- Columna 3 - Servicios -->
+            <div class="footer-links">
+                <h4>Nuestros Servicios</h4>
+                <ul>
+                    <li><a href="#">Cortes de Cabello</a></li>
+                    <li><a href="#">Coloración</a></li>
+                    <li><a href="#">Maquillaje</a></li>
+                    <li><a href="#">Cuidado Facial</a></li>
+                    <li><a href="#">Manicure & Pedicure</a></li>
+                </ul>
+            </div>
+
+            <!-- Columna 4 - Contacto -->
+            <div class="footer-contact">
+                <h4>Contacto</h4>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="bi bi-geo-alt"></i>
+                        <span>Tu dirección aquí</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-telephone"></i>
+                        <span>+1 234 567 890</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-envelope"></i>
+                        <span>info@elegantcut.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-clock"></i>
+                        <span>Lun-Sáb: 9am - 8pm</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 ELEGANTCUT Barbería & Beauty Salon. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    
+    <script src="../scripts/menu.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+        <script src="../scripts/filtro_barberos.js"></script>
+
+   
+
+</body>
+
+</html>
