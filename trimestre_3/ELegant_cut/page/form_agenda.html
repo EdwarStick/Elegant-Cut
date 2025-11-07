@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- ESTILOS PROPIOS -->
-    <link rel="stylesheet" href="../styles/servicios_dama/servicios.css">
+    <link rel="stylesheet" href="../styles/Formulario_Agendar/form_agenda.css">
     <link rel="stylesheet" href="../styles/styles_nav/Nav.css">
     <link rel="stylesheet" href="../styles/Menu_hamburguesa/menu.css">
     <link rel="stylesheet" href="../styles/Footer/Footer.css">
@@ -64,90 +64,22 @@
             </div>
         </nav>
     </header>
-    <main class="form-main">
-        <form id="formAgenda">
-            <h2>Agendar Cita</h2>
+    <section class="cita-section">
+        <div class="cita-container">
+            <h2>Agenda tu Cita</h2>
 
-            <label>Nombre del Cliente:</label>
-            <input type="text" required>
+            <form class="cita-form">
+                <label>Nombre</label>
+                <input type="text" placeholder="Ingresa tu nombre" required>
 
-            <label>Teléfono:</label>
-            <input type="tel" required>
+                <label>Email</label>
+                <input type="email" placeholder="Ingresa tu correo" required>
 
-            <label>Fecha:</label>
-            <input type="date" id="fecha" required>
+                <button type="submit" class="btn-agendar">Enviar</button>
+            </form>
 
-            <label>Hora:</label>
-            <select required>
-                <option value="">Seleccione...</option>
-                <option>9:00 AM</option>
-                <option>10:00 AM</option>
-                <option>11:00 AM</option>
-                <option>12:00 PM</option>
-                <option>1:00 PM</option>
-                <option>2:00 PM</option>
-                <option>3:00 PM</option>
-                <option>4:00 PM</option>
-                <option>5:00 PM</option>
-                <option>6:00 PM</option>
-                <option>7:00 PM</option>
-                <option>8:00 PM</option>
-            </select>
-
-            <label>Barbero:</label>
-            <select required>
-                <option value="">Seleccione...</option>
-                <option>Juan</option>
-                <option>Carlos</option>
-                <option>Pablo</option>
-            </select>
-
-            <label>Tipo de Pago:</label>
-            <select id="pago" required>
-                <option value="">Seleccione...</option>
-                <option value="efectivo">Efectivo</option>
-                <option value="nequi">Nequi</option>
-                <option value="tarjeta">Tarjeta</option>
-            </select>
-
-            <!-- NEQUI -->
-            <div id="nequi-info" class="hidden">
-                <p><strong>Número Nequi:</strong> 312 456 7890</p>
-                <label>Subir Pantallazo:</label>
-                <input type="file" accept="image/*">
-            </div>
-
-            <!-- TARJETA CON EFECTO FLIP -->
-            <div class="card-container hidden" id="tarjeta-card">
-                <div class="card" id="card-flip">
-
-                    <!-- Cara frontal -->
-                    <div class="card-face card-front">
-                        <label>Número de Tarjeta:</label>
-                        <input type="text" placeholder="XXXX XXXX XXXX XXXX">
-
-                        <label>Vencimiento:</label>
-                        <input type="text" placeholder="MM/AA">
-
-                        <label>CVV:</label>
-                        <input type="text" placeholder="***">
-
-                        <label>Titular:</label>
-                        <input type="text" placeholder="Nombre en la tarjeta">
-                    </div>
-
-                    <!-- Cara trasera -->
-                    <div class="card-face card-back">
-                        <h3>Verifique los Datos</h3>
-                        <p>Toque nuevamente para regresar.</p>
-                    </div>
-
-                </div>
-            </div>
-
-            <button type="submit">Agendar</button>
-        </form>
-    </main>
+        </div>
+    </section>
     <!-- FOOTER -->
     <footer class="footer-full">
         <div class="footer-content">
