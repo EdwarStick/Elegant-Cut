@@ -20,8 +20,6 @@ function cargarUsuarios() {
         return{};
     }
 }
-
-// 👇👇👇 AÑADE ESTA FUNCIÓN NUEVA AQUÍ 👇👇👇
 // Función para servir archivos HTML
 function servirArchivo(res, filePath) {
     try {
@@ -33,7 +31,7 @@ function servirArchivo(res, filePath) {
         res.end(JSON.stringify({ error: 'Archivo no encontrado' }));
     }
 }
-// 👆👆👆 HASTA AQUÍ EL PRIMER CAMBIO 👆👆👆
+
 
 // creamos el servidor 
 
@@ -51,13 +49,13 @@ const server =createServer(async (req, res) => {
         return;
     }
 
-    // 👇👇👇 AÑADE ESTA RUTA NUEVA AQUÍ 👇👇👇
+    //  AÑADE ESTA RUTA NUEVA AQUÍ 
     // Servir archivo test.html
     if (req.url === '/test.html' && req.method === 'GET') {
         servirArchivo(res, 'test.html');
         return;
     }
-    // 👆👆👆 HASTA AQUÍ EL SEGUNDO CAMBIO 👆👆👆
+    //  HASTA AQUÍ EL SEGUNDO CAMBIO 
 
     //manejas ruta del LOGIN
 
@@ -77,7 +75,7 @@ const server =createServer(async (req, res) => {
                 const {username, password} = JSON.parse (body);
                 const usuarios = cargarUsuarios(); // lee el usars.json
 
-                // 👇👇👇 AÑADE ESTAS LÍNEAS DE DEPURACIÓN 👇👇👇
+                //  AÑADE ESTAS LÍNEAS DE DEPURACIÓN 
                 console.log('=== DEPURACIÓN LOGIN ===');
                 console.log('Usuario buscado:', username);
                 console.log('Contraseña enviada:', password);
@@ -88,7 +86,7 @@ const server =createServer(async (req, res) => {
                     console.log('Coinciden?:', usuarios[username].password === password ? 'SÍ' : 'NO');
                 }
                 console.log('=======================');
-                // 👆👆👆 HASTA AQUÍ 👆👆👆
+                // HASTA AQUÍ 
 
                 // verifica las credenciales
 
@@ -134,7 +132,7 @@ const server =createServer(async (req, res) => {
             res.writeHead(500, {'Content-Type': 'application/json'}); // CORREGIDO: 'application/json'
             res.end(JSON.stringify({
                 success: false,
-                error: 'Error en el servidor' // CORREGIDO: 'error'
+                error: 'Error en el servidor' 
             }));
         }
         return;
@@ -146,7 +144,7 @@ const server =createServer(async (req, res) => {
 
 });
 
-// Iniciar el servidor (SOLO ESTA LINEA NECESITAS AGREGAR)
+// Iniciar el servidor 
 server.listen(PORT, () => {
     console.log('Servidor corriendo en puerto ' + PORT);
 });
