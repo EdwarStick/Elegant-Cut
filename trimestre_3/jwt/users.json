@@ -1,0 +1,21 @@
+{
+    "admin":{
+        "password":"Admin1",
+        "role": "admin",
+        "name": "Administrador"
+    },
+
+    "maria_perez":{
+        "password": "maria",
+        "role": "user",
+        "name": "maria_perez"
+    },
+    
+    "juan_calvo":{
+        "password": "juancho",
+        "role": "user",
+        "name": "juan_calvo"
+    }
+}
+
+

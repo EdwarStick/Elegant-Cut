@@ -1,458 +1,307 @@
- /* REINICIO GENERAL */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
 
-    /* VARIABLES GLOBALES */
+    /* Estilos para la nueva vista moderna */
     :root {
-      --Negro: #111205;
-      --NegroMedio: #1F1F1E;
-      --Blanco: #f4f4f4;
-      --RojoVino: #BC2041;
-      --Dorado: #D4AF37;
-      --GrisOscuro: #2A2A2A;
+      --primary: #1a1a1a;
+      --secondary: #d4af37;
+      --accent: #8b7355;
+      --light: #f5f5f5;
+      --dark: #121212;
+      --gray: #333;
     }
 
-    /* ESTILOS DEL BODY */
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: var(--Blanco);
-      color: var(--Blanco);
-      line-height: 1.6;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+  body {
+     background-color: var(--light);
+     color: var(--primary);
+      font-family: 'Montserrat', sans-serif;
     }
 
-    /* ---------------- HEADER CON MENÚ HAMBURGUESA ---------------- */
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 2rem;
-      background-color: #ffffff;
+    /* Estilos para el carrusel */
+    .carousel-container {
+      margin-top: 70px;
       position: relative;
     }
 
-    .logo {
-      max-width: 5rem;
-      order: 3;
-      margin-left: auto;
-    }
-
-    /* OCULTAR NAVEGACIÓN NORMAL */
-    .nav-list {
-      display: none;
-    }
-
-    /* BOTÓN HAMBURGUESA */
-    .abrir-menu {
-      border: 0;
-      font-size: 1.5rem;
-      background-color: transparent;
-      cursor: pointer;
-      color: #000;
-    }
-
-    /* MENÚ DESPLEGABLE */
-    .nav {
-      opacity: 0;
-      visibility: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 2rem;
-      position: fixed;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      width: 70%;
-      max-width: 300px;
-      background-color: #ffffff;
-      padding: 4rem 2rem 2rem 2rem;
-      box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease-in-out;
-      transform: translateX(-100%);
-      z-index: 1000;
-    }
-
-    .nav.visible {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(0);
-    }
-
-    /* BOTÓN CERRAR MENÚ */
-    .cerrar-menu {
-      display: block;
-      border: 0;
-      font-size: 1.5rem;
-      background-color: transparent;
-      cursor: pointer;
-      position: absolute;
-      top: 2rem;
-      right: 2rem;
-      z-index: 1001;
-      color: #000;
-    }
-
-    .cerrar-menu:hover {
-      color: #BC2041;
-      transition: transform 0.3s ease;
-      transform: scale(1.2);
-    }
-
-    /* LISTA DEL MENÚ DESPLEGABLE */
-    .nav-list {
-      list-style-type: none;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1.5rem;
-      width: 100%;
-    }
-
-    .nav-list li a {
-      text-decoration: none;
-      color: #000;
-      font-size: 1.1rem;
-      padding: 0.5rem 0;
-      display: block;
-      width: 100%;
-      text-align: left;
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
-
-    .nav-list li a:hover {
-      color: #BC2041;
-    }
-
-    /* FONDO OSCURO CUANDO SE ABRE MENÚ */
-    body.menu-open::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
-
-    /* ---------------- TÍTULOS DE SECCIÓN ---------------- */
-   .titulo {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  justify-content: center;
-  align-items: center;
-  font-size: 1.8rem;
-  font-weight: 600;
-  margin-top: 15px;
-  padding: 15px;
-  position: relative;
-  display: flex;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(188, 32, 65, 0.3);
-  width: 80%; /* Ocupa el 80% del contenedor padre */
-  max-width: 800px; /* Ancho máximo */
-  margin-left: auto;
-  margin-right: auto; /* Centrado */
-}
-
-/* Línea decorativa debajo del título - CORREGIDA */
-.titulo::after {
-  content: "";
-  display: block;
-  width: 55%;
-  height: 3px;
-  background: linear-gradient(to right, transparent, var(--Blanco), transparent);
-  margin-top: 30px;
-  margin-left: auto;    /* ← NUEVO */
-  margin-right: auto;   /* ← NUEVO */
-  border-radius: 10px;
-  position: absolute;   /* ← RECOMENDADO */
-  bottom: 10px;         /* ← RECOMENDADO */
-  left: 0;
-  right: 0;
-}
-
- /* Ajusta la altura del carrusel */
- 
-.carousel-item img {
-   object-fit: cover;
-  height: 70vh; /* altura (puedes cambiarla) */
- }
-
-/*----------Menú de navegacion---------*/
-#section1{
-  text-decoration: none;
-}
-
-    /* ---------------- SECCIÓN DE CORTES ---------------- */
-    .servicios-cortes {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
-      padding: 40px;
-      max-width: 1200px;
-      margin: 0 auto;
-      background-color: #fff;
-    }
-
-    /*------------------SESION DE LA BARBA ----------------*/
-
-    .servicios-barba {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
-      padding: 40px;
-      max-width: 1200px;
-      margin: 0 auto;
-      background-color: #ffffff;
-    }
-
-    /*------------------SESION De otros servicios ----------------*/
-
-    .otros-servicios {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
-      padding: 40px;
-      max-width: 1200px;
-      margin: 0 auto;
-      background-color: #f6f6f6;
-    }
-
-    /* ---------------- TARJETAS MEJORADAS ---------------- */
-    .flip-card {
-      background-color: transparent;
-      width: 100%;
-      max-width: 280px;
-      height: 380px;
-      perspective: 1000px;
-      font-family: 'Poppins', sans-serif;
-      position: relative;
-      margin: 0 auto;
-      cursor: pointer;
-    }
-
-    /* CONTENIDO INTERNO GIRATORIO */
-    .flip-card-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
-      transform-style: preserve-3d;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .flip-card:hover .flip-card-inner {
-      transform: rotateY(180deg);
-    }
-
-    /* CARA FRONTAL Y TRASERA */
-    .flip-card-front, .flip-card-back {
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-      border-radius: 16px;
-      overflow: hidden;
-    }
-
-    /* FRENTE DE LA TARJETA */
-    .flip-card-front {
-      background: linear-gradient(135deg, #ffffff, #f5f5f5);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-      padding: 0;
-      color: #222;
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-    }
-
-    .flip-card-front::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
-      z-index: 1;
-    }
-
-    .image-container {
-      width: 100%;
-      height: 240px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .flip-card-front img {
-      width: 100%;
-      height: 100%;
+    .carousel-item img {
+      height: 400px;
       object-fit: cover;
-      transition: transform 0.5s ease;
+      filter: brightness(0.8);
     }
 
-    .flip-card:hover .flip-card-front img {
-      transform: scale(1.05);
+    .carousel-caption {
+      bottom: 30%;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 10px;
     }
 
-    .card-title {
-      padding: 20px 15px;
-      width: 100%;
-      background: linear-gradient(to bottom, rgba(255,255,255,0.9), #ffffff);
-    }
-
-    .flip-card-front h3 {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--RojoVino);
-      margin-bottom: 5px;
-    }
-
-    .flip-card-front .price {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--GrisOscuro);
-    }
-
-    /* REVERSO DE LA TARJETA */
-    .flip-card-back {
-      background: linear-gradient(135deg, var(--GrisOscuro), var(--NegroMedio));
-      color: #fff;
-      transform: rotateY(180deg);
-      padding: 25px 20px;
+    /* Filtros de categorías */
+    .category-menu {
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      padding: 30px 20px;
+      background: var(--primary);
     }
 
-    .flip-card-back::before {
+    .category-btn {
+      background: transparent;
+      border: 2px solid var(--secondary);
+      color: var(--light);
+      padding: 10px 25px;
+      border-radius: 30px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .category-btn:hover,
+    .category-btn.active {
+      background: var(--secondary);
+      color: var(--primary);
+    }
+
+    /* Títulos de sección */
+    .section-title {
+      text-align: center;
+      margin: 50px 0 30px;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    .section-title:after {
       content: '';
       position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
-      z-index: 0;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: var(--secondary);
     }
 
-    .card-back-content {
+    /* Grid de servicios */
+    .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 0 20px 50px;
+    max-width: 1200px;
+    margin: 0 auto;
+    }
+
+    /* Tarjetas de servicio */
+    .service-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
       position: relative;
-      z-index: 1;
+    }
+
+    .service-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .service-image {
+      height: 200px;
       width: 100%;
+     object-fit: cover;
     }
 
-    .flip-card-back h3 {
-      font-size: 1.4rem;
-      font-weight: bold;
+    .service-content {
+      padding: 20px;
+    }
+
+    .service-title {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .service-price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--secondary);
       margin-bottom: 15px;
-      color: var(--Dorado);
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
-    .flip-card-back p {
-      font-size: 0.95rem;
+    .service-description {
+      color: var(--gray);
+      margin-bottom: 20px;
       line-height: 1.5;
-      opacity: 0.9;
-      margin-bottom: 20px;
     }
 
-    .card-features {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 20px;
+    .service-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
     }
 
     .feature-tag {
-      background: rgba(188, 32, 65, 0.2);
-      border: 1px solid var(--RojoVino);
-      color: var(--Blanco);
+      background: var(--light);
       padding: 5px 10px;
       border-radius: 20px;
       font-size: 0.8rem;
-      font-weight: 500;
+      color: var(--gray);
     }
 
-    .card-button {
-      background: linear-gradient(135deg, var(--RojoVino), #a01a36);
+    .service-button {
+      background: var(--primary);
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 30px;
+      padding: 12px 25px;
+      border-radius: 5px;
+      width: 100%;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 10px rgba(188, 32, 65, 0.3);
-      margin-top: 10px;
+      transition: background 0.3s ease;
     }
 
-    .card-button:hover {
-      background: linear-gradient(135deg, #a01a36, var(--RojoVino));
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(188, 32, 65, 0.4);
+    .service-button:hover {
+      background: var(--secondary);
+      color: var(--primary);
     }
 
-    /* EFECTO BRILLO AL PASAR */
-    .flip-card::before {
-      content: "";
+    /* Indicador de categoría */
+    .category-indicator {
       position: absolute;
-      top: 0; 
-      left: 0;
-      width: 100%; 
-      height: 100%;
-      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
-      opacity: 0;
-      transition: opacity 0.4s;
-      border-radius: 16px;
-      z-index: 2;
-      pointer-events: none;
+      top: 15px;
+      right: 15px;
+      background: var(--secondary);
+      color: var(--primary);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
     }
 
-    .flip-card:hover::before {
-      opacity: 1;
+    /* Estilos para el carrito */
+    #cart {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 350px;
+      height: 100vh;
+      background: white;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+      z-index: 1001;
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* RESPONSIVE */
+    #cart.open {
+      right: 0;
+    }
+
+    .cart-header {
+      padding: 20px;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .close-cart {
+      cursor: pointer;
+    }
+
+    .cart-items {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .cart-total {
+      padding: 20px;
+      background: var(--light);
+      font-weight: 700;
+      font-size: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    #agendarBtn {
+      background: var(--secondary);
+      color: var(--primary);
+      border: none;
+      padding: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    #agendarBtn:hover {
+      background: #c19d2e;
+    }
+
+    #cartToggle {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--primary);
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--secondary);
+      color: var(--primary);
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
-      .servicios-cortes {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-        padding: 20px;
-      }
-      
-      .flip-card {
-        height: 350px;
-      }
-      
-      .titulo {
-        font-size: 1.5rem;
-        padding: 12px 30px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .servicios-cortes {
+      .services-grid {
         grid-template-columns: 1fr;
+        padding: 0 15px 30px;
+      }
+      
+      .category-menu {
+        padding: 20px 15px;
+      }
+      
+      .category-btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+      }
+      
+      #cart {
+        width: 100%;
+        right: -100%;
       }
     }

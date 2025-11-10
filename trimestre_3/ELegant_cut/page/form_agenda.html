@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendar Cita</title>
+    <!-- ICONOS & BOOTSTRAP -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- FUENTES -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ESTILOS PROPIOS -->
+    <link rel="stylesheet" href="../styles/Formulario_Agendar/form_agenda.css">
+    <link rel="stylesheet" href="../styles/styles_nav/Nav.css">
+    <link rel="stylesheet" href="../styles/Menu_hamburguesa/menu.css">
+    <link rel="stylesheet" href="../styles/Footer/Footer.css">
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="brand-container">
+            <div class="logo">
+                <img src="../images/logo.png" alt="ElegantCut Barbería" class="logo-img">
+            </div>
+            <div class="brand-name">
+                <span class="brand-text">ELEGANTCUT</span>
+            </div>
+        </div>
+
+        <div class="button-container desktop-icons">
+            <a href="index.html" class="button nav-button"><i class="bi bi-house-door"></i><span>Inicio</span></a>
+            <a href="reseñas.html" class="button nav-button"><i class="bi bi-star"></i><span>Reseñas</span></a>
+            <a href="../pages/profile.html" class="button nav-button"><i
+                    class="bi bi-person"></i><span>Perfil</span></a>
+            <a href="../pages/services.html" class="button nav-button"><i
+                    class="bi bi-scissors"></i><span>Servicios</span></a>
+        </div>
+
+        <button id="abrir" class="abrir-menu"><i class="bi bi-list"></i></button>
+
+        <nav class="nav" id="nav">
+            <button id="cerrar" class="cerrar-menu"><i class="bi bi-x"></i></button>
+
+            <div class="mobile-brand">
+                <img src="../images/logo.png" alt="ElegantCut Barbería" class="mobile-logo">
+                <span class="mobile-brand-text">ELEGANTCUT</span>
+            </div>
+
+            <div class="menu-icons-container">
+                <a href="../index.html" class="button menu-nav-button"><i class="bi bi-house-door"></i>Inicio</a>
+                <a href="../pages/reviews.html" class="button menu-nav-button"><i class="bi bi-star"></i>Reseñas</a>
+                <a href="../pages/profile.html" class="button menu-nav-button"><i class="bi bi-person"></i>Mi Perfil</a>
+                <a href="../pages/services.html" class="button menu-nav-button"><i
+                        class="bi bi-scissors"></i>Servicios</a>
+            </div>
+
+            <div class="mobile-contact">
+                <div class="contact-item"><i class="bi bi-telephone"></i><span>+1 234 567 890</span></div>
+                <div class="contact-item"><i class="bi bi-clock"></i><span>Lun-Sáb: 9am - 8pm</span></div>
+            </div>
+        </nav>
+    </header>
+    <div class="form-wrapper">
+        <div class="flip-card" id="flipCard">
+
+            <!-- CARA FRONTAL -->
+            <form id="appointmentForm" class="flip-face front-face">
+                <h2>Agendar Cita</h2>
+
+                <label>Nombre del cliente</label>
+                <input type="text" id="name" required>
+
+                <label>Teléfono</label>
+                <input type="tel" id="phone" required>
+
+                <label>Día</label>
+                <input type="date" id="date" required>
+
+                <label>Horario</label>
+                <select id="time" required></select>
+
+                <label>Barbero</label>
+                <select id="barber" required>
+                    <option value="">Seleccione...</option>
+                    <option value="Carlos">Carlos</option>
+                    <option value="Luis">Luis</option>
+                    <option value="Pedro">Pedro</option>
+                </select>
+
+                <label>Método de Pago</label>
+                <div class="payment-options">
+                    <label><input type="radio" name="payment" value="efectivo" checked> Efectivo</label>
+                    <label><input type="radio" name="payment" value="transferencia"> Transferencia</label>
+                </div>
+
+                <button type="submit">Pagar</button>
+            </form>
+
+            <!-- CARA TRASERA (AQUÍ TÚ EDITAS) -->
+            <form id="transferForm" class="flip-face back-face">
+                <h2>Pago por Transferencia</h2>
+
+                <!-- From Uiverse.io by Praashoo7 -->
+                <div class="credit-card">
+                    <div class="credit-card-inner">
+                        <div class="credit-card-front">
+                            <p class="heading_8264">MASTERCARD</p>
+                            <svg class="logo" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="36" height="36"
+                                viewBox="0 0 48 48">
+                                <path fill="#ff9800" d="M32 10A14 14 0 1 0 32 38A14 14 0 1 0 32 10Z"></path>
+                                <path fill="#d50000" d="M16 10A14 14 0 1 0 16 38A14 14 0 1 0 16 10Z"></path>
+                                <path fill="#ff3d00"
+                                    d="M18,24c0,4.755,2.376,8.95,6,11.48c3.624-2.53,6-6.725,6-11.48s-2.376-8.95-6-11.48 C20.376,15.05,18,19.245,18,24z">
+                                </path>
+                            </svg>
+                            <svg version="1.1" class="chip" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="30px"
+                                viewBox="0 0 50 50" xml:space="preserve">
+                                <image id="image0" width="50" height="50" x="0" y="0" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+              AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAB6VBMVEUAAACNcTiVeUKVeUOY
+              fEaafEeUeUSYfEWZfEaykleyklaXe0SWekSZZjOYfEWYe0WXfUWXe0WcgEicfkiXe0SVekSXekSW
+              ekKYe0a9nF67m12ZfUWUeEaXfESVekOdgEmVeUWWekSniU+VeUKVeUOrjFKYfEWliE6WeESZe0GS
+              e0WYfES7ml2Xe0WXeESUeEOWfEWcf0eWfESXe0SXfEWYekSVeUKXfEWxklawkVaZfEWWekOUekOW
+              ekSYfESZe0eXekWYfEWZe0WZe0eVeUSWeETAnmDCoWLJpmbxy4P1zoXwyoLIpWbjvXjivnjgu3bf
+              u3beunWvkFWxkle/nmDivXiWekTnwXvkwHrCoWOuj1SXe0TEo2TDo2PlwHratnKZfEbQrWvPrWua
+              fUfbt3PJp2agg0v0zYX0zYSfgkvKp2frxX7mwHrlv3rsxn/yzIPgvHfduXWXe0XuyIDzzISsjVO1
+              lVm0lFitjVPzzIPqxX7duna0lVncuHTLqGjvyIHeuXXxyYGZfUayk1iyk1e2lln1zYTEomO2llrb
+              tnOafkjFpGSbfkfZtXLhvHfkv3nqxH3mwXujhU3KqWizlFilh06khk2fgkqsjlPHpWXJp2erjVOh
+              g0yWe0SliE+XekShhEvAn2D///+gx8TWAAAARnRSTlMACVCTtsRl7Pv7+vxkBab7pZv5+ZlL/UnU
+              /f3SJCVe+Fx39naA9/75XSMh0/3SSkia+pil/KRj7Pr662JPkrbP7OLQ0JFOijI1MwAAAAFiS0dE
+              orDd34wAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfnAg0IDx2lsiuJAAACLElEQVRIx2Ng
+              GAXkAUYmZhZWPICFmYkRVQcbOwenmzse4MbFzc6DpIGXj8PD04sA8PbhF+CFaxEU8iWkAQT8hEVg
+              OkTF/InR4eUVICYO1SIhCRMLDAoKDvFDVhUaEhwUFAjjSUlDdMiEhcOEItzdI6OiYxA6YqODIt3d
+              I2DcuDBZsBY5eVTr4xMSYcyk5BRUOXkFsBZFJTQnp6alQxgZmVloUkrKYC0qqmji2WE5EEZuWB6a
+              lKoKdi35YQUQRkFYPpFaCouKIYzi6EDitJSUlsGY5RWVRGjJLyxNy4ZxqtIqqvOxaVELQwZFZdkI
+              JVU1RSiSalAt6rUwUBdWG1CP6pT6gNqwOrgCdQyHNYR5YQFhDXj8MiK1IAeyN6aORiyBjByVTc0F
+              qBoKWpqwRCVSgilOaY2OaUPw29qjOzqLvTAchpos47u6EZyYnngUSRwpuTe6D+6qaFQdOPNLRzOM
+              1dzhRZyW+CZouHk3dWLXglFcFIflQhj9YWjJGlZcaKAVSvjyPrRQ0oQVKDAQHlYFYUwIm4gqExGm
+              BSkutaVQJeomwViTJqPK6OhCy2Q9sQBk8cY0DxjTJw0lAQWK6cOKfgNhpKK7ZMpUeF3jPa28BCET
+              amiEqJKM+X1gxvWXpoUjVIVPnwErw71nmpgiqiQGBjNzbgs3j1nus+fMndc+Cwm0T52/oNR9lsdC
+              S24ra7Tq1cbWjpXV3sHRCb1idXZ0sGdltXNxRateRwHRAACYHutzk/2I5QAAACV0RVh0ZGF0ZTpj
+              cmVhdGUAMjAyMy0wMi0xM1QwODoxNToyOSswMDowMEUnN7UAAAAldEVYdGRhdGU6bW9kaWZ5ADIw
+              MjMtMDItMTNUMDg6MTU6MjkrMDA6MDA0eo8JAAAAKHRFWHRkYXRlOnRpbWVzdGFtcAAyMDIzLTAy
+              LTEzVDA4OjE1OjI5KzAwOjAwY2+u1gAAAABJRU5ErkJggg=="></image>
+                            </svg>
+                            <svg version="1.1" class="contactless" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px"
+                                viewBox="0 0 50 50" xml:space="preserve">
+                                <image id="image0" width="50" height="50" x="0" y="0" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAQAAAC0NkA6AAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+              AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAJcEhZ
+              cwAACxMAAAsTAQCanBgAAAAHdElNRQfnAg0IEzgIwaKTAAADDklEQVRYw+1XS0iUURQ+f5qPyjQf
+              lGRFEEFK76koKGxRbWyVVLSOgsCgwjZBJJYuKogSIoOonUK4q3U0WVBWFPZYiIE6kuArG3VGzK/F
+              fPeMM/MLt99/NuHdfPd888/57jn3nvsQWWj/VcMlvMMd5KRTogqx9iCdIjUUmcGR9ImUYowyP3xN
+              GQJoRLVaZ2DaZf8kyjEJALhI28ELioyiwC+Rc3QZwRYyO/DH51hQgWm6DMIh10KmD4u9O16K49it
+              VoPOAmcGAWWOepXIRScAoJZ2Frro8oN+EyTT6lWkkg6msZfMSR35QTJmjU0g15tIGSJ08ZZMJkJk
+              HpNZgSkyXosS13TkJpZ62mPIJvOSzC1bp8vRhhCakEk7G9/o4gmZdbpsTcKu0m63FbnBP9Qrc15z
+              bkbemfgNDtEOI8NO5L5O9VYyRYgmJayZ9nPaxZrSjW4+F6Uw9yQqIiIZwhp2huQTf6OIvCZyGM6g
+              DJBZbyXifJXr7FZjGXsdxADxI7HUJFB6iWvsIhFpkoiIiGTJfjJfiCuJg2ZEspq9EHGVpYgzKqwJ
+              qSAOEwuJQ/pxPvE3cYltJCLdxBLiSKKIE5HxJKcTRNeadxfhDiuYw44zVs1dxKwRk/uCxIiQkxKB
+              sSctRVAge9g1E15EHE6yRUaJecRxcWlukdRIbGFOSZCMWQA/iWauIP3slREHXPyliqBcrrD71Amz
+              Z+rD1Mt2Yr8TZc/UR4/YtFnbijnHi3UrN9vKQ9rPaJf867ZiaqDB+czeKYmd3pNa6fuI75MiC0uX
+              XSR5aEMf7s7a6r/PudVXkjFb/SsrCRfROk0Fx6+H1i9kkTGn/E1vEmt1m089fh+RKdQ5O+xNJPUi
+              cUIjO0Dm7HwvErEr0YxeibL1StSh37STafE4I7zcBdRq1DiOkdmlTJVnkQTBTS7X1FYyvfO4piaI
+              nKbDCDaT2anLudYXCRFsQBgAcIF2/Okwgvz5+Z4tsw118dzruvIvjhTB+HOuWy8UvovEH6beitBK
+              xDyxm9MmISKCWrzB7bSlaqGlsf0FC0gMjzTg6GgAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjMtMDIt
+              MTNUMDg6MTk6NTYrMDA6MDCjlq7LAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIzLTAyLTEzVDA4OjE5
+              OjU2KzAwOjAw0ssWdwAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyMy0wMi0xM1QwODoxOTo1Nisw
+              MDowMIXeN6gAAAAASUVORK5CYII="></image>
+                            </svg>
+                            <p class="number">9759 2484 5269 6576</p>
+                            <p class="valid_thru">VALID THRU</p>
+                            <p class="date_8264">1 2 / 2 4</p>
+                            <p class="name">BRUCE WAYNE</p>
+                        </div>
+                        <div class="credit-card-back">
+                            <div class="strip"></div>
+                            <div class="mstrip"></div>
+                            <div class="sstrip">
+                                <p class="code">*</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit">Confirmar Pago</button>
+                <button type="button" id="volverBtn" class="volver-btn">Volver</button>
+            </form>
+
+        </div>
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer class="footer-full">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>ELEGANTCUT</h3>
+                <p>Estilo con elegancia.</p>
+                <div class="social-links">
+                    <a><i class="bi bi-facebook"></i></a>
+                    <a><i class="bi bi-instagram"></i></a>
+                    <a><i class="bi bi-tiktok"></i></a>
+                    <a><i class="bi bi-whatsapp"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h4>Enlaces Rápidos</h4>
+                <ul>
+                    <li><a>Inicio</a></li>
+                    <li><a>Servicios</a></li>
+                    <li><a>Galería</a></li>
+                    <li><a>Testimonios</a></li>
+                    <li><a>Contacto</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Nuestros Servicios</h4>
+                <ul>
+                    <li><a>Cortes</a></li>
+                    <li><a>Coloración</a></li>
+                    <li><a>Maquillaje</a></li>
+                    <li><a>Cuidado Facial</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h4>Contacto</h4>
+                <div class="contact-item"><i class="bi bi-geo-alt"></i><span>Tu dirección</span></div>
+                <div class="contact-item"><i class="bi bi-telephone"></i><span>+1 234 567 890</span></div>
+                <div class="contact-item"><i class="bi bi-envelope"></i><span>info@elegantcut.com</span></div>
+                <div class="contact-item"><i class="bi bi-clock"></i><span>Lun-Sáb: 9am - 8pm</span></div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 ElegantCut Barbería & Beauty Salon.</p>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="../scripts/menu.js"></script>
+    <script src="../scripts/form_agenda.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
+</body>
+
+</html>
