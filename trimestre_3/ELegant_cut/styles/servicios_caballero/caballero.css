@@ -19,7 +19,7 @@
     /* ESTILOS DEL BODY */
     body {
       font-family: 'Poppins', sans-serif;
-      background-color: var(--Negro);
+      background-color: var(--Blanco);
       color: var(--Blanco);
       line-height: 1.6;
       min-height: 100vh;
@@ -144,7 +144,7 @@
     }
 
     /* ---------------- TÍTULOS DE SECCIÓN ---------------- */
-    .titulo {
+   .titulo {
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   justify-content: center;
   align-items: center;
@@ -156,6 +156,10 @@
   display: flex;
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(188, 32, 65, 0.3);
+  width: 80%; /* Ocupa el 80% del contenedor padre */
+  max-width: 800px; /* Ancho máximo */
+  margin-left: auto;
+  margin-right: auto; /* Centrado */
 }
 
 /* Línea decorativa debajo del título - CORREGIDA */
@@ -175,6 +179,18 @@
   right: 0;
 }
 
+ /* Ajusta la altura del carrusel */
+ 
+.carousel-item img {
+   object-fit: cover;
+  height: 70vh; /* altura (puedes cambiarla) */
+ }
+
+/*----------Menú de navegacion---------*/
+#section1{
+  text-decoration: none;
+}
+
     /* ---------------- SECCIÓN DE CORTES ---------------- */
     .servicios-cortes {
       display: grid;
@@ -184,6 +200,30 @@
       max-width: 1200px;
       margin: 0 auto;
       background-color: #fff;
+    }
+
+    /*------------------SESION DE LA BARBA ----------------*/
+
+    .servicios-barba {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      padding: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: #ffffff;
+    }
+
+    /*------------------SESION De otros servicios ----------------*/
+
+    .otros-servicios {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      padding: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: #f6f6f6;
     }
 
     /* ---------------- TARJETAS MEJORADAS ---------------- */
