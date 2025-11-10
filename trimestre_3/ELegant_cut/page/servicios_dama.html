@@ -32,35 +32,72 @@
         <span class="brand-text">ELEGANTCUT</span>
       </div>
     </div>
-
+    <!-- Contenedor de íconos visible en escritorio -->
     <div class="button-container desktop-icons">
-      <a href="index.html" class="button nav-button"><i class="bi bi-house-door"></i><span>Inicio</span></a>
-      <a href="reseñas.html" class="button nav-button"><i class="bi bi-star"></i><span>Reseñas</span></a>
-      <a href="../pages/profile.html" class="button nav-button"><i class="bi bi-person"></i><span>Perfil</span></a>
-      <a href="../pages/services.html" class="button nav-button"><i
-          class="bi bi-scissors"></i><span>Servicios</span></a>
+      <a href="index.html" class="button nav-button" aria-label="Inicio">
+        <i class="bi bi-house-door"></i>
+        <span class="nav-label">Inicio</span>
+      </a>
+      <a href="reseñas.html" class="button nav-button" aria-label="Reseñas">
+        <i class="bi bi-star"></i>
+        <span class="nav-label">Reseñas</span>
+      </a>
+      <a href="../page/profile.html" class="button nav-button" aria-label="Perfil">
+        <i class="bi bi-person"></i>
+        <span class="nav-label">Perfil</span>
+      </a>
+      <a href="../page/servicios_dama.html" class="button nav-button" aria-label="Servicios">
+        <i class="bi bi-scissors"></i>
+        <span class="nav-label">Servicios</span>
+      </a>
+      <!-- Nuevo icono para Barberos -->
+      <a href="../page/barberos.html" class="button nav-button" aria-label="Barberos">
+        <i class="bi bi-person-badge"></i>
+        <span class="nav-label">Barberos</span>
+      </a>
     </div>
 
-    <button id="abrir" class="abrir-menu"><i class="bi bi-list"></i></button>
+    <!-- Botón abrir menú hamburguesa (solo visible en móvil) -->
+    <button id="abrir" class="abrir-menu" aria-label="Abrir menú">
+      <i class="bi bi-list"></i>
+    </button>
 
+    <!-- Menú hamburguesa -->
     <nav class="nav" id="nav">
-      <button id="cerrar" class="cerrar-menu"><i class="bi bi-x"></i></button>
+      <!-- Botón cerrar -->
+      <button id="cerrar" class="cerrar-menu" aria-label="Cerrar menú">
+        <i class="bi bi-x"></i>
+      </button>
 
+      <!-- Logo en menú hamburguesa -->
       <div class="mobile-brand">
         <img src="../images/logo.png" alt="ElegantCut Barbería" class="mobile-logo">
         <span class="mobile-brand-text">ELEGANTCUT</span>
       </div>
 
+      <!-- Íconos del menú hamburguesa -->
       <div class="menu-icons-container">
-        <a href="../index.html" class="button menu-nav-button"><i class="bi bi-house-door"></i>Inicio</a>
-        <a href="../pages/reviews.html" class="button menu-nav-button"><i class="bi bi-star"></i>Reseñas</a>
-        <a href="../pages/profile.html" class="button menu-nav-button"><i class="bi bi-person"></i>Mi Perfil</a>
-        <a href="../pages/services.html" class="button menu-nav-button"><i class="bi bi-scissors"></i>Servicios</a>
-      </div>
-
-      <div class="mobile-contact">
-        <div class="contact-item"><i class="bi bi-telephone"></i><span>+1 234 567 890</span></div>
-        <div class="contact-item"><i class="bi bi-clock"></i><span>Lun-Sáb: 9am - 8pm</span></div>
+        <a href="../page/index.html" class="button menu-nav-button">
+          <i class="bi bi-house-door"></i>
+          <span class="menu-nav-label">Inicio</span>
+        </a>
+        <a href="../page/reseñas.html" class="button menu-nav-button">
+          <i class="bi bi-star"></i>
+          <span class="menu-nav-label">Reseñas</span>
+        </a>
+        <a href="../page/profile.html" class="button menu-nav-button">
+          <i class="bi bi-person"></i>
+          <span class="menu-nav-label">Mi Perfil</span>
+        </a>
+        <a href="../page/servicios_dama.html" class="button menu-nav-button">
+          <i class="bi bi-scissors"></i>
+          <span class="menu-nav-label">Servicios</span>
+        </a>
+        <!-- Nuevo icono para Barberos en menú móvil -->
+        <a href="../page/barberos.html" class="button menu-nav-button">
+          <i class="bi bi-person-badge"></i>
+          <span class="menu-nav-label">Barberos</span>
+        </a>
       </div>
     </nav>
   </header>
@@ -98,8 +135,22 @@
   </div>
   <main>
 
-    <!-- MENÚ DE CATEGORÍAS -->
-    <div class="category-menu">
+    <!-- FILTRO DAMA/CABALLERO -->
+    <div class="gender-filter-container">
+      <div class="gender-filter">
+        <button class="gender-btn active" data-gender="dama">
+          <i class="bi bi-gender-female"></i>
+          Servicios Dama
+        </button>
+        <button class="gender-btn" data-gender="caballero">
+          <i class="bi bi-gender-male"></i>
+          Servicios Caballero
+        </button>
+      </div>
+    </div>
+
+    <!-- MENÚ DE CATEGORÍAS (DAMA) -->
+    <div class="category-menu" id="categoriaDama">
       <button data-category="uñas" class="active">Uñas</button>
       <button data-category="largo">Cortes Cabello Largo</button>
       <button data-category="corto">Cortes Cabello Corto</button>
@@ -108,8 +159,18 @@
       <button data-category="mascarillas">Mascarillas</button>
     </div>
 
-    <!-- CATALOGO DE PRODUCTOS -->
-    <div class="catalog-container" id="catalog">
+    <!-- MENÚ DE CATEGORÍAS (CABALLERO) -->
+    <div class="category-menu" id="categoriaCaballero" style="display: none;">
+      <button data-category="cortes" class="active">Cortes Clásicos</button>
+      <button data-category="barba">Barba y Bigote</button>
+      <button data-category="modernos">Cortes Modernos</button>
+      <button data-category="tinte-caballero">Color / Tintes</button>
+      <button data-category="tratamientos">Tratamientos</button>
+      <button data-category="mascarilla-caballero">Mascarillas</button>
+    </div>
+
+    <!-- CATALOGO DE PRODUCTOS DAMA -->
+    <div class="catalog-container" id="catalogDama">
       <div class="product-card" data-category="uñas" data-name="Uñas sin diseño" data-price="10000">
         <img src="../images/servicios_dama/Uñas/ManicureSinDiseño.png" alt="Uñas acrílicas básicas">
         <h3>Manicure básico sin Diseño</h3>
@@ -117,7 +178,7 @@
         <div class="price-new">$10.000</div>
         <button class="add-btn">Agregar al carrito</button>
       </div>
-      <!-- CATALOGO DE UÑAS -->
+      
       <div class="product-card" data-category="uñas" data-name="Manicure Básico con color" data-price="11000">
         <img src="../images/servicios_dama/Uñas/ManicureConColor.png" alt="Manicure Básico">
         <h3>Manicure Básico con Color</h3>
@@ -128,70 +189,86 @@
 
       <div class="product-card" data-category="uñas" data-name="Uñas Basico con diseño sencillo" data-price="15000">
         <img src="../images/servicios_dama/Uñas/ManicureConDiseño.png" alt="Uñas acrílicas básicas">
-        <h3>Uñas Básicas con diseño secillo</h3>
+        <h3>Uñas Básicas con diseño sencillo</h3>
         <div class="price-old">$13.000</div>
         <div class="price-new">$15.000</div>
         <button class="add-btn">Agregar al carrito</button>
       </div>
 
-      <div class="product-card" data-category="uñas" data-name="Uñas acrílicas básicas" data-price="25000">
-        <img src="../images/servicios_dama/Uñas/UñasAcrilicasMedio.png" alt="Uñas acrílicas básicas">
-        <h3>Uñas acrílicas básicas</h3>
-        <div class="price-old">$35.000</div>
-        <div class="price-new">$25.000</div>
-        <button class="add-btn">Agregar al carrito</button>
-      </div>
-
-      <div class="product-card" data-category="uñas" data-name="Manicure Largas" data-price="40000">
-        <img src="../images/servicios_dama/Uñas/Uñas AcrilicasLargas.png" alt="Uñas acrílicasLargas">
-        <h3>Uñas acrilicas largas</h3>
-        <div class="price-old">$45.000</div>
-        <div class="price-new">$40.000</div>
-        <button class="add-btn">Agregar al carrito</button>
-      </div>
-
-      <!-- CATALOGO DE CORTE LARGO -->
       <div class="product-card" data-category="largo" data-name="Corte mariposa" data-price="18000">
-        <img src="../images/servicios_dama/Corte Largo/Corte Pariposa.png" alt="Uñas acrílicasLargas">
+        <img src="../images/servicios_dama/Corte Largo/Corte Pariposa.png" alt="Corte Mariposa">
         <h3>Corte Mariposa</h3>
         <div class="price-old">$15.000</div>
         <div class="price-new">$18.000</div>
         <button class="add-btn">Agregar al carrito</button>
       </div>
 
-      <div class="product-card" data-category="largo" data-name="Uñas acrílicas básicas" data-price="25000">
-        <img src="../images/servicios_dama/Uñas/UñasAcrilicasMedio.png" alt="Uñas acrílicas básicas">
-        <h3>Uñas acrílicas básicas</h3>
+      <div class="product-card" data-category="peinados" data-name="Peinado Elegante" data-price="25000">
+        <img src="../images/servicios_dama/Mujer/Corte Recto.png" alt="Peinado Elegante">
+        <h3>Peinado Elegante</h3>
         <div class="price-old">$35.000</div>
         <div class="price-new">$25.000</div>
         <button class="add-btn">Agregar al carrito</button>
       </div>
-      <!-- CATALOGO DE PEINADOS -->
-      <div class="product-card" data-category="peinados" data-name="Manicure Básico" data-price="18000">
-        <img src="../images/servicios_dama/Mujer/Corte Pariposa.png" alt="Manicure Básico">
-        <h3>Manicure Básico</h3>
+
+      <div class="product-card" data-category="mascarillas" data-name="Mascarilla Facial" data-price="18000">
+        <img src="../images/servicios_dama/Mujer/Corte Pariposa.png" alt="Mascarilla Facial">
+        <h3>Mascarilla Facial</h3>
         <div class="price-old">$25.000</div>
         <div class="price-new">$18.000</div>
         <button class="add-btn">Agregar al carrito</button>
       </div>
+    </div>
 
-      <div class="product-card" data-category="peinados" data-name="Uñas acrílicas básicas" data-price="25000">
-        <img src="../images/servicios_dama/Mujer/Corte Recto.png" alt="Uñas acrílicas básicas">
-        <h3>Uñas acrílicas básicas</h3>
-        <div class="price-old">$35.000</div>
+    <!-- CATALOGO DE PRODUCTOS CABALLERO -->
+    <div class="catalog-container" id="catalogCaballero" style="display: none;">
+      <div class="product-card" data-category="cortes" data-name="Corte Clásico" data-price="15000">
+        <img src="../images/servicios_caballero/corte-clasico.jpg" alt="Corte Clásico">
+        <h3>Corte Clásico</h3>
+        <div class="price-old">$18.000</div>
+        <div class="price-new">$15.000</div>
+        <button class="add-btn">Agregar al carrito</button>
+      </div>
+      
+      <div class="product-card" data-category="cortes" data-name="Corte Moderno" data-price="20000">
+        <img src="../images/servicios_caballero/corte-moderno.jpg" alt="Corte Moderno">
+        <h3>Corte Moderno</h3>
+        <div class="price-old">$25.000</div>
+        <div class="price-new">$20.000</div>
+        <button class="add-btn">Agregar al carrito</button>
+      </div>
+
+      <div class="product-card" data-category="barba" data-name="Afeitado Clásico" data-price="12000">
+        <img src="../images/servicios_caballero/afeitado-clasico.jpg" alt="Afeitado Clásico">
+        <h3>Afeitado Clásico</h3>
+        <div class="price-old">$15.000</div>
+        <div class="price-new">$12.000</div>
+        <button class="add-btn">Agregar al carrito</button>
+      </div>
+
+      <div class="product-card" data-category="barba" data-name="Diseño de Barba" data-price="18000">
+        <img src="../images/servicios_caballero/diseno-barba.jpg" alt="Diseño de Barba">
+        <h3>Diseño de Barba</h3>
+        <div class="price-old">$22.000</div>
+        <div class="price-new">$18.000</div>
+        <button class="add-btn">Agregar al carrito</button>
+      </div>
+
+      <div class="product-card" data-category="tratamientos" data-name="Tratamiento Capilar" data-price="25000">
+        <img src="../images/servicios_caballero/tratamiento-capilar.jpg" alt="Tratamiento Capilar">
+        <h3>Tratamiento Capilar</h3>
+        <div class="price-old">$30.000</div>
         <div class="price-new">$25.000</div>
         <button class="add-btn">Agregar al carrito</button>
       </div>
-      <!-- CATALOGO DE MASCARILLAS -->
-      <div class="product-card" data-category="mascarillas" data-name="Manicure Básico" data-price="18000">
-        <img src="../images/servicios_dama/Mujer/Corte Pariposa.png" alt="Manicure Básico">
-        <h3>Manicure Básico</h3>
-        <div class="price-old">$25.000</div>
-        <div class="price-new">$18.000</div>
+
+      <div class="product-card" data-category="mascarilla-caballero" data-name="Mascarilla Revitalizante" data-price="15000">
+        <img src="../images/servicios_caballero/mascarilla.jpg" alt="Mascarilla Revitalizante">
+        <h3>Mascarilla Revitalizante</h3>
+        <div class="price-old">$20.000</div>
+        <div class="price-new">$15.000</div>
         <button class="add-btn">Agregar al carrito</button>
       </div>
-
-      <!-- Añadir más productos siguiendo el mismo patrón -->
     </div>
 
     <!-- CARRITO -->
@@ -264,6 +341,8 @@
   <!-- SCRIPTS -->
   <script src="../scripts/menu.js"></script>
   <script src="../scripts/carrito.js"></script>
+  <script src="../scripts/filtro_genero.js
+  "></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
