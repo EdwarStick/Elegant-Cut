@@ -206,6 +206,57 @@ header {
 }
 
 /* --------------------------------------------------
+   Esto es para todo el filtro de caballeros/dama
+-------------------------------------------------- */
+.seleccion-genero{ /*Esto es el div general*/
+text-align: center;
+margin: 80px 0;
+}
+
+.botones-genero{ /*Este es el contenedor de los botones*/
+
+  display: flex;
+  justify-content: center;
+  gap: 20px; /*Este se usa para el espacio entre los dos botones*/
+  margin-top: 20px;          /*cuando hay un flex*/
+}
+
+.btn-dama{ /*Esta es la clase de cada botonsito*/
+  background-color: #f4f4f4;/*FONDO*/
+  color: #000; /*Letra*/
+  padding: 12px 24px; /*Alto-ancho*/
+  border-radius: 12px;
+  text-decoration: none; /*Esto quita la línea de enlace*/
+  font-size: 1.1rem; /*Tamaño de letra*/
+  font-weight: 1000;
+  transition: all 0.5s ease;
+}
+
+.btn-dama:hover{
+  background-color: var(--Rojo);
+  transform: scale(1.05); /*para que aumente el tamaño del boton*/
+  color: var(--Blanco);
+}
+
+.btn-caballero{ /*AHORA PARA EL BOTON CABALLERO*/
+  background-color: var(--Blanco);
+  color: var(--Negro);
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 1000; /*NO se mide con px*/
+  text-decoration: none;
+  transition: all 0.5s ease; /*All = todo los que tengan la misma clase*/
+                             /*0.3s el tiempo a tardar, y ease = suave*/
+}
+
+.btn-caballero:hover{
+  background-color: var(--Negro);
+  color: var(--Blanco);
+  transform: scale(1.05);
+}
+
+/* --------------------------------------------------
    CATEGORÍAS
 -------------------------------------------------- */
 .category-menu {

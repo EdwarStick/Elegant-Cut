@@ -1,13 +1,11 @@
 
-    /* Estilos para la nueva vista moderna */
+    /* CAMBIAR COLORES PENDIENTE*/
     :root {
-      --primary: #1a1a1a;
-      --secondary: #d4af37;
-      --accent: #8b7355;
-      --light: #f5f5f5;
-      --dark: #121212;
-      --gray: #333;
-    }
+  --Negro: #111205;
+  --NegroMedio: #1f1f1e;
+  --Blanco: #f4f4f4;
+  --Rojo: #bc2041;
+}
 
   body {
      background-color: var(--light);
@@ -15,7 +13,9 @@
       font-family: 'Montserrat', sans-serif;
     }
 
-    /* Estilos para el carrusel */
+/* --------------------------------------------------
+   CARRUSEL
+-------------------------------------------------- */
     .carousel-container {
       margin-top: 70px;
       position: relative;
@@ -34,20 +34,73 @@
       border-radius: 10px;
     }
 
-    /* Filtros de categorías */
+/* --------------------------------------------------
+   Esto es para todo el filtro de caballeros/dama
+-------------------------------------------------- */
+.seleccion-genero{ /*Esto es el div general*/
+text-align: center;
+margin: 80px 0;
+}
+
+.botones-genero{ /*Este es el contenedor de los botones*/
+
+  display: flex;
+  justify-content: center;
+  gap: 20px; /*Este se usa para el espacio entre los dos botones*/
+  margin-top: 20px;          /*cuando hay un flex*/
+}
+
+.btn-dama{ /*Esta es la clase de cada botonsito*/
+  background-color: #f4f4f4;/*FONDO*/
+  color: #000; /*Letra*/
+  padding: 12px 24px; /*Alto-ancho*/
+  border-radius: 12px;
+  text-decoration: none; /*Esto quita la línea de enlace*/
+  font-size: 1.1rem; /*Tamaño de letra*/
+  font-weight: 1000;
+  transition: all 0.5s ease;
+}
+
+.btn-dama:hover{
+  background-color: var(--Rojo);
+  transform: scale(1.05); /*para que aumente el tamaño del boton*/
+  color: var(--Blanco);
+}
+
+.btn-caballero{ /*AHORA PARA EL BOTON CABALLERO*/
+  background-color: var(--Blanco);
+  color: var(--Negro);
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 1000; /*NO se mide con px*/
+  text-decoration: none;
+  transition: all 0.5s ease; /*All = todo los que tengan la misma clase*/
+                             /*0.3s el tiempo a tardar, y ease = suave*/
+}
+
+.btn-caballero:hover{
+  background-color: var(--Negro);
+  color: var(--Blanco);
+  transform: scale(1.05);
+}
+
+/* --------------------------------------------------
+FILTROS DE LOS SERVICIOS
+-------------------------------------------------- */
     .category-menu {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
       gap: 15px;
       padding: 30px 20px;
-      background: var(--primary);
+      background: var(--NegroMedio);
     }
 
     .category-btn {
       background: transparent;
-      border: 2px solid var(--secondary);
-      color: var(--light);
+      border: 2px solid var(--Blanco);
+      color: var(--Blanco);
       padding: 10px 25px;
       border-radius: 30px;
       font-weight: 600;
@@ -57,11 +110,14 @@
 
     .category-btn:hover,
     .category-btn.active {
-      background: var(--secondary);
-      color: var(--primary);
+      background: var(--Blanco);
+      color: var(--Negro);
+      transform: scale(1.05); /*Para que aumente el tamaño "sin rem"*/
     }
 
-    /* Títulos de sección */
+/* --------------------------------------------------
+   TITULO DE LAS SECCIONES
+-------------------------------------------------- */
     .section-title {
       text-align: center;
       margin: 50px 0 30px;
@@ -80,7 +136,9 @@
       background: var(--secondary);
     }
 
-    /* Grid de servicios */
+/* --------------------------------------------------
+   TARJETAS DE LOS SERVICIOS
+-------------------------------------------------- */
     .services-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -92,7 +150,7 @@
 
     /* Tarjetas de servicio */
     .service-card {
-      background: white;
+      background: var(--Blanco);
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -118,7 +176,7 @@
     .service-title {
       font-size: 1.3rem;
       margin-bottom: 10px;
-      color: var(--primary);
+      color: var(--NegroMedio);
       text-transform: uppercase;
       letter-spacing: 1px;
     }
@@ -143,46 +201,55 @@
     margin-bottom: 20px;
     }
 
+    /*Para los items de "maquina, tijera"*/
     .feature-tag {
-      background: var(--light);
-      padding: 5px 10px;
+      background: var(--Rojo);
+      padding: 7px 12px;
       border-radius: 20px;
       font-size: 0.8rem;
-      color: var(--gray);
+      color: var(--Blanco);
     }
 
+    /*Boton de agregar*/
     .service-button {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 5px;
-      width: 100%;
+      background: var(--Blanco);
+      color: var(--Negro);
+      display: block;
+      align-items: center;
+      border: 1px solid var(--Negro);
+      padding: 12px 24px;
+      border-radius: 12px;
+      width: 35%;
+      margin:0 auto;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
     }
 
     .service-button:hover {
-      background: var(--secondary);
-      color: var(--primary);
+      background: var(--Negro);
+      color: var(--Blanco);
     }
 
-    /* Indicador de categoría */
+/* --------------------------------------------------
+   INDICADOR DE LA CATEGORIA
+-------------------------------------------------- */
     .category-indicator {
       position: absolute;
       top: 15px;
       right: 15px;
-      background: var(--secondary);
-      color: var(--primary);
-      padding: 5px 10px;
+      background: var(--Rojo);
+      color: var(--Blanco);
+      padding: 7px 12px;
       border-radius: 20px;
       font-size: 0.7rem;
       font-weight: 700;
       text-transform: uppercase;
     }
 
-    /* Estilos para el carrito */
+ /* --------------------------------------------------
+   CARRITO
+-------------------------------------------------- */
     #cart {
       position: fixed;
       top: 0;
@@ -284,7 +351,9 @@
       font-weight: 700;
     }
 
-    /* Responsive */
+ /* --------------------------------------------------
+   RESPONSIVE
+-------------------------------------------------- */
     @media (max-width: 768px) {
       .services-grid {
         grid-template-columns: 1fr;
