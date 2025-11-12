@@ -259,32 +259,36 @@ margin: 80px 0;
 /* --------------------------------------------------
    CATEGORÍAS
 -------------------------------------------------- */
-.category-menu {
+.category-menu { /*Este es el div general*/
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.8rem;
-  background: #fff;
+  background: var(--Blanco);
   padding: 1rem;
   position: sticky;
   top: 60px;
   z-index: 50;
 }
 
+/*Botones "uñas, cortes etc" */
 .category-menu button {
+ background-color: #f4f4f4;/*FONDO*/
+  color: #000; /*Letra*/
+  padding: 12px 24px; /*Alto-ancho*/
+  border-radius: 12px;
+  text-decoration: none; /*Esto quita la línea de enlace*/
   border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 20px;
-  cursor: pointer;
-  color: var(--Negro);
-  background: white;
-  font-size: 0.9rem;
-  transition: 0.3s;
+  font-size: 1.1rem; /*Tamaño de letra*/
+  font-weight: 1000;
+  transition: all 0.5s ease;
 }
 
-.category-menu button.active {
-  background: #bc204227;
-  color: var(--Rojo);
+.category-btn:hover,
+.category-btn.active { /*Botón donde estemos*/
+  background: var(--Rojo);
+  color: var(--Blanco);
+  transform: scale(1.05);
 }
 
 /* --------------------------------------------------
