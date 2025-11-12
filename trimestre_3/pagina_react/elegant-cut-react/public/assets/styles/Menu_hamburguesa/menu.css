@@ -1,0 +1,237 @@
+/* ESTILOS EXCLUSIVOS PARA EL MENÚ HAMBURGUESA */
+
+/* En pantalla GRANDE: mostrar íconos, ocultar menú hamburguesa */
+@media screen and (min-width: 551px) {
+    .desktop-icons {
+        display: flex;
+    }
+    .abrir-menu {
+        display: none;
+    }
+    .nav {
+        display: none;
+    }
+}
+
+/* En pantalla PEQUEÑA: ocultar íconos, mostrar botón hamburguesa */
+@media screen and (max-width: 550px) {
+    .desktop-icons {
+        display: none;
+    }
+
+    /* Botón abrir menú */
+    .abrir-menu {
+        display: flex;
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        background: none;
+        border: none;
+        font-size: 1.8rem;
+        color: var(--Negro);
+        z-index: 1001;
+        transition: all 0.3s ease;
+    }
+
+    /* Quitar fondo gris al hover */
+    .abrir-menu:hover {
+        background-color: transparent !important;
+        color: var(--RojoVino);
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    /* Mostrar el menú móvil - CAMBIO IMPORTANTE AQUÍ */
+    .nav {
+        opacity: 0;
+        visibility: hidden;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        display: flex; /* ← ESTO YA LO TENÍAS, ESTÁ BIEN */
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        padding: 2rem;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        z-index: 1000;
+    }
+
+    /* CLASE QUE REACT VA A AÑADIR/CUANDO EL MENÚ ESTÉ ABIERTO */
+    .nav.visible {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Botón cerrar */
+    .cerrar-menu {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: none;
+        border: none;
+        color: var(--Blanco);
+        font-size: 2rem;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        z-index: 1001;
+    }
+
+    /* Sin fondo gris al hover y con leve animación */
+    .cerrar-menu:hover {
+        background-color: transparent !important;
+        color: var(--RojoVino);
+        transform: scale(1.2);
+    }
+
+    /* Logo y marca en menú móvil */
+    .mobile-brand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .mobile-logo {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--RojoVino), var(--Dorado));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .mobile-brand-text {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--Blanco);
+        letter-spacing: 1px;
+        text-align: center;
+    }
+
+    .mobile-slogan {
+        font-size: 0.8rem;
+        color: var(--RojoVino);
+        font-weight: 500;
+        text-align: center;
+    }
+
+    /* Contenedor de íconos dentro del menú hamburguesa */
+    .menu-icons-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    /* Botones de navegación en menú móvil */
+    .menu-nav-button {
+        width: 100%;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 0 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: var(--Blanco);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .menu-nav-button:hover {
+        background: rgba(188, 32, 65, 0.2);
+        border-color: var(--RojoVino);
+        transform: translateX(10px);
+        color: var(--RojoVino);
+    }
+
+    .menu-nav-button i {
+        font-size: 1.5rem;
+        width: 30px;
+        text-align: center;
+    }
+
+    .menu-nav-label {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--Blanco);
+        transition: color 0.3s ease;
+    }
+
+    .menu-nav-button:hover .menu-nav-label {
+        color: var(--RojoVino);
+        font-weight: 600;
+    }
+
+    /* Información de contacto en menú móvil */
+    .mobile-contact {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        color: var(--Blanco);
+        margin-bottom: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .contact-item i {
+        color: var(--RojoVino);
+        font-size: 1rem;
+    }
+
+    /* Tamaño uniforme para todos los íconos (compatibilidad con versión anterior) */
+    .menu-icon {
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease;
+        cursor: pointer;
+    }
+
+    .menu-icon:hover {
+        transform: translateY(-5px) scale(1.1);
+    }
+
+    .menu-icon .icon,
+    .menu-icon svg {
+        width: 30px !important;
+        height: 30px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Corrección visual para el ícono de tijeras */
+    .menu-icon.scissors .icon,
+    .menu-icon.scissors svg {
+        transform: rotate(0deg) scale(1.15);
+    }
+}
+
