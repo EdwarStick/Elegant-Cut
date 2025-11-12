@@ -1,0 +1,34 @@
+{
+    "barberos": [
+        {
+            "id_barbero" : 1001,
+            "nombre": "Nicolás",
+            "especialidad" : "Barbero profesional",
+            "email": "nicolas@gmail.com",
+            "telefono": "3115502545",
+            "ranking": 4.9,
+            "activo" : true
+
+        },
+        {
+            "id_barbero" : 1002,
+            "nombre": "Juan",
+            "especialidad" : "Barbero Aprendiz",
+            "email": "juancho@gmail.com",
+            "telefono": "3225802545",
+            "ranking": 3.4,
+            "activo" : true
+        },
+
+        {
+            "id_barbero" : 1003,
+            "nombre": "Andres",
+            "especialidad" : "Tratamiento capilar",
+            "email": "Andres@gmail.com",
+            "telefono": "3248876572",
+            "ranking": 5.0,
+            "activo" : true
+        }
+    ]
+
+}
