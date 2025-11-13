@@ -1,18 +1,38 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/UseAuth.js';
 
 function Header() {
-    //creamos la variable 
     const [menuOpen, setMenuOpen] = useState(false);
+    const { isAuthenticated, user, logout } = useAuth();
+    const navigate = useNavigate();
     
-    //sirve para abrir/cerrar el menú
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     };
 
-    //funcion para solo cerrar el menú
     const closeMenu = () => {
         setMenuOpen(false);
+    };
+
+    const handleLogout = () => {
+        logout();
+        closeMenu();
+        navigate('/');
+    };
+
+    const handleLogin = () => {
+        closeMenu();
+        navigate('/login');
+    };
+
+    const handleProfile = () => {
+        closeMenu();
+        if (isAuthenticated) {
+            navigate('/profile');
+        } else {
+            navigate('/login');
+        }
     };
 
     return (
@@ -42,10 +62,16 @@ function Header() {
                         <i className="bi bi-star"></i>
                         <span className="nav-label">Reseñas</span>
                     </Link>
-                    <Link to="/profile" className="button nav-button" aria-label="Perfil">
+                    <button 
+                        className="button nav-button" 
+                        aria-label="Perfil"
+                        onClick={handleProfile}
+                    >
                         <i className="bi bi-person"></i>
-                        <span className="nav-label">Perfil</span>
-                    </Link>
+                        <span className="nav-label">
+                            {isAuthenticated ? 'Mi Perfil' : 'Perfil'}
+                        </span>
+                    </button>
                     <Link to="/services" className="button nav-button" aria-label="Servicios">
                         <i className="bi bi-scissors"></i>
                         <span className="nav-label">Servicios</span>
@@ -54,9 +80,35 @@ function Header() {
                         <i className="bi bi-person-badge"></i>
                         <span className="nav-label">Barberos</span>
                     </Link>
+
+                    {/* Estado de autenticación en desktop */}
+                    {isAuthenticated ? (
+                        <div className="user-info-desktop">
+                            <span className="user-welcome">
+                                Hola, {user?.name}
+                            </span>
+                            <button 
+                                className="button logout-button"
+                                onClick={handleLogout}
+                                aria-label="Cerrar sesión"
+                            >
+                                <i className="bi bi-box-arrow-right"></i>
+                                <span className="nav-label">Salir</span>
+                            </button>
+                        </div>
+                    ) : (
+                        <button 
+                            className="button login-button"
+                            onClick={handleLogin}
+                            aria-label="Iniciar sesión"
+                        >
+                            <i className="bi bi-box-arrow-in-right"></i>
+                            <span className="nav-label">Ingresar</span>
+                        </button>
+                    )}
                 </div>
 
-                {/* Botón abrir menú hamburguesa - AÑADIR ONCLICK AQUÍ */}
+                {/* Botón abrir menú hamburguesa */}
                 <button 
                     id="abrir" 
                     className="abrir-menu" 
@@ -66,9 +118,8 @@ function Header() {
                     <i className="bi bi-list"></i>
                 </button>
 
-                {/* Menú hamburguesa - AÑADIR CLASE DINÁMICA AQUÍ */}
+                {/* Menú hamburguesa */}
                 <nav className={`nav ${menuOpen ? 'visible' : ''}`} id="nav">
-                    {/* Botón cerrar - AÑADIR ONCLICK AQUÍ */}
                     <button 
                         id="cerrar" 
                         className="cerrar-menu" 
@@ -88,7 +139,20 @@ function Header() {
                         <span className="mobile-brand-text">ELEGANTCUT</span>
                     </div>
 
-                    {/* Íconos del menú hamburguesa - AÑADIR ONCLICK A LOS LINKS */}
+                    {/* Información del usuario en móvil */}
+                    {isAuthenticated && (
+                        <div className="user-info-mobile">
+                            <div className="user-avatar">
+                                <i className="bi bi-person-circle"></i>
+                            </div>
+                            <div className="user-details">
+                                <span className="user-name">{user?.name}</span>
+                                <span className="user-role">{user?.role}</span>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Íconos del menú hamburguesa */}
                     <div className="menu-icons-container">
                         <Link to="/" className="button menu-nav-button" onClick={closeMenu}>
                             <i className="bi bi-house-door"></i>
@@ -98,10 +162,15 @@ function Header() {
                             <i className="bi bi-star"></i>
                             <span className="menu-nav-label">Reseñas</span>
                         </Link>
-                        <Link to="/profile" className="button menu-nav-button" onClick={closeMenu}>
+                        <button 
+                            className="button menu-nav-button" 
+                            onClick={handleProfile}
+                        >
                             <i className="bi bi-person"></i>
-                            <span className="menu-nav-label">Mi Perfil</span>
-                        </Link>
+                            <span className="menu-nav-label">
+                                {isAuthenticated ? 'Mi Perfil' : 'Iniciar Sesión'}
+                            </span>
+                        </button>
                         <Link to="/services" className="button menu-nav-button" onClick={closeMenu}>
                             <i className="bi bi-scissors"></i>
                             <span className="menu-nav-label">Servicios</span>
@@ -110,6 +179,25 @@ function Header() {
                             <i className="bi bi-person-badge"></i>
                             <span className="menu-nav-label">Barberos</span>
                         </Link>
+
+                        {/* Botones de autenticación en móvil */}
+                        {isAuthenticated ? (
+                            <button 
+                                className="button menu-nav-button logout-mobile"
+                                onClick={handleLogout}
+                            >
+                                <i className="bi bi-box-arrow-right"></i>
+                                <span className="menu-nav-label">Cerrar Sesión</span>
+                            </button>
+                        ) : (
+                            <button 
+                                className="button menu-nav-button login-mobile"
+                                onClick={handleLogin}
+                            >
+                                <i className="bi bi-box-arrow-in-right"></i>
+                                <span className="menu-nav-label">Iniciar Sesión</span>
+                            </button>
+                        )}
                     </div>
                 </nav>
             </header>

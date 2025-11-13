@@ -661,3 +661,129 @@ main {
         font-size: 2.5rem;
     }
 }
+
+/* ===== AUTENTICACIÓN HEADER - CORREGIDO ===== */
+
+/* Estado de autenticación en desktop - DENTRO DEL CONTENEDOR */
+.user-info-desktop {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.user-welcome {
+    font-size: 0.8rem;
+    color: #333;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Botones INTEGRADOS en el contenedor de íconos */
+.logout-button, .login-button {
+    outline: 0 !important;
+    border: 0 !important;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    transition: all ease-in-out 0.3s;
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.logout-button:hover, .login-button:hover {
+    transform: translateY(-3px);
+    color: red;
+}
+
+/* Etiquetas igual que los otros botones */
+.logout-button .nav-label,
+.login-button .nav-label {
+    font-size: 0.7rem;
+    margin-top: 2px;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+/* Información del usuario en móvil */
+.user-info-mobile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin: 1rem 0;
+}
+
+.user-avatar {
+    font-size: 2rem;
+    color: #007bff;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.user-role {
+    font-size: 0.8rem;
+    color: #666;
+    text-transform: capitalize;
+}
+
+/* Botones de autenticación en móvil */
+.logout-mobile, .login-mobile {
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    background: transparent;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.logout-mobile:hover, .login-mobile:hover {
+    background: #dc3545;
+    color: white;
+}
+
+.login-mobile {
+    color: #007bff;
+    border-color: #007bff;
+}
+
+.login-mobile:hover {
+    background: #007bff;
+    color: white;
+}
+
+/* Asegurar que se vea en desktop */
+@media (min-width: 769px) {
+    .user-info-desktop {
+        display: flex !important;
+    }
+}
+
+/* Ocultar en móvil */
+@media (max-width: 768px) {
+    .user-info-desktop {
+        display: none !important;
+    }
+}

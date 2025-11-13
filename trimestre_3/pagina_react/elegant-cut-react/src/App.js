@@ -6,18 +6,30 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Barberos from './pages/Barberos'
 import './App.css'
+import LoginForm from './components/LoginForm'
 
 function App() {
   return (
     <BrowserRouter>
-      <Header/>
       <Routes>
-        <Route path='/' element={<Home/>}/>        {/* Ruta principal */}
-        <Route path='/home' element={<Home/>}/>    {/* Alternativa */}
-        <Route path='/Barberos' element={<Barberos/>}/>
-        <Route path='/reseñas' element={<Reseñas/>}/>
+        {/* RUTAS SIN HEADER/FOOTER */}
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/admin" element={<div>Página Admin - Sin Header/Footer</div>} />
+        
+        {/* RUTAS CON HEADER/FOOTER */}
+        <Route path="/*" element={
+          <>
+            <Header />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/barberos" element={<Barberos />} />
+              <Route path="/reseñas" element={<Reseñas />} />
+            </Routes>
+            <Footer />
+          </>
+        } />
       </Routes>
-      <Footer/>
     </BrowserRouter>
   )
 }

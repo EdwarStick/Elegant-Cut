@@ -1,0 +1,9 @@
+{
+    "name": "backend-elegantcut",
+    "version": "1.0.0",
+    "type": "commonjs",
+    "dependencies": {
+        "bcryptjs": "^3.0.3",
+        "jsonwebtoken": "^9.0.0"
+    }
+}

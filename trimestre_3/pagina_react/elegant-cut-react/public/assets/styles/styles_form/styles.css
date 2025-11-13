@@ -1,32 +1,18 @@
-/* Configuraciones de estilos universales */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-/* Estilos del body */
-body {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #ffff;
-    font-family: 'Arial', sans-serif;
-    perspective: 1000px;
-}
+/* ESTILOS ESPECÍFICOS SOLO PARA EL FORMULARIO LIBRO */
+/* Eliminamos los estilos globales que afectan el body y header */
 
 /* Contenedor principal del libro */
-.book-container {
+.login-form-container .book-container {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
+    min-height: 80vh;
 }
 
 /* Libro con efecto 3D */
-.book {
+.login-form-container .book {
     width: 100%;
     max-width: 400px;
     height: 500px;
@@ -35,12 +21,12 @@ body {
     transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
 }
 
-.book.flipped {
+.login-form-container .book.flipped {
     transform: rotateY(-180deg);
 }
 
 /* Páginas del libro */
-.page {
+.login-form-container .page {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -48,20 +34,20 @@ body {
     display: none;
 }
 
-.page.active {
+.login-form-container .page.active {
     display: block;
 }
 
-#login-page {
+.login-form-container #login-page {
     transform: rotateY(0deg);
 }
 
-#register-page {
+.login-form-container #register-page {
     transform: rotateY(180deg);
 }
 
 /* Caja del formulario */
-.form-box {
+.login-form-container .form-box {
     background-color: white;
     padding: 40px 30px;
     border-radius: 15px;
@@ -75,7 +61,7 @@ body {
 }
 
 /* Título del formulario */
-.form-title {
+.login-form-container .form-title {
     text-align: center;
     margin-bottom: 30px;
     color: #333;
@@ -84,12 +70,12 @@ body {
 }
 
 /* Grupo de formulario */
-.form-group {
+.login-form-container .form-group {
     margin-bottom: 20px;
 }
 
 /* Inputs del formulario */
-.form-input {
+.login-form-container .form-input {
     width: 100%;
     padding: 15px;
     border: 2px solid #e1e1e1;
@@ -99,22 +85,22 @@ body {
     transition: all 0.3s ease;
 }
 
-.form-input:focus {
+.login-form-container .form-input:focus {
     outline: none;
     border-color: #BC2041;
     background-color: white;
-    box-shadow: 0 0 0 3px rgba(240, 188, 0, 0.1);
+    box-shadow: 0 0 0 3px rgba(188, 32, 65, 0.1);
 }
 
-.form-input::placeholder {
+.login-form-container .form-input::placeholder {
     color: #999;
 }
 
 /* Botón de enviar */
-.submit-btn {
+.login-form-container .submit-btn {
     width: 100%;
     padding: 15px;
-    background:#BC2041; 
+    background: #BC2041;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -125,55 +111,55 @@ body {
     transition: all 0.3s ease;
 }
 
-.submit-btn:hover {
+.login-form-container .submit-btn:hover {
     background: #f51d4c;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(240, 188, 0, 0.3);
+    box-shadow: 0 5px 15px rgba(188, 32, 65, 0.3);
 }
 
-.submit-btn:active {
+.login-form-container .submit-btn:active {
     transform: translateY(0);
 }
 
 /* Enlace para cambiar entre formularios */
-.switch-form {
+.login-form-container .switch-form {
     text-align: center;
     margin-top: 20px;
 }
 
-.switch-link {
+.login-form-container .switch-link {
     color: #000;
     text-decoration: none;
     font-weight: 600;
     cursor: pointer;
+    background: none;
+    border: none;
+    font-size: inherit;
 }
 
-.switch-link:hover {
+.login-form-container .switch-link:hover {
     text-decoration: underline;
 }
 
-/* Agrega esto al final de tu CSS actual */
-
-/* Asegurar que la página de registro esté oculta inicialmente */
-#register-page {
+/* Mostrar/ocultar páginas */
+.login-form-container #register-page {
     display: none;
 }
 
-/* Cuando el libro está flipped, mostrar register page y ocultar login */
-.book.flipped #login-page {
+.login-form-container .book.flipped #login-page {
     display: none;
 }
 
-.book.flipped #register-page {
+.login-form-container .book.flipped #register-page {
     display: block;
 }
 
 /* Mejorar la transición de las páginas */
-.page {
+.login-form-container .page {
     transition: opacity 0.3s ease;
 }
 
 /* Efecto visual mejorado durante el flip */
-.book.flipped .form-box {
+.login-form-container .book.flipped .form-box {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
