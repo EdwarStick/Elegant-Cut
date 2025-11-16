@@ -72,7 +72,7 @@ function Header() {
                             {isAuthenticated ? 'Mi Perfil' : 'Perfil'}
                         </span>
                     </button>
-                    <Link to="/services" className="button nav-button" aria-label="Servicios">
+                    <Link to="/Servicios_dama" className="button nav-button" aria-label="Servicios">
                         <i className="bi bi-scissors"></i>
                         <span className="nav-label">Servicios</span>
                     </Link>

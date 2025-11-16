@@ -8,40 +8,52 @@ const path = require('path');
 const JWT_SECRET = "Clave-secreta-elegant-cut-2025";
 const PORT = 3001;
 
-// Ruta correcta
+// ✅ Ruta CORREGIDA: en carpeta data
 const USERS_PATH = path.join(__dirname, 'data', 'users.json');
 
-// Función para cargar usuarios
+// Función MEJORADA para cargar usuarios
 function cargarUsuarios() {
     try {
-        // Asegurar que la carpeta data existe
+        // ✅ Asegurar que la carpeta data existe
         const dataDir = path.dirname(USERS_PATH);
         if (!existsSync(dataDir)) {
             mkdirSync(dataDir, { recursive: true });
         }
         
-        // Si el archivo no existe, crearlo
         if (!existsSync(USERS_PATH)) {
-            const estructuraInicial = { users: {} };
-            writeFileSync(USERS_PATH, JSON.stringify(estructuraInicial, null, 2));
-            return estructuraInicial;
+            // Si el archivo no existe, crearlo con estructura vacía
+            writeFileSync(USERS_PATH, JSON.stringify({ users: {} }, null, 2));
+            return { users: {} };
         }
         
         const data = readFileSync(USERS_PATH, 'utf8');
-        return JSON.parse(data);
+        const usuarios = JSON.parse(data);
         
+        // Asegurar que tenga la estructura correcta
+        if (!usuarios.users) {
+            usuarios.users = {};
+        }
+        
+        return usuarios;
     } catch (error) {
-        console.log('Error cargando usuarios:', error.message);
-        // Retornar estructura vacía
+        console.log('Error cargando usuarios, creando nuevo archivo...');
+        // Si hay error, crear archivo nuevo
+        writeFileSync(USERS_PATH, JSON.stringify({ users: {} }, null, 2));
         return { users: {} };
     }
 }
 
-// Función para guardar usuarios
+// Función MEJORADA para guardar
 function guardarUsuarios(usuarios) {
     try {
+        // ✅ Asegurar que la carpeta data existe
+        const dataDir = path.dirname(USERS_PATH);
+        if (!existsSync(dataDir)) {
+            mkdirSync(dataDir, { recursive: true });
+        }
+        
         writeFileSync(USERS_PATH, JSON.stringify(usuarios, null, 2));
-        console.log('✅ Usuarios guardados en:', USERS_PATH);
+        console.log('✅ Archivo guardado correctamente en:', USERS_PATH);
         return true;
     } catch (error) {
         console.log('❌ Error guardando:', error.message);
@@ -75,22 +87,24 @@ const server = createServer(async (req, res) => {
             try {
                 const { username, password, name, role = 'client' } = JSON.parse(body);
                 
-                console.log('🔨 Registrando usuario:', username);
+                console.log('🔨 Intentando registrar:', username);
                 
-                // Validaciones
+                // Validaciones básicas
                 if (!username || !password || !name) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
                     return res.end(JSON.stringify({
                         success: false,
                         error: 'Faltan campos obligatorios'
                     }));
                 }
 
-                // Cargar usuarios
+                // Cargar usuarios existentes
                 const usuarios = cargarUsuarios();
-                console.log('📊 Usuarios existentes:', usuarios);
+                console.log('👥 Usuarios actuales:', Object.keys(usuarios.users));
 
                 // Verificar si ya existe
                 if (usuarios.users[username]) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
                     return res.end(JSON.stringify({
                         success: false,
                         error: 'Usuario ya existe'
@@ -108,20 +122,20 @@ const server = createServer(async (req, res) => {
                     createdAt: new Date().toISOString()
                 };
 
-                // Guardar
+                // GUARDAR - esta es la parte importante
                 const guardado = guardarUsuarios(usuarios);
                 
                 if (!guardado) {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
                     return res.end(JSON.stringify({
                         success: false,
                         error: 'Error al guardar'
                     }));
                 }
 
-                // Verificar guardado
-                const verificacion = cargarUsuarios();
-                console.log('🔍 Verificación - usuarios:', verificacion.users);
-                console.log('🔍 Verificación - keys:', Object.keys(verificacion.users));
+                // Verificar que realmente se guardó
+                const usuariosVerificados = cargarUsuarios();
+                console.log('🔍 Después de guardar:', Object.keys(usuariosVerificados.users));
 
                 // Crear token
                 const token = jwt.sign(
@@ -139,7 +153,8 @@ const server = createServer(async (req, res) => {
                 }));
 
             } catch (error) {
-                console.log('💥 Error:', error);
+                console.log('💥 Error en registro:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
                     success: false,
                     error: 'Error del servidor'
@@ -173,24 +188,28 @@ const server = createServer(async (req, res) => {
                             { expiresIn: '24h' }
                         );
 
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
                         res.end(JSON.stringify({
                             success: true,
                             token: token,
                             user: { username, name: usuario.name, role: usuario.role }
                         }));
                     } else {
+                        res.writeHead(401, { 'Content-Type': 'application/json' });
                         res.end(JSON.stringify({
                             success: false,
                             error: 'Credenciales incorrectas'
                         }));
                     }
                 } else {
+                    res.writeHead(401, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({
                         success: false,
                         error: 'Usuario no existe'
                     }));
                 }
             } catch (error) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
                     success: false,
                     error: 'Error del servidor'
@@ -204,11 +223,13 @@ const server = createServer(async (req, res) => {
     if (req.url === '/auth/users' && req.method === 'GET') {
         try {
             const usuarios = cargarUsuarios();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({
                 success: true,
                 users: usuarios.users
             }));
         } catch (error) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({
                 success: false,
                 error: 'Error cargando usuarios'
@@ -218,15 +239,16 @@ const server = createServer(async (req, res) => {
     }
 
     // Ruta no encontrada
+    res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'Ruta no encontrada' }));
 });
 
 // Iniciar servidor
 server.listen(PORT, () => {
     console.log('🚀 Servidor corriendo en http://localhost:' + PORT);
+    console.log('📁 Archivo: ' + USERS_PATH);
     
     // Verificar archivo al iniciar
     const usuarios = cargarUsuarios();
-    console.log('📁 Archivo:', USERS_PATH);
     console.log('👥 Usuarios registrados:', Object.keys(usuarios.users).length);
 });
