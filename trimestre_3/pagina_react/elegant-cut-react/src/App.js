@@ -9,6 +9,9 @@ import './App.css'
 import LoginForm from './components/LoginForm'
 import Servicios_dama from './pages/Servicios_dama'
 import Servicios_caballero from './pages/Servicios_caballero'
+import Form_agenda from './pages/Form_agenda'
+import AdminPanel from './pages/AdminPanel'
+import ProtectedRoute from './components/ProtectedRoute' // Añade esta importación
 
 function App() {
   return (
@@ -16,7 +19,13 @@ function App() {
       <Routes>
         {/* RUTAS SIN HEADER/FOOTER */}
         <Route path="/login" element={<LoginForm />} />
-        <Route path="/admin" element={<div>Página Admin - Sin Header/Footer</div>} />
+        
+        {/* RUTA ADMIN PROTEGIDA - CAMBIA ESTA LÍNEA */}
+        <Route path="/admin" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminPanel />
+          </ProtectedRoute>
+        } />
         
         {/* RUTAS CON HEADER/FOOTER */}
         <Route path="/*" element={
@@ -29,6 +38,7 @@ function App() {
               <Route path="/reseñas" element={<Reseñas />} />
               <Route path="/Servicios_dama" element={<Servicios_dama />} />
               <Route path="/Servicios_caballero" element={<Servicios_caballero />} />
+              <Route path="/Form_agenda" element={<Form_agenda />} />
             </Routes>
             <Footer />
           </>

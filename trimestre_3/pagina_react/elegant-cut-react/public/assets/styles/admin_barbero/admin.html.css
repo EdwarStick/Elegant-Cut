@@ -13,19 +13,6 @@
   --warning-color: #ffc107;
   --danger-color: #dc3545;
 }
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-}
-
-body {
-    background-color: var(--body-color);
-    color: var(--text-color);
-}
-
 .admin-container {
     display: flex;
     min-height: 100vh;

@@ -14,19 +14,34 @@ export function useAuth() {
     const token = AuthClient.getToken();
     const userData = AuthClient.getUser();
     
-    if (token && userData) {
+    if (token && userData && AuthClient.isTokenValid()) {
       setIsAuthenticated(true);
       setUser(userData);
     } else {
+      // Token inválido o expirado
+      if (token && !AuthClient.isTokenValid()) {
+        AuthClient.logout();
+      }
       setIsAuthenticated(false);
       setUser(null);
     }
     setLoading(false);
   };
 
-  const login = (userData) => {
-    setIsAuthenticated(true);
-    setUser(userData);
+  const login = async (username, password) => {
+    try {
+      const result = await AuthClient.login(username, password);
+      
+      if (result.success) {
+        setIsAuthenticated(true);
+        setUser(result.user);
+        return { success: true, user: result.user };
+      } else {
+        return { success: false, message: result.error };
+      }
+    } catch (error) {
+      return { success: false, message: 'Error de conexión' };
+    }
   };
 
   const logout = () => {

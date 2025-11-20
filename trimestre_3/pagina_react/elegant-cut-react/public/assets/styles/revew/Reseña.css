@@ -1,13 +1,3 @@
-/* From Uiverse.io by adamgiebl - Botón especial de enviar CORREGIDO */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-}
-
-
-
 .submit-button {
   font-family: inherit;
   font-size: 20px;

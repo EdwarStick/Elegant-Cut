@@ -13,27 +13,6 @@
 /* --------------------------------------------------
    RESETEO Y BASE
 -------------------------------------------------- */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Comfortaa", sans-serif;
-}
-
-body {
-  background-color: #f8f9fa;
-  color: #333;
-  line-height: 1.6;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* --------------------------------------------------
-   HEADER
--------------------------------------------------- */
-
-
 .brand-container {
   display: flex;
   align-items: center;

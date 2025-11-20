@@ -1,7 +1,137 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 function Servicios_dama() {
+    const [cartOpen, setCartOpen] = useState(false);
+    const [cartItems, setCartItems] = useState([]);
+    const [activeCategory, setActiveCategory] = useState('uñas');
+
+    // Calcular total y cantidad
+    const cartTotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);
+
+    // Agregar producto al carrito
+    const addToCart = (name, price) => {
+        setCartItems(prevItems => {
+            const existingItem = prevItems.find(item => item.name === name);
+            
+            if (existingItem) {
+                return prevItems.map(item =>
+                    item.name === name ? { ...item, quantity: item.quantity + 1 } : item
+                );
+            } else {
+                return [...prevItems, { name, price, quantity: 1 }];
+            }
+        });
+    };
+
+    // Eliminar producto del carrito
+    const removeFromCart = (name) => {
+        setCartItems(prevItems => {
+            const existingItem = prevItems.find(item => item.name === name);
+            
+            if (existingItem && existingItem.quantity > 1) {
+                return prevItems.map(item =>
+                    item.name === name ? { ...item, quantity: item.quantity - 1 } : item
+                );
+            } else {
+                return prevItems.filter(item => item.name !== name);
+            }
+        });
+    };
+
+    // Filtrar productos por categoría
+    const filterByCategory = (category) => {
+        setActiveCategory(category);
+    };
+
+    // Categorías disponibles
+    const categories = [
+        { id: 'uñas', name: 'Uñas' },
+        { id: 'largo', name: 'Cortes Cabello Largo' },
+        { id: 'corto', name: 'Cortes Cabello Corto' },
+        { id: 'tinte', name: 'Color / Tintes' },
+        { id: 'peinados', name: 'Peinados' },
+        { id: 'mascarillas', name: 'Mascarillas' }
+    ];
+
+    // Productos disponibles
+    const products = [
+        // Uñas
+        { 
+            category: 'uñas', 
+            name: 'Uñas sin diseño', 
+            price: 10000, 
+            image: '/', 
+            oldPrice: 12000,
+            description: 'Manicure básico sin Diseño'
+        },
+        { 
+            category: 'uñas', 
+            name: 'Manicure Básico con color', 
+            price: 11000, 
+            image: '../images/servicios_dama/Uñas/ManicureConColor.png', 
+            oldPrice: 11000,
+            description: 'Manicure Básico con Color'
+        },
+        { 
+            category: 'uñas', 
+            name: 'Uñas Basico con diseño sencillo', 
+            price: 15000, 
+            image: '../images/servicios_dama/Uñas/ManicureConDiseño.png', 
+            oldPrice: 13000,
+            description: 'Uñas Básicas con diseño sencillo'
+        },
+        { 
+            category: 'uñas', 
+            name: 'Uñas acrílicas básicas', 
+            price: 25000, 
+            image: '../images/servicios_dama/Uñas/UñasAcrilicasMedio.png', 
+            oldPrice: 35000,
+            description: 'Uñas acrílicas básicas'
+        },
+        { 
+            category: 'uñas', 
+            name: 'Manicure Largas', 
+            price: 40000, 
+            image: '../images/servicios_dama/Uñas/Uñas AcrilicasLargas.png', 
+            oldPrice: 45000,
+            description: 'Uñas acrílicas largas'
+        },
+        // Cortes Largo
+        { 
+            category: 'largo', 
+            name: 'Corte mariposa', 
+            price: 18000, 
+            image: '../images/servicios_dama/Corte Largo/Corte Pariposa.png', 
+            oldPrice: 15000,
+            description: 'Corte Mariposa'
+        },
+        // Peinados
+        { 
+            category: 'peinados', 
+            name: 'Peinado Especial', 
+            price: 18000, 
+            image: '../images/servicios_dama/Mujer/Corte Pariposa.png', 
+            oldPrice: 25000,
+            description: 'Peinado Especial'
+        },
+        // Mascarillas
+        { 
+            category: 'mascarillas', 
+            name: 'Mascarilla Facial', 
+            price: 18000, 
+            image: '../images/servicios_dama/Mujer/Corte Pariposa.png', 
+            oldPrice: 25000,
+            description: 'Mascarilla Facial'
+        }
+    ];
+
+    // Filtrar productos por categoría activa
+    const filteredProducts = activeCategory === 'all' 
+        ? products 
+        : products.filter(product => product.category === activeCategory);
+
     return (
         <div>
             <main>
@@ -39,94 +169,68 @@ function Servicios_dama() {
 
                 {/* MENÚ DE CATEGORÍAS */}
                 <div className="category-menu">
-                    <button data-category="uñas" className="active">Uñas</button>
-                    <button data-category="largo">Cortes Cabello Largo</button>
-                    <button data-category="corto">Cortes Cabello Corto</button>
-                    <button data-category="tinte">Color / Tintes</button>
-                    <button data-category="peinados">Peinados</button>
-                    <button data-category="mascarillas">Mascarillas</button>
+                    {categories.map(category => (
+                        <button 
+                            key={category.id}
+                            data-category={category.id}
+                            className={activeCategory === category.id ? 'active' : ''}
+                            onClick={() => filterByCategory(category.id)}
+                        >
+                            {category.name}
+                        </button>
+                    ))}
                 </div>
 
                 {/* CATALOGO DE PRODUCTOS */}
                 <div className="catalog-container" id="catalog">
-                    <div className="product-card" data-category="uñas" data-name="Uñas sin diseño" data-price="10000">
-                        <img src="/" alt="Uñas acrílicas básicas" />
-                        <h3>Manicure básico sin Diseño</h3>
-                        <div className="price-old">$12.000</div>
-                        <div className="price-new">$10.000</div>
-                        <button className="add-btn">Agregar al carrito</button>
-                    </div>
-
-                    {/* CATALOGO DE UÑAS */}
-                    <div className="product-card" data-category="uñas" data-name="Manicure Básico con color" data-price="11000">
-                        <img src="../images/servicios_dama/Uñas/ManicureConColor.png" alt="Manicure Básico" />
-                        <h3>Manicure Básico con Color</h3>
-                        <div className="price-old">$11.000</div>
-                        <div className="price-new">$11.000</div>
-                        <button className="add-btn">Agregar al carrito</button>
-                    </div>
-
-                    <div className="product-card" data-category="uñas" data-name="Uñas Basico con diseño sencillo" data-price="15000">
-                        <img src="../images/servicios_dama/Uñas/ManicureConDiseño.png" alt="Uñas acrílicas básicas" />
-                        <h3>Uñas Básicas con diseño sencillo</h3>
-                        <div className="price-old">$13.000</div>
-                        <div className="price-new">$15.000</div>
-                        <button className="add-btn">Agregar al carrito</button>
-                    </div>
-
-                    <div className="product-card" data-category="uñas" data-name="Uñas acrílicas básicas" data-price="25000">
-                        <img src="../images/servicios_dama/Uñas/UñasAcrilicasMedio.png" alt="Uñas acrílicas básicas" />
-                        <h3>Uñas acrílicas básicas</h3>
-                        <div className="price-old">$35.000</div>
-                        <div className="price-new">$25.000</div>
-                        <button className="add-btn">Agregar al carrito</button>
-                    </div>
-
-                    <div className="product-card" data-category="uñas" data-name="Manicure Largas" data-price="40000">
-                        <img src="../images/servicios_dama/Uñas/Uñas AcrilicasLargas.png" alt="Uñas acrílicas largas" />
-                        <h3>Uñas acrílicas largas</h3>
-                        <div className="price-old">$45.000</div>
-                        <div className="price-new">$40.000</div>
-                        <button className="add-btn">Agregar al carrito</button>
-                    </div>
-
-                    {/* CATALOGO DE CORTE LARGO */}
-                    <div className="product-card" data-category="largo" data-name="Corte mariposa" data-price="18000">
-                        <img src="../images/servicios_dama/Corte Largo/Corte Pariposa.png" alt="Corte Mariposa" />
-                        <h3>Corte Mariposa</h3>
-                        <div className="price-old">$15.000</div>
-                        <div className="price-new">$18.000</div>
-                        <button className="add-btn">Agregar al carrito</button>
-                    </div>
-
-                    {/* CATALOGO DE PEINADOS */}
-                    <div className="product-card" data-category="peinados" data-name="Manicure Básico" data-price="18000">
-                        <img src="../images/servicios_dama/Mujer/Corte Pariposa.png" alt="Manicure Básico" />
-                        <h3>Manicure Básico</h3>
-                        <div className="price-old">$25.000</div>
-                        <div className="price-new">$18.000</div>
-                        <button className="add-btn">Agregar al carrito</button>
-                    </div>
-
-                    {/* CATALOGO DE MASCARILLAS */}
-                    <div className="product-card" data-category="mascarillas" data-name="Manicure Básico" data-price="18000">
-                        <img src="../images/servicios_dama/Mujer/Corte Pariposa.png" alt="Manicure Básico" />
-                        <h3>Manicure Básico</h3>
-                        <div className="price-old">$25.000</div>
-                        <div className="price-new">$18.000</div>
-                        <button className="add-btn">Agregar al carrito</button>
-                    </div>
+                    {filteredProducts.map((product, index) => (
+                        <div 
+                            key={index}
+                            className="product-card" 
+                            data-category={product.category}
+                        >
+                            <img src={product.image} alt={product.description} />
+                            <h3>{product.description}</h3>
+                            <div className="price-old">${product.oldPrice?.toLocaleString()}</div>
+                            <div className="price-new">${product.price.toLocaleString()}</div>
+                            <button 
+                                className="add-btn"
+                                onClick={() => addToCart(product.name, product.price)}
+                            >
+                                Agregar al carrito
+                            </button>
+                        </div>
+                    ))}
                 </div>
 
                 {/* CARRITO */}
-                <div id="cart">
+                <div id="cart" className={cartOpen ? 'open' : ''}>
                     <div className="cart-header">
                         Carrito
-                        <i className="bi bi-x-lg close-cart"></i>
+                        <i 
+                            className="bi bi-x-lg close-cart" 
+                            onClick={() => setCartOpen(false)}
+                        ></i>
                     </div>
-                    <div className="cart-items"></div>
+                    <div className="cart-items">
+                        {cartItems.length === 0 ? (
+                            <p>El carrito está vacío</p>
+                        ) : (
+                            cartItems.map((item, index) => (
+                                <div key={index} className="cart-item">
+                                    <span>{item.name}</span>
+                                    <span>${item.price.toLocaleString()}</span>
+                                    <span>x{item.quantity}</span>
+                                    <i 
+                                        className="bi bi-trash remove-btn"
+                                        onClick={() => removeFromCart(item.name)}
+                                    ></i>
+                                </div>
+                            ))
+                        )}
+                    </div>
                     <div className="cart-total">
-                        Total: <span id="cartTotal">$0</span>
+                        Total: <span id="cartTotal">${cartTotal.toLocaleString()}</span>
                     </div>
                     <Link to="/form_agenda">
                         <button id="agendarBtn">Agendar</button>
@@ -134,9 +238,9 @@ function Servicios_dama() {
                 </div>
 
                 {/* BOTÓN FLOTANTE DEL CARRITO */}
-                <div id="cartToggle">
+                <div id="cartToggle" onClick={() => setCartOpen(!cartOpen)}>
                     <i className="bi bi-bag"></i>
-                    <span className="cart-count">0</span>
+                    <span className="cart-count">{cartCount}</span>
                 </div>
             </main>
         </div>

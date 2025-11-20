@@ -154,7 +154,7 @@ function Servicios_caballero() {
             </div>
           </div>
 
-          {/* 👇 Aquí puedes dejar el resto de tus servicios igual (ya sabes cómo adaptarlos) */}
+          {/*  Aquí puedes dejar el resto de tus servicios igual (ya sabes cómo adaptarlos) */}
         </div>
 
         {/* CARRITO */}

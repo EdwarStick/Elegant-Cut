@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/UseAuth.js';
 
@@ -34,6 +34,19 @@ function Header() {
             navigate('/login');
         }
     };
+
+    // Controlar el overlay del body cuando el menú está abierto
+    useEffect(() => {
+        if (menuOpen) {
+            document.body.classList.add('menu-open');
+        } else {
+            document.body.classList.remove('menu-open');
+        }
+
+        return () => {
+            document.body.classList.remove('menu-open');
+        };
+    }, [menuOpen]);
 
     return (
         <div>
@@ -171,7 +184,7 @@ function Header() {
                                 {isAuthenticated ? 'Mi Perfil' : 'Iniciar Sesión'}
                             </span>
                         </button>
-                        <Link to="/services" className="button menu-nav-button" onClick={closeMenu}>
+                        <Link to="/Servicios_dama" className="button menu-nav-button" onClick={closeMenu}>
                             <i className="bi bi-scissors"></i>
                             <span className="menu-nav-label">Servicios</span>
                         </Link>
