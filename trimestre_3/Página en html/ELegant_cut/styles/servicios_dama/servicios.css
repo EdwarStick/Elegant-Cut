@@ -264,7 +264,7 @@ margin: 80px 0;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.8rem;
-  background: var(--Blanco);
+  background:var(--NegroMedio);
   padding: 1rem;
   position: sticky;
   top: 60px;
@@ -273,12 +273,12 @@ margin: 80px 0;
 
 /*Botones "uñas, cortes etc" */
 .category-menu button {
- background-color: #f4f4f4;/*FONDO*/
-  color: #000; /*Letra*/
-  padding: 12px 24px; /*Alto-ancho*/
-  border-radius: 12px;
+ background-color:var(--NegroMedio);/*FONDO*/
+  color: white; /*Letra*/
+  padding: 11px 22px; /*Alto-ancho*/
+  border-radius: 50px;
+  border-color: white;
   text-decoration: none; /*Esto quita la línea de enlace*/
-  border: none;
   font-size: 1.1rem; /*Tamaño de letra*/
   font-weight: 1000;
   transition: all 0.5s ease;
@@ -286,8 +286,8 @@ margin: 80px 0;
 
 .category-btn:hover,
 .category-btn.active { /*Botón donde estemos*/
-  background: var(--Rojo);
-  color: var(--Blanco);
+  background: white;
+  color: var(--NegroMedio);
   transform: scale(1.05);
 }
 
@@ -296,7 +296,7 @@ margin: 80px 0;
 -------------------------------------------------- */
 .catalog-container {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   padding: 2rem;
 
@@ -342,15 +342,16 @@ margin: 80px 0;
   margin-top: 0.6rem;
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  border: none;
-  background: var(--Negro);
-  color: #fff;
+  border-color: #000;
+  background: white;
+  color: var(--Negro);
   cursor: pointer;
   transition: 0.3s;
 }
 
 .add-btn:hover {
-  background:#ff305d;
+  background:var(--Negro);
+  color: white;
 }
 
 /* --------------------------------------------------
