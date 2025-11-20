@@ -1,22 +1,22 @@
 {
   "users": {
+    "nicolas_pk": {
+      "password": "$2b$10$lapU3sh6sNxyo/KA9wSRE.LPCzDle7R7.BUI2hixmLMwp7KQ700gu",
+      "name": "jn147870@gmail.com",
+      "role": "admin",
+      "createdAt": "2025-11-13T02:41:46.115Z",
+      "updatedAt": "2025-11-13T03:19:49.483Z"
+    },
     "testuser": {
       "password": "$2b$10$F9cWDsAa4fYmFLd8QH3N5uG9PR.UlElA2LIcjnvbyB6TXeGwo6CkK",
       "name": "Test User",
       "role": "client",
       "createdAt": "2025-11-13T02:40:09.711Z"
     },
-    "nicolas_pk": {
-      "password": "$2b$10$lapU3sh6sNxyo/KA9wSRE.LPCzDle7R7.BUI2hixmLMwp7KQ700gu",
-      "name": "jn147870@gmail.com",
-      "role": "client",
-      "createdAt": "2025-11-13T02:41:46.115Z",
-      "updatedAt": "2025-11-13T03:19:49.483Z"
-    },
     "pepe": {
       "password": "$2b$10$RSKiGFWUovtH9wpLCKGz5u/z6x93tzjdJFQ63YqIY.xogofMJgO5u",
       "name": "pepe@gmail.com",
-      "role": "client",
+      "role": "admin",
       "createdAt": "2025-11-13T03:04:28.606Z"
     },
     "cangre": {

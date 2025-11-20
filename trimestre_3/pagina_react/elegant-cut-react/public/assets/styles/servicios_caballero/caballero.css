@@ -7,11 +7,6 @@
   --Rojo: #bc2041;
 }
 
-  body {
-     background-color: var(--light);
-     color: var(--primary);
-      font-family: 'Montserrat', sans-serif;
-    }
 
 /* --------------------------------------------------
    CARRUSEL

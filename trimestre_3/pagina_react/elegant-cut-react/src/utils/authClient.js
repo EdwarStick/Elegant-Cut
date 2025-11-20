@@ -2,10 +2,10 @@
 
 export class AuthClient {
   
-  // ✅ FUNCIÓN: Registro
+  //  FUNCIÓN: Registro
   static async register(username, password, name, role = 'client') {
     try {
-      console.log('📞 Enviando registro al servidor...');
+      console.log('Enviando registro al servidor...');
       
       const response = await fetch('http://localhost:3001/auth/register', {
         method: 'POST',
@@ -17,21 +17,21 @@ export class AuthClient {
 
       const data = await response.json();
       
-      console.log('📨 Respuesta del servidor (registro):', data);
+      console.log(' Respuesta del servidor (registro):', data);
       
       if (data.success && data.token) {
         // Guardar token y datos del usuario automáticamente
         localStorage.setItem('jwt_token', data.token);
         localStorage.setItem('user_data', JSON.stringify(data.user));
         
-        console.log('✅ Registro exitoso!');
+        console.log(' Registro exitoso!');
         return { success: true, user: data.user };
       } else {
-        console.log('❌ Error en registro:', data.error);
+        console.log(' Error en registro:', data.error);
         return { success: false, error: data.error };
       }
     } catch (error) {
-      console.log('🚨 Error de conexión:', error);
+      console.log(' Error de conexión:', error);
       return { success: false, error: 'No se pudo conectar al servidor' };
     }
   }
