@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peticiones, quejas, reclamos y sugerencias</title>
-     <!--lisnk de conexion con boostrap-->
+    <!--lisnk de conexion con boostrap-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <!--lisnk de conexion con google fonts-->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="../styles/styles_nav/Nav.css">
-    <link rel="stylesheet" href="../styles/revew/pqrs.css">
+    <link rel="stylesheet" href="../styles/styles_nav/Nav.css">
+    <link rel="stylesheet" href="../styles/pqrs/pqrs.css">
     <link rel="stylesheet" href="../styles/Menu_hamburguesa/menu.css">
     <link rel="stylesheet" href="../styles/reviews/reviews.css">
     <link rel="stylesheet" href="../styles/Footer/Footer.css">
 
 </head>
+
 <body>
-       <!-- Header con menú hamburguesa -->
+    <!-- Header con menú hamburguesa -->
     <header>
         <!-- Logo y nombre de la marca -->
         <div class="brand-container">
@@ -30,86 +32,86 @@
             </div>
         </div>
 
-       <!-- Contenedor de íconos visible en escritorio -->
-<div class="button-container desktop-icons">
-    <a href="index.html" class="button nav-button" aria-label="Inicio">
-        <i class="bi bi-house-door"></i>
-        <span class="nav-label">Inicio</span>
-    </a>
-    <a href="reseñas.html" class="button nav-button" aria-label="Reseñas">
-        <i class="bi bi-star"></i>
-        <span class="nav-label">Reseñas</span>
-    </a>
-    <a href="../page/profile.html" class="button nav-button" aria-label="Perfil">
-        <i class="bi bi-person"></i>
-        <span class="nav-label">Perfil</span>
-    </a>
-    <a href="../page/servicios_dama.html" class="button nav-button" aria-label="Servicios">
-        <i class="bi bi-scissors"></i>
-        <span class="nav-label">Servicios</span>
-    </a>
-    <!-- Nuevo icono para Barberos -->
-    <a href="../page/barberos.html" class="button nav-button" aria-label="Barberos">
-        <i class="bi bi-person-badge"></i>
-        <span class="nav-label">Barberos</span>
-    </a>
-     <a href="../page/pqrs.html" class="button nav-button" aria-label="pqrs">
-        <i class="bi bi-question-circle"></i>
-        <span class="nav-label">Pqrs</span>
-    </a>
-</div>
+        <!-- Contenedor de íconos visible en escritorio -->
+        <div class="button-container desktop-icons">
+            <a href="index.html" class="button nav-button" aria-label="Inicio">
+                <i class="bi bi-house-door"></i>
+                <span class="nav-label">Inicio</span>
+            </a>
+            <a href="reseñas.html" class="button nav-button" aria-label="Reseñas">
+                <i class="bi bi-star"></i>
+                <span class="nav-label">Reseñas</span>
+            </a>
+            <a href="../page/profile.html" class="button nav-button" aria-label="Perfil">
+                <i class="bi bi-person"></i>
+                <span class="nav-label">Perfil</span>
+            </a>
+            <a href="../page/servicios_dama.html" class="button nav-button" aria-label="Servicios">
+                <i class="bi bi-scissors"></i>
+                <span class="nav-label">Servicios</span>
+            </a>
+            <!-- Nuevo icono para Barberos -->
+            <a href="../page/barberos.html" class="button nav-button" aria-label="Barberos">
+                <i class="bi bi-person-badge"></i>
+                <span class="nav-label">Barberos</span>
+            </a>
+            <a href="../page/pqrs.html" class="button nav-button" aria-label="pqrs">
+                <i class="bi bi-question-circle"></i>
+                <span class="nav-label">Pqrs</span>
+            </a>
+        </div>
 
-<!-- Botón abrir menú hamburguesa (solo visible en móvil) -->
-<button id="abrir" class="abrir-menu" aria-label="Abrir menú">
-    <i class="bi bi-list"></i>
-</button>
+        <!-- Botón abrir menú hamburguesa (solo visible en móvil) -->
+        <button id="abrir" class="abrir-menu" aria-label="Abrir menú">
+            <i class="bi bi-list"></i>
+        </button>
 
-<!-- Menú hamburguesa -->
-<nav class="nav" id="nav">
-    <!-- Botón cerrar -->
-    <button id="cerrar" class="cerrar-menu" aria-label="Cerrar menú">
-        <i class="bi bi-x"></i>
-    </button>
+        <!-- Menú hamburguesa -->
+        <nav class="nav" id="nav">
+            <!-- Botón cerrar -->
+            <button id="cerrar" class="cerrar-menu" aria-label="Cerrar menú">
+                <i class="bi bi-x"></i>
+            </button>
 
-    <!-- Logo en menú hamburguesa -->
-    <div class="mobile-brand">
-        <img src="../images/logo.png" alt="ElegantCut Barbería" class="mobile-logo">
-        <span class="mobile-brand-text">ELEGANTCUT</span>
-    </div>
+            <!-- Logo en menú hamburguesa -->
+            <div class="mobile-brand">
+                <img src="../images/logo.png" alt="ElegantCut Barbería" class="mobile-logo">
+                <span class="mobile-brand-text">ELEGANTCUT</span>
+            </div>
 
-    <!-- Íconos del menú hamburguesa -->
-    <div class="menu-icons-container">
-        <a href="../page/index.html" class="button menu-nav-button">
-            <i class="bi bi-house-door"></i>
-            <span class="menu-nav-label">Inicio</span>
-        </a>
-        <a href="../page/reseñas.html" class="button menu-nav-button">
-            <i class="bi bi-star"></i>
-            <span class="menu-nav-label">Reseñas</span>
-        </a>
-        <a href="../page/profile.html" class="button menu-nav-button">
-            <i class="bi bi-person"></i>
-            <span class="menu-nav-label">Mi Perfil</span>
-        </a>
-        <a href="../page/servicios_dama.html" class="button menu-nav-button">
-            <i class="bi bi-scissors"></i>
-            <span class="menu-nav-label">Servicios</span>
-        </a>
-        <!-- Nuevo icono para Barberos en menú móvil -->
-        <a href="../page/barberos.html" class="button menu-nav-button">
-            <i class="bi bi-person-badge"></i>
-            <span class="menu-nav-label">Barberos</span>
-        </a>
-        <a href="../page/pqrs.html" class="button nav-button" aria-label="pqrs">
-            <i class="bi bi-question-circle"></i>
-            <span class="nav-label">Pqrs</span>
-        </a>
-    </div>
-</nav>
-</header>
+            <!-- Íconos del menú hamburguesa -->
+            <div class="menu-icons-container">
+                <a href="../page/index.html" class="button menu-nav-button">
+                    <i class="bi bi-house-door"></i>
+                    <span class="menu-nav-label">Inicio</span>
+                </a>
+                <a href="../page/reseñas.html" class="button menu-nav-button">
+                    <i class="bi bi-star"></i>
+                    <span class="menu-nav-label">Reseñas</span>
+                </a>
+                <a href="../page/profile.html" class="button menu-nav-button">
+                    <i class="bi bi-person"></i>
+                    <span class="menu-nav-label">Mi Perfil</span>
+                </a>
+                <a href="../page/servicios_dama.html" class="button menu-nav-button">
+                    <i class="bi bi-scissors"></i>
+                    <span class="menu-nav-label">Servicios</span>
+                </a>
+                <!-- Nuevo icono para Barberos en menú móvil -->
+                <a href="../page/barberos.html" class="button menu-nav-button">
+                    <i class="bi bi-person-badge"></i>
+                    <span class="menu-nav-label">Barberos</span>
+                </a>
+                <a href="../page/pqrs.html" class="button nav-button" aria-label="pqrs">
+                    <i class="bi bi-question-circle"></i>
+                    <span class="nav-label">Pqrs</span>
+                </a>
+            </div>
+        </nav>
+    </header>
     <!-- Contenido principal -->
-     <main>
-  
+    <main>
+
 
         <div class="Botones-pqrs">
             <button class="tab-btn active" data-tab="form-tab">Nueva PQRS</button>
@@ -172,7 +174,8 @@
 
                     <div class="form-group">
                         <label for="attachments">Adjuntar archivos</label>
-                        <input type="file" id="attachments" name="attachments" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                        <input type="file" id="attachments" name="attachments" multiple
+                            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
                         <small>Formatos permitidos: PDF, JPG, PNG, DOC, DOCX (Máx. 5MB por archivo)</small>
                     </div>
 
@@ -201,7 +204,8 @@
                         <label class="checkbox-option">
                             <input type="checkbox" id="terms" name="terms" required>
                             <span class="checkbox-checkmark"></span>
-                            Acepto los <a href="#" id="terms-link">términos y condiciones</a> y la <a href="#" id="policy-link">política de tratamiento de datos</a> <span class="required">*</span>
+                            Acepto los <a href="#" id="terms-link">términos y condiciones</a> y la <a href="#"
+                                id="policy-link">política de tratamiento de datos</a> <span class="required">*</span>
                         </label>
                     </div>
 
@@ -218,7 +222,8 @@
                 <div class="track-form">
                     <div class="form-group">
                         <label for="tracking-number">Número de radicado</label>
-                        <input type="text" id="tracking-number" name="tracking-number" placeholder="Ej: PQRS-2023-001234">
+                        <input type="text" id="tracking-number" name="tracking-number"
+                            placeholder="Ej: PQRS-2023-001234">
                         <button id="track-btn" class="btn btn-primary">Consultar</button>
                     </div>
                 </div>
@@ -249,7 +254,7 @@
                             <li><strong>Sugerencias:</strong> 10 días hábiles</li>
                         </ul>
                     </div>
-                    
+
                     <div class="info-section">
                         <h3>Canales Alternativos de Contacto</h3>
                         <ul>
@@ -259,15 +264,18 @@
                             <li><strong>Horario de atención:</strong> Lunes a Viernes 8:00 AM - 6:00 PM</li>
                         </ul>
                     </div>
-                    
+
                     <div class="info-section">
                         <h3>Política de Tratamiento de Datos</h3>
-                        <p>Sus datos personales serán tratados de acuerdo con la Ley de Protección de Datos Personales. Solo serán utilizados para el procesamiento de su PQRS y no serán compartidos con terceros sin su autorización.</p>
+                        <p>Sus datos personales serán tratados de acuerdo con la Ley de Protección de Datos Personales.
+                            Solo serán utilizados para el procesamiento de su PQRS y no serán compartidos con terceros
+                            sin su autorización.</p>
                     </div>
-                    
+
                     <div class="info-section">
                         <h3>Términos y Condiciones</h3>
-                        <p>Al enviar una PQRS, usted acepta que la información proporcionada es veraz y autoriza su tratamiento para los fines relacionados con la gestión de su solicitud.</p>
+                        <p>Al enviar una PQRS, usted acepta que la información proporcionada es veraz y autoriza su
+                            tratamiento para los fines relacionados con la gestión de su solicitud.</p>
                     </div>
                 </div>
             </section>
@@ -296,8 +304,10 @@
                     <ol>
                         <li>La información proporcionada debe ser veraz y completa.</li>
                         <li>Se compromete a utilizar el sistema únicamente para fines legítimos.</li>
-                        <li>La empresa se reserva el derecho de rechazar solicitudes que contengan lenguaje ofensivo o inapropiado.</li>
-                        <li>Los tiempos de respuesta son estimados y pueden variar según la complejidad de la solicitud.</li>
+                        <li>La empresa se reserva el derecho de rechazar solicitudes que contengan lenguaje ofensivo o
+                            inapropiado.</li>
+                        <li>Los tiempos de respuesta son estimados y pueden variar según la complejidad de la solicitud.
+                        </li>
                         <li>Usted autoriza el tratamiento de sus datos personales para la gestión de su PQRS.</li>
                     </ol>
                 </div>
@@ -315,17 +325,70 @@
                         <li>Sus datos personales serán incorporados a una base de datos de la empresa.</li>
                         <li>La finalidad del tratamiento es gestionar su PQRS y mantener comunicación relacionada.</li>
                         <li>Sus datos no serán cedidos a terceros sin su autorización, salvo por obligación legal.</li>
-                        <li>Puede ejercer sus derechos de acceso, rectificación, cancelación y oposición contactando a nuestro responsable de datos.</li>
-                        <li>Conservaremos sus datos durante el tiempo necesario para cumplir con la finalidad del tratamiento y las obligaciones legales.</li>
+                        <li>Puede ejercer sus derechos de acceso, rectificación, cancelación y oposición contactando a
+                            nuestro responsable de datos.</li>
+                        <li>Conservaremos sus datos durante el tiempo necesario para cumplir con la finalidad del
+                            tratamiento y las obligaciones legales.</li>
                     </ol>
                 </div>
             </div>
         </div>
-    </div>
+        </div>
+    </main>
 
-    <script src="pqrs.js"></script>
+    <!-- FOOTER -->
+    <footer class="footer-full">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>ELEGANTCUT</h3>
+                <p>Estilo con elegancia.</p>
+                <div class="social-links">
+                    <a><i class="bi bi-facebook"></i></a>
+                    <a><i class="bi bi-instagram"></i></a>
+                    <a><i class="bi bi-tiktok"></i></a>
+                    <a><i class="bi bi-whatsapp"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h4>Enlaces Rápidos</h4>
+                <ul>
+                    <li><a>Inicio</a></li>
+                    <li><a>Servicios</a></li>
+                    <li><a>Galería</a></li>
+                    <li><a>Testimonios</a></li>
+                    <li><a>Contacto</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Nuestros Servicios</h4>
+                <ul>
+                    <li><a>Cortes</a></li>
+                    <li><a>Coloración</a></li>
+                    <li><a>Maquillaje</a></li>
+                    <li><a>Cuidado Facial</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h4>Contacto</h4>
+                <div class="contact-item"><i class="bi bi-geo-alt"></i><span>Tu dirección</span></div>
+                <div class="contact-item"><i class="bi bi-telephone"></i><span>+1 234 567 890</span></div>
+                <div class="contact-item"><i class="bi bi-envelope"></i><span>info@elegantcut.com</span></div>
+                <div class="contact-item"><i class="bi bi-clock"></i><span>Lun-Sáb: 9am - 8pm</span></div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 ElegantCut Barbería & Beauty Salon.</p>
+        </div>
+    </footer>
+
+
+    <!-- SCRIPTS -->
+    <script src="../scripts/menu.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../scripts/pqrs.js"></script>
 </body>
-</html>
-     </main>
-</body>
+
 </html>

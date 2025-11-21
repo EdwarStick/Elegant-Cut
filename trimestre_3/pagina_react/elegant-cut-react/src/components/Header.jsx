@@ -6,7 +6,7 @@ function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
     const { isAuthenticated, user, logout } = useAuth();
     const navigate = useNavigate();
-    
+
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     };
@@ -59,10 +59,10 @@ function Header() {
                 {/* Logo principal */}
                 <div className="brand-container">
                     <div className="logo">
-                        <img 
-                            src={`${process.env.PUBLIC_URL}/assets/images/logo.png`} 
-                            alt="ElegantCut Barbería" 
-                            className="logo-img" 
+                        <img
+                            src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+                            alt="ElegantCut Barbería"
+                            className="logo-img"
                         />
                     </div>
                     <div className="brand-name">
@@ -80,7 +80,7 @@ function Header() {
                         <i className="bi bi-star"></i>
                         <span className="nav-label">Reseñas</span>
                     </Link>
-                    <button 
+                    <button
                         className="button nav-button"
                         onClick={handleProfile}
                     >
@@ -96,6 +96,10 @@ function Header() {
                     <Link to="/Barberos" className="button nav-button">
                         <i className="bi bi-person-badge"></i>
                         <span className="nav-label">Barberos</span>
+                    </Link>
+                    <Link to="/Pqrs" className="button nav-button" aria-label="Pqrs">
+                        <i className="bi bi-question-circle"></i>
+                        <span className="nav-label">Pqrs</span>
                     </Link>
 
                     {/* Autenticación en escritorio */}
@@ -124,11 +128,11 @@ function Header() {
                 </div>
 
                 {/* Botón hamburguesa */}
-                <button 
-                    id="abrir" 
-                    className="abrir-menu" 
+                <button
+                    id="abrir"
+                    className="abrir-menu"
                     aria-label="Abrir menú"
-                    onClick={toggleMenu} 
+                    onClick={toggleMenu}
                 >
                     <i className="bi bi-list"></i>
                 </button>
@@ -137,9 +141,9 @@ function Header() {
             {/* Menú móvil */}
             <nav className={`nav ${menuOpen ? 'visible' : ''}`} id="nav">
                 {/* Botón cerrar */}
-                <button 
-                    id="cerrar" 
-                    className="cerrar-menu" 
+                <button
+                    id="cerrar"
+                    className="cerrar-menu"
                     aria-label="Cerrar menú"
                     onClick={closeMenu}
                 >
@@ -148,9 +152,9 @@ function Header() {
 
                 {/* Logo móvil pequeño - ORGANIZADO AL PRINCIPIO */}
                 <div className="mobile-brand">
-                    <img 
-                        src={`${process.env.PUBLIC_URL}/assets/images/logo.png`} 
-                        alt="ElegantCut Barbería" 
+                    <img
+                        src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+                        alt="ElegantCut Barbería"
                         className="mobile-logo-small"
                     />
                     <div className="mobile-brand-text">ELEGANTCUT</div>
@@ -167,7 +171,7 @@ function Header() {
                         <i className="bi bi-star"></i>
                         <span className="menu-nav-label">Reseñas</span>
                     </Link>
-                    <button 
+                    <button
                         className="button menu-nav-button"
                         onClick={handleProfile}
                     >
@@ -184,10 +188,14 @@ function Header() {
                         <i className="bi bi-person-badge"></i>
                         <span className="menu-nav-label">Barberos</span>
                     </Link>
+                    <Link to="/Pqrs" className="button menu-nav-button" onClick={closeMenu}>
+                        <i className="bi bi-question-circle"></i>
+                        <span className="menu-nav-label">Pqrs</span>
+                    </Link>
 
                     {/* Botón salir / login */}
                     {isAuthenticated ? (
-                        <button 
+                        <button
                             className="button menu-nav-button logout-mobile"
                             onClick={handleLogout}
                         >
@@ -195,7 +203,7 @@ function Header() {
                             <span className="menu-nav-label">Cerrar Sesión</span>
                         </button>
                     ) : (
-                        <button 
+                        <button
                             className="button menu-nav-button login-mobile"
                             onClick={handleLogin}
                         >

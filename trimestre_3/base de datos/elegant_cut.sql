@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 20-11-2025 a las 18:59:34
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Host: 127.0.0.1
+-- Generation Time: Nov 21, 2025 at 04:43 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,38 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `elegant_cut`
+-- Database: `elegantcut`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `detalle_cita_servicio`
+-- Table structure for table `codigos_verificacion`
+--
+
+CREATE TABLE `codigos_verificacion` (
+  `id` int(11) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `codigo` varchar(6) NOT NULL,
+  `tipo` enum('registro','recuperacion') NOT NULL,
+  `expira_en` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `usado` tinyint(1) DEFAULT 0,
+  `creado_en` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `codigos_verificacion`
+--
+
+INSERT INTO `codigos_verificacion` (`id`, `email`, `codigo`, `tipo`, `expira_en`, `usado`, `creado_en`) VALUES
+(1, 'jn147860@gmail.com', '199333', 'recuperacion', '2025-11-21 03:31:01', 0, '2025-11-21 03:16:01'),
+(2, 'jn147860@gmail.com', '278952', 'recuperacion', '2025-11-21 03:26:32', 1, '2025-11-21 03:25:16'),
+(3, 'jn147870@gmail.com', '629229', 'recuperacion', '2025-11-21 03:42:51', 0, '2025-11-21 03:27:51');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `detalle_cita_servicio`
 --
 
 CREATE TABLE `detalle_cita_servicio` (
@@ -36,7 +61,7 @@ CREATE TABLE `detalle_cita_servicio` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `estado_cita`
+-- Table structure for table `estado_cita`
 --
 
 CREATE TABLE `estado_cita` (
@@ -47,7 +72,7 @@ CREATE TABLE `estado_cita` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `horarios`
+-- Table structure for table `horarios`
 --
 
 CREATE TABLE `horarios` (
@@ -59,7 +84,7 @@ CREATE TABLE `horarios` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `pagos`
+-- Table structure for table `pagos`
 --
 
 CREATE TABLE `pagos` (
@@ -73,7 +98,7 @@ CREATE TABLE `pagos` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `reservas`
+-- Table structure for table `reservas`
 --
 
 CREATE TABLE `reservas` (
@@ -88,7 +113,7 @@ CREATE TABLE `reservas` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `rol`
+-- Table structure for table `rol`
 --
 
 CREATE TABLE `rol` (
@@ -96,10 +121,19 @@ CREATE TABLE `rol` (
   `nombre_rol` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `rol`
+--
+
+INSERT INTO `rol` (`id_rol`, `nombre_rol`) VALUES
+(1, 'admin'),
+(2, 'barbero'),
+(3, 'cliente');
+
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `servicios`
+-- Table structure for table `servicios`
 --
 
 CREATE TABLE `servicios` (
@@ -112,7 +146,7 @@ CREATE TABLE `servicios` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tipo_pago`
+-- Table structure for table `tipo_pago`
 --
 
 CREATE TABLE `tipo_pago` (
@@ -123,28 +157,48 @@ CREATE TABLE `tipo_pago` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `usuarios`
+-- Table structure for table `usuarios`
 --
 
 CREATE TABLE `usuarios` (
   `id_usuario` int(11) NOT NULL,
+  `username` varchar(50) DEFAULT NULL,
   `prim_nombre` varchar(70) NOT NULL,
   `seg_nombre` varchar(70) DEFAULT NULL,
   `apellido1` varchar(70) NOT NULL,
   `apellido2` varchar(70) DEFAULT NULL,
   `email` varchar(70) NOT NULL,
-  `contrasena` int(11) NOT NULL,
+  `password_hash` varchar(255) DEFAULT NULL,
   `telefono` varchar(20) DEFAULT NULL,
   `estado` tinyint(1) NOT NULL DEFAULT 1,
-  `id_rol` int(11) NOT NULL
+  `id_rol` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Índices para tablas volcadas
+-- Dumping data for table `usuarios`
+--
+
+INSERT INTO `usuarios` (`id_usuario`, `username`, `prim_nombre`, `seg_nombre`, `apellido1`, `apellido2`, `email`, `password_hash`, `telefono`, `estado`, `id_rol`, `created_at`, `updated_at`) VALUES
+(1, 'admin', 'Admin', NULL, 'Sistema', NULL, 'admin@elegantcut.com', NULL, NULL, 1, 1, '2025-11-21 01:55:41', '2025-11-21 01:55:41'),
+(2, 'pepe', 'Pepe', NULL, 'Admin', NULL, 'pepe@gmail.com', '$2b$10$RSKiGFWUovtH9wpLCKGz5u/z6x93tzjdJFQ63YqIY.xogofMJgO5u', NULL, 1, 1, '2025-11-21 02:10:00', '2025-11-21 02:10:00'),
+(3, 'Nicolas_f', 'jorge', 'nicolas', 'echeverry', 'calvo', 'jn147860@gmail.com', '$2b$10$V/IopMP5Y/tO2dPMut5W/uDY.79tF6Opu3OZM9IrCuVmZ6GVOYudu', '3213925370', 1, 3, '2025-11-21 02:23:39', '2025-11-21 03:26:32'),
+(4, 'nicolas2', 'jorge', 'nicolas', 'calvo', 'echeverry', 'jn147870@gmail.com', '$2b$10$x0i0EJa5AvMTZQCQtAzUxuPoFGvK.OTA3DZIOtlZH9ou/Y/kE8LVK', '3115502434', 1, 3, '2025-11-21 03:27:40', '2025-11-21 03:27:40');
+
+--
+-- Indexes for dumped tables
 --
 
 --
--- Indices de la tabla `detalle_cita_servicio`
+-- Indexes for table `codigos_verificacion`
+--
+ALTER TABLE `codigos_verificacion`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_email_codigo` (`email`,`codigo`,`tipo`,`usado`);
+
+--
+-- Indexes for table `detalle_cita_servicio`
 --
 ALTER TABLE `detalle_cita_servicio`
   ADD PRIMARY KEY (`id_detalle_cita_servicio`),
@@ -152,19 +206,19 @@ ALTER TABLE `detalle_cita_servicio`
   ADD KEY `fk_detalle_servicio` (`id_servicio`);
 
 --
--- Indices de la tabla `estado_cita`
+-- Indexes for table `estado_cita`
 --
 ALTER TABLE `estado_cita`
   ADD PRIMARY KEY (`id_estado_cita`);
 
 --
--- Indices de la tabla `horarios`
+-- Indexes for table `horarios`
 --
 ALTER TABLE `horarios`
   ADD PRIMARY KEY (`id_horarios`);
 
 --
--- Indices de la tabla `pagos`
+-- Indexes for table `pagos`
 --
 ALTER TABLE `pagos`
   ADD PRIMARY KEY (`id_pago`),
@@ -172,7 +226,7 @@ ALTER TABLE `pagos`
   ADD KEY `fk_pago_reserva` (`id_reservas`);
 
 --
--- Indices de la tabla `reservas`
+-- Indexes for table `reservas`
 --
 ALTER TABLE `reservas`
   ADD PRIMARY KEY (`id_reservas`),
@@ -181,108 +235,115 @@ ALTER TABLE `reservas`
   ADD KEY `fk_reserva_horario` (`id_horarios`);
 
 --
--- Indices de la tabla `rol`
+-- Indexes for table `rol`
 --
 ALTER TABLE `rol`
   ADD PRIMARY KEY (`id_rol`);
 
 --
--- Indices de la tabla `servicios`
+-- Indexes for table `servicios`
 --
 ALTER TABLE `servicios`
   ADD PRIMARY KEY (`id_servicio`);
 
 --
--- Indices de la tabla `tipo_pago`
+-- Indexes for table `tipo_pago`
 --
 ALTER TABLE `tipo_pago`
   ADD PRIMARY KEY (`id_tipo_pago`);
 
 --
--- Indices de la tabla `usuarios`
+-- Indexes for table `usuarios`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id_usuario`),
+  ADD UNIQUE KEY `username` (`username`),
   ADD KEY `fk_rol_usuario` (`id_rol`);
 
 --
--- AUTO_INCREMENT de las tablas volcadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de la tabla `detalle_cita_servicio`
+-- AUTO_INCREMENT for table `codigos_verificacion`
+--
+ALTER TABLE `codigos_verificacion`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `detalle_cita_servicio`
 --
 ALTER TABLE `detalle_cita_servicio`
   MODIFY `id_detalle_cita_servicio` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `estado_cita`
+-- AUTO_INCREMENT for table `estado_cita`
 --
 ALTER TABLE `estado_cita`
   MODIFY `id_estado_cita` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `horarios`
+-- AUTO_INCREMENT for table `horarios`
 --
 ALTER TABLE `horarios`
   MODIFY `id_horarios` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `pagos`
+-- AUTO_INCREMENT for table `pagos`
 --
 ALTER TABLE `pagos`
   MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `reservas`
+-- AUTO_INCREMENT for table `reservas`
 --
 ALTER TABLE `reservas`
   MODIFY `id_reservas` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `rol`
+-- AUTO_INCREMENT for table `rol`
 --
 ALTER TABLE `rol`
-  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT de la tabla `servicios`
+-- AUTO_INCREMENT for table `servicios`
 --
 ALTER TABLE `servicios`
   MODIFY `id_servicio` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `tipo_pago`
+-- AUTO_INCREMENT for table `tipo_pago`
 --
 ALTER TABLE `tipo_pago`
   MODIFY `id_tipo_pago` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `usuarios`
+-- AUTO_INCREMENT for table `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- Restricciones para tablas volcadas
+-- Constraints for dumped tables
 --
 
 --
--- Filtros para la tabla `detalle_cita_servicio`
+-- Constraints for table `detalle_cita_servicio`
 --
 ALTER TABLE `detalle_cita_servicio`
   ADD CONSTRAINT `fk_detalle_reserva` FOREIGN KEY (`id_reservas`) REFERENCES `reservas` (`id_reservas`),
   ADD CONSTRAINT `fk_detalle_servicio` FOREIGN KEY (`id_servicio`) REFERENCES `servicios` (`id_servicio`);
 
 --
--- Filtros para la tabla `pagos`
+-- Constraints for table `pagos`
 --
 ALTER TABLE `pagos`
   ADD CONSTRAINT `fk_pago_reserva` FOREIGN KEY (`id_reservas`) REFERENCES `reservas` (`id_reservas`),
   ADD CONSTRAINT `fk_pago_tipo` FOREIGN KEY (`id_tipo_pago`) REFERENCES `tipo_pago` (`id_tipo_pago`);
 
 --
--- Filtros para la tabla `reservas`
+-- Constraints for table `reservas`
 --
 ALTER TABLE `reservas`
   ADD CONSTRAINT `fk_reserva_estado` FOREIGN KEY (`id_estado_cita`) REFERENCES `estado_cita` (`id_estado_cita`),
@@ -290,7 +351,7 @@ ALTER TABLE `reservas`
   ADD CONSTRAINT `fk_reserva_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`);
 
 --
--- Filtros para la tabla `usuarios`
+-- Constraints for table `usuarios`
 --
 ALTER TABLE `usuarios`
   ADD CONSTRAINT `fk_rol_usuario` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`);
