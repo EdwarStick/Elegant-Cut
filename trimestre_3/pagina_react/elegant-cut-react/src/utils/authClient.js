@@ -2,8 +2,8 @@
 
 export class AuthClient {
   
-  //  FUNCIÓN: Registro
-  static async register(username, password, name, role = 'client') {
+  // FUNCIÓN: Registro - ACTUALIZADO
+  static async register(registerData) {
     try {
       console.log('Enviando registro al servidor...');
       
@@ -12,7 +12,7 @@ export class AuthClient {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password, name, role }),
+        body: JSON.stringify(registerData),
       });
 
       const data = await response.json();
@@ -70,12 +70,42 @@ export class AuthClient {
     }
   }
 
-  // ✅ FUNCIÓN AÑADIDA: Actualizar contraseña
+  // ✅ FUNCIÓN AÑADIDA: Olvidar contraseña
+  static async forgotPassword(username, newPassword) {
+    try {
+      console.log('📞 Recuperando contraseña para:', username);
+      
+      const response = await fetch('http://localhost:3001/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, newPassword }),
+      });
+
+      const data = await response.json();
+      
+      console.log('📨 Respuesta del servidor (forgot-password):', data);
+      
+      if (data.success) {
+        console.log('✅ Contraseña recuperada!');
+        return { success: true, message: data.message };
+      } else {
+        console.log('❌ Error recuperando contraseña:', data.error);
+        return { success: false, error: data.error };
+      }
+    } catch (error) {
+      console.log('🚨 Error de conexión:', error);
+      return { success: false, error: 'No se pudo conectar al servidor' };
+    }
+  }
+
+  // ✅ FUNCIÓN AÑADIDA: Actualizar contraseña (mantener por compatibilidad)
   static async updatePassword(username, newPassword) {
     try {
       console.log('📞 Actualizando contraseña para:', username);
       
-      const response = await fetch('http://localhost:3001/auth/update-password', {
+      const response = await fetch('http://localhost:3001/auth/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -132,13 +162,13 @@ export class AuthClient {
   // Verificar si es barbero
   static isBarber() {
     const user = this.getUser();
-    return user && user.role === 'barber';
+    return user && user.role === 'barbero';
   }
 
   // Verificar si es cliente
   static isClient() {
     const user = this.getUser();
-    return user && user.role === 'client';
+    return user && user.role === 'cliente';
   }
 
   // Verificar si el token es válido

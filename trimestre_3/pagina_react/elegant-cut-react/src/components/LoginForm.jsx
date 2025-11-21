@@ -6,7 +6,16 @@ function LoginForm() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [loginData, setLoginData] = useState({ usuario: '', contrasena: '' });
-  const [registerData, setRegisterData] = useState({ email: '', usuario: '', contrasena: '' });
+  const [registerData, setRegisterData] = useState({ 
+    email: '', 
+    usuario: '', 
+    contrasena: '',
+    prim_nombre: '',
+    seg_nombre: '',
+    apellido1: '',
+    apellido2: '',
+    telefono: ''
+  });
   const [forgotPasswordData, setForgotPasswordData] = useState({ 
     usuario: '', 
     nuevaContrasena: '', 
@@ -71,19 +80,31 @@ function LoginForm() {
     }
   };
 
-  // Manejar registro
+  // Manejar registro - ACTUALIZADO
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
     mostrarMensaje('Procesando registro...', 'info');
 
+    // Validar campos obligatorios
+    if (!registerData.prim_nombre || !registerData.apellido1) {
+      mostrarMensaje('Por favor ingresa al menos el primer nombre y primer apellido', 'error');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const result = await AuthClient.register(
-        registerData.usuario,
-        registerData.contrasena,  
-        registerData.email,
-        'client'
-      );
+      const result = await AuthClient.register({
+        username: registerData.usuario,
+        password: registerData.contrasena,
+        email: registerData.email,
+        prim_nombre: registerData.prim_nombre,
+        seg_nombre: registerData.seg_nombre || '',
+        apellido1: registerData.apellido1,
+        apellido2: registerData.apellido2 || '',
+        telefono: registerData.telefono || '',
+        role: 'cliente'
+      });
       
       if (result.success) {
         mostrarMensaje('¡Registro exitoso!', 'success');
@@ -101,7 +122,7 @@ function LoginForm() {
     }
   };
 
-  // Manejar olvidé contraseña
+  // Manejar olvidé contraseña - ACTUALIZADO
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -133,7 +154,7 @@ function LoginForm() {
     }
 
     try {
-      const result = await AuthClient.updatePassword(
+      const result = await AuthClient.forgotPassword(
         forgotPasswordData.usuario,
         forgotPasswordData.nuevaContrasena
       );
@@ -243,7 +264,7 @@ function LoginForm() {
             </div>
           </div>
 
-          {/* Página 2: Registro */}
+          {/* Página 2: Registro - ACTUALIZADO con más campos */}
           <div className={`page ${isFlipped ? 'active' : ''}`} id="register-page">
             <div className="form-box">
               <h2 className="form-title">Crear Cuenta</h2>
@@ -270,7 +291,7 @@ function LoginForm() {
                   <input 
                     type="email" 
                     name="email" 
-                    placeholder="Ingrese su correo" 
+                    placeholder="Ingrese su correo electrónico" 
                     required
                     className="form-input"
                     value={registerData.email}
@@ -283,7 +304,7 @@ function LoginForm() {
                   <input 
                     type="text" 
                     name="usuario" 
-                    placeholder="Ingrese su nombre de usuario" 
+                    placeholder="Nombre de usuario" 
                     required
                     className="form-input"
                     value={registerData.usuario}
@@ -294,9 +315,71 @@ function LoginForm() {
 
                 <div className="form-group">
                   <input 
+                    type="text" 
+                    name="prim_nombre" 
+                    placeholder="Primer nombre *" 
+                    required
+                    className="form-input"
+                    value={registerData.prim_nombre}
+                    onChange={(e) => setRegisterData({...registerData, prim_nombre: e.target.value})}
+                    disabled={loading}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <input 
+                    type="text" 
+                    name="seg_nombre" 
+                    placeholder="Segundo nombre" 
+                    className="form-input"
+                    value={registerData.seg_nombre}
+                    onChange={(e) => setRegisterData({...registerData, seg_nombre: e.target.value})}
+                    disabled={loading}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <input 
+                    type="text" 
+                    name="apellido1" 
+                    placeholder="Primer apellido *" 
+                    required
+                    className="form-input"
+                    value={registerData.apellido1}
+                    onChange={(e) => setRegisterData({...registerData, apellido1: e.target.value})}
+                    disabled={loading}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <input 
+                    type="text" 
+                    name="apellido2" 
+                    placeholder="Segundo apellido" 
+                    className="form-input"
+                    value={registerData.apellido2}
+                    onChange={(e) => setRegisterData({...registerData, apellido2: e.target.value})}
+                    disabled={loading}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <input 
+                    type="text" 
+                    name="telefono" 
+                    placeholder="Teléfono" 
+                    className="form-input"
+                    value={registerData.telefono}
+                    onChange={(e) => setRegisterData({...registerData, telefono: e.target.value})}
+                    disabled={loading}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <input 
                     type="password" 
                     name="contrasena" 
-                    placeholder="Ingrese su contraseña" 
+                    placeholder="Contraseña" 
                     required
                     className="form-input"
                     value={registerData.contrasena}
