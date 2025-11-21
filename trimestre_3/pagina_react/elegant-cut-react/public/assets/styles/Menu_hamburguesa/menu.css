@@ -1,7 +1,17 @@
-/* ESTILOS EXCLUSIVOS PARA EL MENÚ HAMBURGUESA */
+/* VARIABLES CSS - AÑADIR AL INICIO */
+:root {
+    --Negro: #111205;
+    --NegroMedio: #1F1F1E;
+    --Blanco: #f4f4f4;
+    --RojoVino: #BC2041;
+    --Dorado: #D4AF37;
+    --GrisOscuro: #2A2A2A;
+}
+
+/* ESTILOS EXCLUSIVOS PARA EL MENÚ HAMBURGUESA - CORREGIDO */
 
 /* En pantalla GRANDE: mostrar íconos, ocultar menú hamburguesa */
-@media screen and (min-width: 551px) {
+@media screen and (min-width: 769px) {
     .desktop-icons {
         display: flex;
     }
@@ -14,12 +24,18 @@
 }
 
 /* En pantalla PEQUEÑA: ocultar íconos, mostrar botón hamburguesa */
-@media screen and (max-width: 550px) {
+@media screen and (max-width: 768px) {
     .desktop-icons {
         display: none;
     }
 
-    /* Botón abrir menú */
+    /* Ocultar elementos del header cuando el menú móvil está abierto */
+    .header-hidden .brand-container {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    /* Botón abrir menú - Estilo mejorado */
     .abrir-menu {
         display: flex;
         position: absolute;
@@ -32,7 +48,9 @@
         font-size: 1.8rem;
         color: var(--Negro);
         z-index: 1001;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 0.5rem;
+        border-radius: 50%;
     }
 
     /* Quitar fondo gris al hover */
@@ -42,33 +60,35 @@
         transform: translateY(-50%) scale(1.1);
     }
 
-    /* Mostrar el menú móvil - CAMBIO IMPORTANTE AQUÍ */
+    /* Menú móvil - CORREGIDO PARA QUE SE DESPLIEGUE */
     .nav {
-        opacity: 0;
-        visibility: hidden;
         position: fixed;
         top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
+        left: -100%; /* Comienza fuera de la pantalla */
+        width: 100%;
+        height: 100vh;
         background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-        display: flex; /* ← ESTO YA LO TENÍAS, ESTÁ BIEN */
+        display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        gap: 2rem;
-        padding: 2rem;
-        transition: opacity 0.3s ease, visibility 0.3s ease;
+        padding: 0;
         z-index: 1000;
-    }
-
-    /* CLASE QUE REACT VA A AÑADIR/CUANDO EL MENÚ ESTÉ ABIERTO */
-    .nav.visible {
+        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         opacity: 1;
         visibility: visible;
     }
 
-    /* Botón cerrar */
+    /* Menú visible - CORREGIDO */
+    .nav.visible {
+        left: 0; /* Se despliega desde la izquierda */
+    }
+
+    /* Quitar scroll del body cuando el menú está abierto */
+    body.menu-open {
+        overflow: hidden !important;
+    }
+
+    /* Botón cerrar - Estilo mejorado */
     .cerrar-menu {
         position: absolute;
         top: 1.5rem;
@@ -78,8 +98,10 @@
         color: var(--Blanco);
         font-size: 2rem;
         cursor: pointer;
-        transition: transform 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 1001;
+        padding: 0.5rem;
+        border-radius: 50%;
     }
 
     /* Sin fondo gris al hover y con leve animación */
@@ -89,149 +111,233 @@
         transform: scale(1.2);
     }
 
-    /* Logo y marca en menú móvil */
+    /* ========== LOGO ARRIBA DEL TODO - ESTILO MEJORADO ========== */
     .mobile-brand {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1rem;
-        margin-bottom: 2rem;
+        gap: 0.8rem;
+        padding: 3.5rem 1rem 1.5rem;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
     }
 
-    .mobile-logo {
+    .mobile-logo-small {
         width: 80px;
         height: 80px;
         border-radius: 50%;
-        background: linear-gradient(135deg, var(--RojoVino), var(--Dorado));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-        font-size: 1.2rem;
+        object-fit: cover;
+        border: 3px solid var(--RojoVino);
+        display: block;
+        box-shadow: 0 4px 15px rgba(188, 32, 65, 0.3);
+        transition: transform 0.3s ease;
+    }
+
+    .mobile-logo-small:hover {
+        transform: scale(1.05);
     }
 
     .mobile-brand-text {
         font-size: 1.5rem;
-        font-weight: 700;
+        font-weight: 800;
         color: var(--Blanco);
-        letter-spacing: 1px;
+        letter-spacing: 2px;
         text-align: center;
+        text-transform: uppercase;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
 
     .mobile-slogan {
-        font-size: 0.8rem;
-        color: var(--RojoVino);
+        font-size: 0.9rem;
+        color: var(--Dorado);
         font-weight: 500;
         text-align: center;
+        font-style: italic;
+        letter-spacing: 1px;
     }
 
-    /* Contenedor de íconos dentro del menú hamburguesa */
+    /* ========== CONTENEDOR DE BOTONES CON SCROLL VERTICAL - ESTILO MEJORADO ========== */
     .menu-icons-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        gap: 1.5rem;
+        gap: 1rem;
         width: 100%;
-        max-width: 300px;
+        padding: 2rem 1rem;
+        overflow-y: auto;
+        flex: 1;
+        max-height: calc(100vh - 250px);
+        scrollbar-width: thin;
+        scrollbar-color: var(--RojoVino) transparent;
     }
 
-    /* Botones de navegación en menú móvil */
+    /* Personalizar scrollbar */
+    .menu-icons-container::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .menu-icons-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .menu-icons-container::-webkit-scrollbar-thumb {
+        background: var(--RojoVino);
+        border-radius: 10px;
+    }
+
+    /* Botones de navegación en menú móvil - Estilo mejorado */
     .menu-nav-button {
         width: 100%;
-        height: 60px;
+        max-width: 280px;
+        height: 55px;
         display: flex;
         align-items: center;
-        gap: 1.5rem;
+        gap: 1rem;
         padding: 0 1.5rem;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 12px;
         color: var(--Blanco);
         text-decoration: none;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     .menu-nav-button:hover {
-        background: rgba(188, 32, 65, 0.2);
+        background: rgba(188, 32, 65, 0.3);
         border-color: var(--RojoVino);
-        transform: translateX(10px);
+        transform: translateX(8px);
         color: var(--RojoVino);
+        box-shadow: 0 6px 20px rgba(188, 32, 65, 0.3);
     }
 
     .menu-nav-button i {
-        font-size: 1.5rem;
-        width: 30px;
+        font-size: 1.2rem;
+        width: 25px;
         text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .menu-nav-button:hover i {
+        transform: scale(1.2);
     }
 
     .menu-nav-label {
-        font-size: 1.1rem;
-        font-weight: 500;
+        font-size: 1rem;
+        font-weight: 600;
         color: var(--Blanco);
-        transition: color 0.3s ease;
+        transition: all 0.3s ease;
+        letter-spacing: 0.5px;
     }
 
     .menu-nav-button:hover .menu-nav-label {
         color: var(--RojoVino);
-        font-weight: 600;
+        font-weight: 700;
     }
 
-    /* Información de contacto en menú móvil */
-    .mobile-contact {
-        margin-top: 2rem;
-        padding-top: 2rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    /* Botones de login/logout específicos - Estilo mejorado */
+    .logout-mobile {
+        background: rgba(188, 32, 65, 0.2) !important;
+        border-color: rgba(188, 32, 65, 0.5) !important;
+        margin-top: 1rem;
+    }
+
+    .login-mobile {
+        background: rgba(255, 215, 0, 0.15) !important;
+        border-color: rgba(255, 215, 0, 0.4) !important;
+        margin-top: 1rem;
+    }
+
+    .login-mobile:hover {
+        background: rgba(255, 215, 0, 0.25) !important;
+        border-color: var(--Dorado) !important;
+        color: var(--Dorado) !important;
+    }
+
+    /* User info en móvil - AL FINAL - Estilo mejorado */
+    .user-info-mobile {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        margin-top: auto;
+        margin-bottom: 2rem;
         width: 100%;
-        max-width: 300px;
-        text-align: center;
+        max-width: 280px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
     }
 
-    .contact-item {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.8rem;
-        color: var(--Blanco);
-        margin-bottom: 0.8rem;
-        font-size: 0.9rem;
-    }
-
-    .contact-item i {
+    .user-avatar {
+        font-size: 1.5rem;
         color: var(--RojoVino);
-        font-size: 1rem;
-    }
-
-    /* Tamaño uniforme para todos los íconos (compatibilidad con versión anterior) */
-    .menu-icon {
-        width: 70px;
-        height: 70px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         transition: transform 0.3s ease;
-        cursor: pointer;
     }
 
-    .menu-icon:hover {
-        transform: translateY(-5px) scale(1.1);
+    .user-info-mobile:hover .user-avatar {
+        transform: scale(1.1);
     }
 
-    .menu-icon .icon,
-    .menu-icon svg {
-        width: 30px !important;
-        height: 30px !important;
+    .user-details {
         display: flex;
-        align-items: center;
-        justify-content: center;
+        flex-direction: column;
+        gap: 0.2rem;
     }
 
-    /* Corrección visual para el ícono de tijeras */
-    .menu-icon.scissors .icon,
-    .menu-icon.scissors svg {
-        transform: rotate(0deg) scale(1.15);
+    .user-name {
+        font-weight: 600;
+        color: var(--Blanco);
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+    }
+
+    .user-role {
+        font-size: 0.8rem;
+        color: var(--Dorado);
+        font-weight: 500;
     }
 }
 
+/* === DIAGNÓSTICO Y FORZADO - AÑADIR AL FINAL === */
+@media screen and (max-width: 768px) {
+    /* FORZAR que el menú se muestre */
+    .nav.visible {
+        left: 0 !important;
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: flex !important;
+    }
+    
+    /* Reset completo para eliminar cualquier conflicto */
+    .nav {
+        position: fixed !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100vh !important;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        padding: 0 !important;
+        z-index: 9999 !important;
+        transition: left 0.4s ease !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Asegurar que el botón cerrar sea visible */
+    .cerrar-menu {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        z-index: 10001 !important;
+    }
+}

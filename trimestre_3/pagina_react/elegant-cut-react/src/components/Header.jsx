@@ -8,10 +8,37 @@ function Header() {
     const navigate = useNavigate();
     
     const toggleMenu = () => {
+        console.log('🔄 Menu toggle - Estado actual:', menuOpen);
+        console.log('🔄 Nuevo estado:', !menuOpen);
+        
+        // Debug del elemento nav
+        const navElement = document.querySelector('.nav');
+        console.log('🎯 Elemento nav encontrado:', navElement);
+        console.log('🎯 Clases del nav antes:', navElement?.className);
+        
         setMenuOpen(!menuOpen);
+        
+        // Verificar después de un breve delay
+        setTimeout(() => {
+            console.log('✅ Estado después del setState:', !menuOpen);
+            const updatedNav = document.querySelector('.nav');
+            console.log('✅ Clases actuales del nav:', updatedNav?.className);
+            console.log('✅ Body classes:', document.body.className);
+            
+            // Debug visual adicional
+            if (updatedNav) {
+                console.log('🎨 Estilos computados del nav:');
+                console.log('- display:', window.getComputedStyle(updatedNav).display);
+                console.log('- visibility:', window.getComputedStyle(updatedNav).visibility);
+                console.log('- opacity:', window.getComputedStyle(updatedNav).opacity);
+                console.log('- left:', window.getComputedStyle(updatedNav).left);
+                console.log('- transform:', window.getComputedStyle(updatedNav).transform);
+            }
+        }, 100);
     };
 
     const closeMenu = () => {
+        console.log('❌ Cerrando menú');
         setMenuOpen(false);
     };
 
@@ -35,23 +62,39 @@ function Header() {
         }
     };
 
-    // Controlar el overlay del body cuando el menú está abierto
+    // Desactivar scroll cuando menú está abierto
     useEffect(() => {
+        console.log('📱 Efecto menuOpen cambiado a:', menuOpen);
+        
         if (menuOpen) {
             document.body.classList.add('menu-open');
+            document.body.style.overflow = "hidden";
+            console.log('🚫 Scroll desactivado');
         } else {
             document.body.classList.remove('menu-open');
+            document.body.style.overflow = "auto";
+            console.log('🔄 Scroll reactivado');
         }
 
         return () => {
             document.body.classList.remove('menu-open');
+            document.body.style.overflow = "auto";
+            console.log('🧹 Cleanup - scroll reactivado');
         };
     }, [menuOpen]);
 
+    // Debug adicional cuando el componente se monta
+    useEffect(() => {
+        console.log('🔍 Header montado - menuOpen inicial:', menuOpen);
+        console.log('🔍 Elemento nav en montaje:', document.querySelector('.nav'));
+    }, []);
+
     return (
         <div>
-            <header>
-                {/* Logo y nombre de la marca */}
+            {/* Header que se oculta cuando el menú está abierto */}
+            <header className={menuOpen ? "header-hidden" : ""}>
+
+                {/* Logo principal */}
                 <div className="brand-container">
                     <div className="logo">
                         <img 
@@ -65,19 +108,18 @@ function Header() {
                     </div>
                 </div>
 
-                {/* Contenedor de íconos visible en escritorio */}
+                {/* Íconos en escritorio */}
                 <div className="button-container desktop-icons">
-                    <Link to="/" className="button nav-button" aria-label="Inicio">
+                    <Link to="/" className="button nav-button">
                         <i className="bi bi-house-door"></i>
                         <span className="nav-label">Inicio</span>
                     </Link>
-                    <Link to="/Reseñas" className="button nav-button" aria-label="Reseñas">
+                    <Link to="/Reseñas" className="button nav-button">
                         <i className="bi bi-star"></i>
                         <span className="nav-label">Reseñas</span>
                     </Link>
                     <button 
-                        className="button nav-button" 
-                        aria-label="Perfil"
+                        className="button nav-button"
                         onClick={handleProfile}
                     >
                         <i className="bi bi-person"></i>
@@ -85,35 +127,37 @@ function Header() {
                             {isAuthenticated ? 'Mi Perfil' : 'Perfil'}
                         </span>
                     </button>
-                    <Link to="/Servicios_dama" className="button nav-button" aria-label="Servicios">
+                    <Link to="/Servicios_dama" className="button nav-button">
                         <i className="bi bi-scissors"></i>
                         <span className="nav-label">Servicios</span>
                     </Link>
-                    <Link to="/Barberos" className="button nav-button" aria-label="Barberos">
+                    <Link to="/Barberos" className="button nav-button">
                         <i className="bi bi-person-badge"></i>
                         <span className="nav-label">Barberos</span>
                     </Link>
+                    <Link to="/Pqrs" className="button nav-button" aria-label="Pqrs">
+                        <i className="bi bi-question-circle"></i>
+                        <span className="nav-label">Pqrs</span>
+                    </Link>
 
-                    {/* Estado de autenticación en desktop */}
+                    {/* Autenticación en escritorio */}
                     {isAuthenticated ? (
                         <div className="user-info-desktop">
                             <span className="user-welcome">
                                 Hola, {user?.name}
                             </span>
-                            <button 
+                            <button
                                 className="button logout-button"
                                 onClick={handleLogout}
-                                aria-label="Cerrar sesión"
                             >
                                 <i className="bi bi-box-arrow-right"></i>
                                 <span className="nav-label">Salir</span>
                             </button>
                         </div>
                     ) : (
-                        <button 
+                        <button
                             className="button login-button"
                             onClick={handleLogin}
-                            aria-label="Iniciar sesión"
                         >
                             <i className="bi bi-box-arrow-in-right"></i>
                             <span className="nav-label">Ingresar</span>
@@ -121,7 +165,7 @@ function Header() {
                     )}
                 </div>
 
-                {/* Botón abrir menú hamburguesa */}
+                {/* Botón hamburguesa */}
                 <button 
                     id="abrir" 
                     className="abrir-menu" 
@@ -130,29 +174,83 @@ function Header() {
                 >
                     <i className="bi bi-list"></i>
                 </button>
+            </header>
 
-                {/* Menú hamburguesa */}
-                <nav className={`nav ${menuOpen ? 'visible' : ''}`} id="nav">
+            {/* Menú móvil */}
+            <nav className={`nav ${menuOpen ? 'visible' : ''}`} id="nav">
+                {/* Botón cerrar */}
+                <button 
+                    id="cerrar" 
+                    className="cerrar-menu" 
+                    aria-label="Cerrar menú"
+                    onClick={closeMenu}
+                >
+                    <i className="bi bi-x"></i>
+                </button>
+
+                {/* Logo móvil pequeño - ORGANIZADO AL PRINCIPIO */}
+                <div className="mobile-brand">
+                    <img 
+                        src={`${process.env.PUBLIC_URL}/assets/images/logo.png`} 
+                        alt="ElegantCut Barbería" 
+                        className="mobile-logo-small"
+                    />
+                    <div className="mobile-brand-text">ELEGANTCUT</div>
+                    <div className="mobile-slogan">Barbería & Estilo</div>
+                </div>
+
+                {/* Botones del menú */}
+                <div className="menu-icons-container">
+                    <Link to="/" className="button menu-nav-button" onClick={closeMenu}>
+                        <i className="bi bi-house-door"></i>
+                        <span className="menu-nav-label">Inicio</span>
+                    </Link>
+                    <Link to="/Reseñas" className="button menu-nav-button" onClick={closeMenu}>
+                        <i className="bi bi-star"></i>
+                        <span className="menu-nav-label">Reseñas</span>
+                    </Link>
                     <button 
-                        id="cerrar" 
-                        className="cerrar-menu" 
-                        aria-label="Cerrar menú"
-                        onClick={closeMenu}  
+                        className="button menu-nav-button"
+                        onClick={handleProfile}
                     >
-                        <i className="bi bi-x"></i>
+                        <i className="bi bi-person"></i>
+                        <span className="menu-nav-label">
+                            {isAuthenticated ? 'Mi Perfil' : 'Iniciar Sesión'}
+                        </span>
                     </button>
+                    <Link to="/Servicios_dama" className="button menu-nav-button" onClick={closeMenu}>
+                        <i className="bi bi-scissors"></i>
+                        <span className="menu-nav-label">Servicios</span>
+                    </Link>
+                    <Link to="/Barberos" className="button menu-nav-button" onClick={closeMenu}>
+                        <i className="bi bi-person-badge"></i>
+                        <span className="menu-nav-label">Barberos</span>
+                    </Link>
+                    <Link to="/Pqrs" className="button menu-nav-button" onClick={closeMenu}>
+                        <i className="bi bi-question-circle"></i>
+                        <span className="menu-nav-label">Pqrs</span>
+                    </Link>
 
-                    {/* Logo en menú hamburguesa */}
-                    <div className="mobile-brand">
-                        <img 
-                            src={`${process.env.PUBLIC_URL}/assets/images/logo.png`} 
-                            alt="ElegantCut Barbería" 
-                            className="mobile-logo" 
-                        />
-                        <span className="mobile-brand-text">ELEGANTCUT</span>
-                    </div>
+                    {/* Botón salir / login */}
+                    {isAuthenticated ? (
+                        <button 
+                            className="button menu-nav-button logout-mobile"
+                            onClick={handleLogout}
+                        >
+                            <i className="bi bi-box-arrow-right"></i>
+                            <span className="menu-nav-label">Cerrar Sesión</span>
+                        </button>
+                    ) : (
+                        <button 
+                            className="button menu-nav-button login-mobile"
+                            onClick={handleLogin}
+                        >
+                            <i className="bi bi-box-arrow-in-right"></i>
+                            <span className="menu-nav-label">Iniciar Sesión</span>
+                        </button>
+                    )}
 
-                    {/* Información del usuario en móvil */}
+                    {/* Info del usuario al fondo */}
                     {isAuthenticated && (
                         <div className="user-info-mobile">
                             <div className="user-avatar">
@@ -164,56 +262,8 @@ function Header() {
                             </div>
                         </div>
                     )}
-
-                    {/* Íconos del menú hamburguesa */}
-                    <div className="menu-icons-container">
-                        <Link to="/" className="button menu-nav-button" onClick={closeMenu}>
-                            <i className="bi bi-house-door"></i>
-                            <span className="menu-nav-label">Inicio</span>
-                        </Link>
-                        <Link to="/Reseñas" className="button menu-nav-button" onClick={closeMenu}>
-                            <i className="bi bi-star"></i>
-                            <span className="menu-nav-label">Reseñas</span>
-                        </Link>
-                        <button 
-                            className="button menu-nav-button" 
-                            onClick={handleProfile}
-                        >
-                            <i className="bi bi-person"></i>
-                            <span className="menu-nav-label">
-                                {isAuthenticated ? 'Mi Perfil' : 'Iniciar Sesión'}
-                            </span>
-                        </button>
-                        <Link to="/Servicios_dama" className="button menu-nav-button" onClick={closeMenu}>
-                            <i className="bi bi-scissors"></i>
-                            <span className="menu-nav-label">Servicios</span>
-                        </Link>
-                        <Link to="/Barberos" className="button menu-nav-button" onClick={closeMenu}>
-                            <i className="bi bi-person-badge"></i>
-                            <span className="menu-nav-label">Barberos</span>
-                        </Link>
-
-                        {/* Botones de autenticación en móvil */}
-                        {isAuthenticated ? (
-                            <button 
-                                className="button menu-nav-button logout-mobile"
-                                onClick={handleLogout}
-                            >
-                                <i className="bi bi-box-arrow-right"></i>
-                                <span className="menu-nav-label">Cerrar Sesión</span>
-                            </button>
-                        ) : (
-                            <button 
-                                className="button menu-nav-button login-mobile"
-                                onClick={handleLogin}
-                            >
-                                <i className="bi bi-box-arrow-in-right"></i>
-                                <span className="menu-nav-label">Iniciar Sesión</span>
-                            </button>
-                        )}
-                    </div>
-                </nav>
-            </header>
+                </div>
+            </nav>
         </div>
     );
 }
