@@ -6,12 +6,39 @@ function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
     const { isAuthenticated, user, logout } = useAuth();
     const navigate = useNavigate();
-
+    
     const toggleMenu = () => {
+        console.log('🔄 Menu toggle - Estado actual:', menuOpen);
+        console.log('🔄 Nuevo estado:', !menuOpen);
+        
+        // Debug del elemento nav
+        const navElement = document.querySelector('.nav');
+        console.log('🎯 Elemento nav encontrado:', navElement);
+        console.log('🎯 Clases del nav antes:', navElement?.className);
+        
         setMenuOpen(!menuOpen);
+        
+        // Verificar después de un breve delay
+        setTimeout(() => {
+            console.log('✅ Estado después del setState:', !menuOpen);
+            const updatedNav = document.querySelector('.nav');
+            console.log('✅ Clases actuales del nav:', updatedNav?.className);
+            console.log('✅ Body classes:', document.body.className);
+            
+            // Debug visual adicional
+            if (updatedNav) {
+                console.log('🎨 Estilos computados del nav:');
+                console.log('- display:', window.getComputedStyle(updatedNav).display);
+                console.log('- visibility:', window.getComputedStyle(updatedNav).visibility);
+                console.log('- opacity:', window.getComputedStyle(updatedNav).opacity);
+                console.log('- left:', window.getComputedStyle(updatedNav).left);
+                console.log('- transform:', window.getComputedStyle(updatedNav).transform);
+            }
+        }, 100);
     };
 
     const closeMenu = () => {
+        console.log('❌ Cerrando menú');
         setMenuOpen(false);
     };
 
@@ -37,19 +64,30 @@ function Header() {
 
     // Desactivar scroll cuando menú está abierto
     useEffect(() => {
+        console.log('📱 Efecto menuOpen cambiado a:', menuOpen);
+        
         if (menuOpen) {
             document.body.classList.add('menu-open');
             document.body.style.overflow = "hidden";
+            console.log('🚫 Scroll desactivado');
         } else {
             document.body.classList.remove('menu-open');
             document.body.style.overflow = "auto";
+            console.log('🔄 Scroll reactivado');
         }
 
         return () => {
             document.body.classList.remove('menu-open');
             document.body.style.overflow = "auto";
+            console.log('🧹 Cleanup - scroll reactivado');
         };
     }, [menuOpen]);
+
+    // Debug adicional cuando el componente se monta
+    useEffect(() => {
+        console.log('🔍 Header montado - menuOpen inicial:', menuOpen);
+        console.log('🔍 Elemento nav en montaje:', document.querySelector('.nav'));
+    }, []);
 
     return (
         <div>
@@ -59,10 +97,10 @@ function Header() {
                 {/* Logo principal */}
                 <div className="brand-container">
                     <div className="logo">
-                        <img
-                            src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
-                            alt="ElegantCut Barbería"
-                            className="logo-img"
+                        <img 
+                            src={`${process.env.PUBLIC_URL}/assets/images/logo.png`} 
+                            alt="ElegantCut Barbería" 
+                            className="logo-img" 
                         />
                     </div>
                     <div className="brand-name">
@@ -80,7 +118,7 @@ function Header() {
                         <i className="bi bi-star"></i>
                         <span className="nav-label">Reseñas</span>
                     </Link>
-                    <button
+                    <button 
                         className="button nav-button"
                         onClick={handleProfile}
                     >
@@ -128,11 +166,11 @@ function Header() {
                 </div>
 
                 {/* Botón hamburguesa */}
-                <button
-                    id="abrir"
-                    className="abrir-menu"
+                <button 
+                    id="abrir" 
+                    className="abrir-menu" 
                     aria-label="Abrir menú"
-                    onClick={toggleMenu}
+                    onClick={toggleMenu} 
                 >
                     <i className="bi bi-list"></i>
                 </button>
@@ -141,9 +179,9 @@ function Header() {
             {/* Menú móvil */}
             <nav className={`nav ${menuOpen ? 'visible' : ''}`} id="nav">
                 {/* Botón cerrar */}
-                <button
-                    id="cerrar"
-                    className="cerrar-menu"
+                <button 
+                    id="cerrar" 
+                    className="cerrar-menu" 
                     aria-label="Cerrar menú"
                     onClick={closeMenu}
                 >
@@ -152,9 +190,9 @@ function Header() {
 
                 {/* Logo móvil pequeño - ORGANIZADO AL PRINCIPIO */}
                 <div className="mobile-brand">
-                    <img
-                        src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
-                        alt="ElegantCut Barbería"
+                    <img 
+                        src={`${process.env.PUBLIC_URL}/assets/images/logo.png`} 
+                        alt="ElegantCut Barbería" 
                         className="mobile-logo-small"
                     />
                     <div className="mobile-brand-text">ELEGANTCUT</div>
@@ -171,7 +209,7 @@ function Header() {
                         <i className="bi bi-star"></i>
                         <span className="menu-nav-label">Reseñas</span>
                     </Link>
-                    <button
+                    <button 
                         className="button menu-nav-button"
                         onClick={handleProfile}
                     >
@@ -195,7 +233,7 @@ function Header() {
 
                     {/* Botón salir / login */}
                     {isAuthenticated ? (
-                        <button
+                        <button 
                             className="button menu-nav-button logout-mobile"
                             onClick={handleLogout}
                         >
@@ -203,7 +241,7 @@ function Header() {
                             <span className="menu-nav-label">Cerrar Sesión</span>
                         </button>
                     ) : (
-                        <button
+                        <button 
                             className="button menu-nav-button login-mobile"
                             onClick={handleLogin}
                         >

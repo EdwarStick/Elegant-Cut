@@ -1,7 +1,17 @@
-/* ESTILOS EXCLUSIVOS PARA EL MENÚ HAMBURGUESA - ESTILO MEJORADO */
+/* VARIABLES CSS - AÑADIR AL INICIO */
+:root {
+    --Negro: #111205;
+    --NegroMedio: #1F1F1E;
+    --Blanco: #f4f4f4;
+    --RojoVino: #BC2041;
+    --Dorado: #D4AF37;
+    --GrisOscuro: #2A2A2A;
+}
+
+/* ESTILOS EXCLUSIVOS PARA EL MENÚ HAMBURGUESA - CORREGIDO */
 
 /* En pantalla GRANDE: mostrar íconos, ocultar menú hamburguesa */
-@media screen and (min-width: 551px) {
+@media screen and (min-width: 769px) {
     .desktop-icons {
         display: flex;
     }
@@ -14,14 +24,15 @@
 }
 
 /* En pantalla PEQUEÑA: ocultar íconos, mostrar botón hamburguesa */
-@media screen and (max-width: 550px) {
+@media screen and (max-width: 768px) {
     .desktop-icons {
         display: none;
     }
 
-    /* Ocultar header completo cuando el menú móvil está abierto */
-    .header-hidden {
-        display: none !important;
+    /* Ocultar elementos del header cuando el menú móvil está abierto */
+    .header-hidden .brand-container {
+        opacity: 0;
+        visibility: hidden;
     }
 
     /* Botón abrir menú - Estilo mejorado */
@@ -49,28 +60,27 @@
         transform: translateY(-50%) scale(1.1);
     }
 
-    /* Menú móvil - REORGANIZADO COMPLETAMENTE CON ESTILO MEJORADO */
+    /* Menú móvil - CORREGIDO PARA QUE SE DESPLIEGUE */
     .nav {
-        opacity: 0;
-        visibility: hidden;
         position: fixed;
         top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
+        left: -100%; /* Comienza fuera de la pantalla */
+        width: 100%;
+        height: 100vh;
         background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
         display: flex;
         flex-direction: column;
         align-items: center;
         padding: 0;
         z-index: 1000;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Menú visible */
-    .nav.visible {
+        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         opacity: 1;
         visibility: visible;
+    }
+
+    /* Menú visible - CORREGIDO */
+    .nav.visible {
+        left: 0; /* Se despliega desde la izquierda */
     }
 
     /* Quitar scroll del body cuando el menú está abierto */
@@ -115,8 +125,8 @@
     }
 
     .mobile-logo-small {
-        width: 100px;
-        height: 100px;
+        width: 80px;
+        height: 80px;
         border-radius: 50%;
         object-fit: cover;
         border: 3px solid var(--RojoVino);
@@ -130,17 +140,17 @@
     }
 
     .mobile-brand-text {
-        font-size: 2rem;
+        font-size: 1.5rem;
         font-weight: 800;
         color: var(--Blanco);
-        letter-spacing: 4px;
+        letter-spacing: 2px;
         text-align: center;
         text-transform: uppercase;
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
 
     .mobile-slogan {
-        font-size: 1rem;
+        font-size: 0.9rem;
         color: var(--Dorado);
         font-weight: 500;
         text-align: center;
@@ -180,15 +190,15 @@
     /* Botones de navegación en menú móvil - Estilo mejorado */
     .menu-nav-button {
         width: 100%;
-        max-width: 320px;
-        height: 60px;
+        max-width: 280px;
+        height: 55px;
         display: flex;
         align-items: center;
-        gap: 1.5rem;
+        gap: 1rem;
         padding: 0 1.5rem;
         background: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 15px;
+        border-radius: 12px;
         color: var(--Blanco);
         text-decoration: none;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -206,8 +216,8 @@
     }
 
     .menu-nav-button i {
-        font-size: 1.4rem;
-        width: 30px;
+        font-size: 1.2rem;
+        width: 25px;
         text-align: center;
         transition: transform 0.3s ease;
     }
@@ -217,7 +227,7 @@
     }
 
     .menu-nav-label {
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 600;
         color: var(--Blanco);
         transition: all 0.3s ease;
@@ -252,20 +262,20 @@
     .user-info-mobile {
         display: flex;
         align-items: center;
-        gap: 1.2rem;
-        padding: 1.2rem;
+        gap: 1rem;
+        padding: 1rem;
         background: rgba(255, 255, 255, 0.08);
-        border-radius: 15px;
+        border-radius: 12px;
         margin-top: auto;
         margin-bottom: 2rem;
         width: 100%;
-        max-width: 320px;
+        max-width: 280px;
         border: 1px solid rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
     }
 
     .user-avatar {
-        font-size: 2rem;
+        font-size: 1.5rem;
         color: var(--RojoVino);
         transition: transform 0.3s ease;
     }
@@ -281,9 +291,9 @@
     }
 
     .user-name {
-        font-weight: 700;
+        font-weight: 600;
         color: var(--Blanco);
-        font-size: 1rem;
+        font-size: 0.9rem;
         letter-spacing: 0.5px;
     }
 
@@ -291,5 +301,43 @@
         font-size: 0.8rem;
         color: var(--Dorado);
         font-weight: 500;
+    }
+}
+
+/* === DIAGNÓSTICO Y FORZADO - AÑADIR AL FINAL === */
+@media screen and (max-width: 768px) {
+    /* FORZAR que el menú se muestre */
+    .nav.visible {
+        left: 0 !important;
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: flex !important;
+    }
+    
+    /* Reset completo para eliminar cualquier conflicto */
+    .nav {
+        position: fixed !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100vh !important;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        padding: 0 !important;
+        z-index: 9999 !important;
+        transition: left 0.4s ease !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Asegurar que el botón cerrar sea visible */
+    .cerrar-menu {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        z-index: 10001 !important;
     }
 }
