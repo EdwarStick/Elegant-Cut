@@ -70,7 +70,71 @@ export class AuthClient {
     }
   }
 
-  // ✅ FUNCIÓN AÑADIDA: Olvidar contraseña
+  // ✅ NUEVO: Solicitar código de recuperación por email
+  static async solicitarRecuperacion(email) {
+    try {
+      console.log('📧 Solicitando código de recuperación para:', email);
+      
+      const response = await fetch('http://localhost:3001/auth/solicitar-recuperacion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+      
+      console.log('📨 Respuesta del servidor (solicitar-recuperacion):', data);
+      
+      if (data.success) {
+        console.log('✅ Código solicitado!');
+        return { 
+          success: true, 
+          message: data.mensaje,
+          username: data.username 
+        };
+      } else {
+        console.log('❌ Error solicitando código:', data.error);
+        return { success: false, error: data.error };
+      }
+    } catch (error) {
+      console.log('🚨 Error de conexión:', error);
+      return { success: false, error: 'No se pudo conectar al servidor' };
+    }
+  }
+
+  // ✅ NUEVO: Verificar código y cambiar contraseña
+  static async verificarCodigoRecuperacion(email, codigo, nuevaContrasena) {
+    try {
+      console.log('🔐 Verificando código para:', email);
+      
+      const response = await fetch('http://localhost:3001/auth/verificar-codigo-recuperacion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, codigo, nuevaContrasena }),
+      });
+
+      const data = await response.json();
+      
+      console.log('📨 Respuesta del servidor (verificar-codigo-recuperacion):', data);
+      
+      if (data.success) {
+        console.log('✅ Contraseña cambiada exitosamente!');
+        return { success: true, message: data.message };
+      } else {
+        console.log('❌ Error verificando código:', data.error);
+        return { success: false, error: data.error };
+      }
+    } catch (error) {
+      console.log('🚨 Error de conexión:', error);
+      return { success: false, error: 'No se pudo conectar al servidor' };
+    }
+  }
+
+  // ✅ MANTENER: Olvidar contraseña (método antiguo por compatibilidad)
   static async forgotPassword(username, newPassword) {
     try {
       console.log('📞 Recuperando contraseña para:', username);
@@ -100,7 +164,7 @@ export class AuthClient {
     }
   }
 
-  // ✅ FUNCIÓN AÑADIDA: Actualizar contraseña (mantener por compatibilidad)
+  // ✅ MANTENER: Actualizar contraseña (por compatibilidad)
   static async updatePassword(username, newPassword) {
     try {
       console.log('📞 Actualizando contraseña para:', username);

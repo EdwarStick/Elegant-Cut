@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 function LoginForm() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showCodigoVerificacion, setShowCodigoVerificacion] = useState(false);
   const [loginData, setLoginData] = useState({ usuario: '', contrasena: '' });
   const [registerData, setRegisterData] = useState({ 
     email: '', 
@@ -17,18 +18,22 @@ function LoginForm() {
     telefono: ''
   });
   const [forgotPasswordData, setForgotPasswordData] = useState({ 
-    usuario: '', 
+    email: '',
+    codigo: '',
     nuevaContrasena: '', 
     confirmarContrasena: '' 
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
+  const [emailSolicitado, setEmailSolicitado] = useState('');
+  const [usernameRecuperacion, setUsernameRecuperacion] = useState('');
   const navigate = useNavigate();
 
   // Función para cambiar a registro
   const switchToRegister = () => {
     setIsFlipped(true);
     setShowForgotPassword(false);
+    setShowCodigoVerificacion(false);
     setMessage({ text: '', type: '' });
   };
 
@@ -36,12 +41,20 @@ function LoginForm() {
   const switchToLogin = () => {
     setIsFlipped(false);
     setShowForgotPassword(false);
+    setShowCodigoVerificacion(false);
     setMessage({ text: '', type: '' });
   };
 
   // Función para mostrar olvidé contraseña
   const showForgotPasswordForm = () => {
     setShowForgotPassword(true);
+    setShowCodigoVerificacion(false);
+    setMessage({ text: '', type: '' });
+  };
+
+  // Función para volver atrás desde código de verificación
+  const volverAEmail = () => {
+    setShowCodigoVerificacion(false);
     setMessage({ text: '', type: '' });
   };
 
@@ -80,7 +93,7 @@ function LoginForm() {
     }
   };
 
-  // Manejar registro - ACTUALIZADO
+  // Manejar registro
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -122,15 +135,45 @@ function LoginForm() {
     }
   };
 
-  // Manejar olvidé contraseña - ACTUALIZADO
-  const handleForgotPassword = async (e) => {
+  // Solicitar código de recuperación
+  const handleSolicitarCodigo = async (e) => {
     e.preventDefault();
     setLoading(true);
-    mostrarMensaje('Actualizando contraseña...', 'info');
+    mostrarMensaje('Enviando código de verificación...', 'info');
+
+    if (!forgotPasswordData.email) {
+      mostrarMensaje('Por favor ingresa tu email', 'error');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const result = await AuthClient.solicitarRecuperacion(forgotPasswordData.email);
+      
+      if (result.success) {
+        mostrarMensaje('Código enviado a tu email', 'success');
+        setEmailSolicitado(forgotPasswordData.email);
+        setUsernameRecuperacion(result.username);
+        setShowCodigoVerificacion(true);
+      } else {
+        mostrarMensaje('Error: ' + result.error, 'error');
+      }
+    } catch (error) {
+      mostrarMensaje('Error de conexión: ' + error.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Verificar código y cambiar contraseña
+  const handleVerificarCodigo = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    mostrarMensaje('Verificando código...', 'info');
 
     // Validaciones
-    if (!forgotPasswordData.usuario) {
-      mostrarMensaje('Por favor ingresa tu nombre de usuario', 'error');
+    if (!forgotPasswordData.codigo) {
+      mostrarMensaje('Por favor ingresa el código de verificación', 'error');
       setLoading(false);
       return;
     }
@@ -154,18 +197,21 @@ function LoginForm() {
     }
 
     try {
-      const result = await AuthClient.forgotPassword(
-        forgotPasswordData.usuario,
+      const result = await AuthClient.verificarCodigoRecuperacion(
+        emailSolicitado,
+        forgotPasswordData.codigo,
         forgotPasswordData.nuevaContrasena
       );
       
       if (result.success) {
         mostrarMensaje('¡Contraseña actualizada exitosamente!', 'success');
         
-        // Limpiar formulario y volver al login
+        // Limpiar y volver al login
         setTimeout(() => {
-          setForgotPasswordData({ usuario: '', nuevaContrasena: '', confirmarContrasena: '' });
+          setForgotPasswordData({ email: '', codigo: '', nuevaContrasena: '', confirmarContrasena: '' });
           setShowForgotPassword(false);
+          setShowCodigoVerificacion(false);
+          switchToLogin();
         }, 2000);
       } else {
         mostrarMensaje('Error: ' + result.error, 'error');
@@ -190,7 +236,7 @@ function LoginForm() {
         <div className={`book ${isFlipped ? 'flipped' : ''}`}>
           
           {/* Página 1: Iniciar Sesión */}
-          <div className={`page ${!isFlipped && !showForgotPassword ? 'active' : ''}`} id="login-page">
+          <div className={`page ${!isFlipped && !showForgotPassword && !showCodigoVerificacion ? 'active' : ''}`} id="login-page">
             <div className="form-box">
               <h2 className="form-title">Iniciar Sesión</h2>
               
@@ -264,7 +310,7 @@ function LoginForm() {
             </div>
           </div>
 
-          {/* Página 2: Registro - ACTUALIZADO con más campos */}
+          {/* Página 2: Registro */}
           <div className={`page ${isFlipped ? 'active' : ''}`} id="register-page">
             <div className="form-box">
               <h2 className="form-title">Crear Cuenta</h2>
@@ -403,8 +449,8 @@ function LoginForm() {
             </div>
           </div>
 
-          {/* Página 3: Olvidé Contraseña */}
-          <div className={`page ${showForgotPassword ? 'active' : ''}`} id="forgot-password-page">
+          {/* Página 3: Solicitar Email para Recuperación */}
+          <div className={`page ${showForgotPassword && !showCodigoVerificacion ? 'active' : ''}`} id="forgot-password-page">
             <div className="form-box">
               <h2 className="form-title">Recuperar Contraseña</h2>
               
@@ -425,18 +471,93 @@ function LoginForm() {
                 </div>
               )}
               
-              <form className="forgot-password-form" onSubmit={handleForgotPassword}>
+              <form className="forgot-password-form" onSubmit={handleSolicitarCodigo}>
                 <div className="form-group">
                   <input 
-                    type="text" 
-                    name="usuario" 
-                    placeholder="Ingrese su nombre de usuario" 
+                    type="email" 
+                    name="email" 
+                    placeholder="Ingrese su email registrado" 
                     required
                     className="form-input"
-                    value={forgotPasswordData.usuario}
-                    onChange={(e) => setForgotPasswordData({...forgotPasswordData, usuario: e.target.value})}
+                    value={forgotPasswordData.email}
+                    onChange={(e) => setForgotPasswordData({...forgotPasswordData, email: e.target.value})}
                     disabled={loading}
                   />
+                </div>
+
+                <button type="submit" className="submit-btn" disabled={loading}>
+                  {loading ? 'Enviando código...' : 'Enviar Código de Verificación'}
+                </button>
+                
+                <div className="switch-form">
+                  <p>
+                    <button type="button" className="switch-link" onClick={switchToLogin}>
+                      Volver al login
+                    </button>
+                  </p>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          {/* Página 4: Verificación de Código - DISEÑO MEJORADO */}
+          <div className={`page ${showCodigoVerificacion ? 'active' : ''}`} id="codigo-verificacion-page">
+            <div className="form-box">
+              <div className="verification-header">
+                <div className="verification-icon">
+                  <i className="bi bi-shield-check"></i>
+                </div>
+                <h2 className="form-title">Verificación de Seguridad</h2>
+                <p className="verification-subtitle">
+                  Hemos enviado un código a: <strong>{emailSolicitado}</strong>
+                </p>
+                {usernameRecuperacion && (
+                  <p className="user-info">
+                    Usuario: <span className="username">{usernameRecuperacion}</span>
+                  </p>
+                )}
+              </div>
+              
+              {/* Mensaje */}
+              {message.text && (
+                <div 
+                  className="mensaje-login" 
+                  style={{
+                    padding: '10px',
+                    margin: '10px 0',
+                    borderRadius: '5px',
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    ...messageStyles[message.type]
+                  }}
+                >
+                  {message.text}
+                </div>
+              )}
+              
+              <form className="verification-form" onSubmit={handleVerificarCodigo}>
+                <div className="form-group">
+                  <label className="code-label">Código de 6 dígitos</label>
+                  <input 
+                    type="text" 
+                    name="codigo" 
+                    placeholder="Ej: 123456" 
+                    required
+                    maxLength="6"
+                    className="code-input"
+                    value={forgotPasswordData.codigo}
+                    onChange={(e) => setForgotPasswordData({...forgotPasswordData, codigo: e.target.value.replace(/\D/g, '')})}
+                    disabled={loading}
+                    style={{
+                      textAlign: 'center',
+                      fontSize: '18px',
+                      letterSpacing: '8px',
+                      fontWeight: 'bold'
+                    }}
+                  />
+                  <div className="code-hint">
+                    ⏰ El código expira en 15 minutos
+                  </div>
                 </div>
 
                 <div className="form-group">
@@ -465,16 +586,27 @@ function LoginForm() {
                   />
                 </div>
 
-                <button type="submit" className="submit-btn" disabled={loading}>
-                  {loading ? 'Actualizando...' : 'Actualizar Contraseña'}
+                <button type="submit" className="submit-btn verification-btn" disabled={loading}>
+                  {loading ? 'Verificando...' : 'Verificar y Cambiar Contraseña'}
                 </button>
                 
-                <div className="switch-form">
-                  <p>
-                    <button type="button" className="switch-link" onClick={switchToLogin}>
-                      Volver al login
-                    </button>
-                  </p>
+                <div className="verification-actions">
+                  <button 
+                    type="button" 
+                    className="back-btn"
+                    onClick={volverAEmail}
+                    disabled={loading}
+                  >
+                    <i className="bi bi-arrow-left"></i> Volver atrás
+                  </button>
+                  <button 
+                    type="button" 
+                    className="resend-btn"
+                    onClick={handleSolicitarCodigo}
+                    disabled={loading}
+                  >
+                    Reenviar código
+                  </button>
                 </div>
               </form>
             </div>
