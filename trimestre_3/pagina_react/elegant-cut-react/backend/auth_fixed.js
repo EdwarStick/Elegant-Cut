@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const pool = require('./config/database'); // Importar MySQL
 const EmailService = require('./emailService'); // Añadir este import
+const Dashboard = require('./models/Dashboard');
+const Service = require('./models/Service');
+const Appointment = require('./models/Appointment');
 
 const JWT_SECRET = "Clave-secreta-elegant-cut-2025";
 const PORT = 3001;
@@ -11,8 +14,8 @@ const http = require('http');
 const server = http.createServer(async (req, res) => {
     // CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     
     if (req.method === 'OPTIONS') {
         res.writeHead(200);
@@ -308,7 +311,7 @@ const server = http.createServer(async (req, res) => {
                 }
 
             } catch (error) {
-                console.log('💥 Error solicitando recuperación:', error);
+                console.log(' Error solicitando recuperación:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
                     success: false,
@@ -363,11 +366,214 @@ const server = http.createServer(async (req, res) => {
                 }
 
             } catch (error) {
-                console.log('💥 Error verificando código:', error);
+                console.log(' Error verificando código:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
                     success: false,
                     error: 'Error del servidor: ' + error.message
+                }));
+            }
+        });
+        return;
+    }
+
+    // =============================================
+    // ENDPOINTS DEL PANEL DE ADMINISTRACIÓN
+    // =============================================
+
+    // DASHBOARD STATS
+    if (req.url === '/admin/dashboard/stats' && req.method === 'GET') {
+        try {
+            const stats = await Dashboard.getStats();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true, data: stats }));
+        } catch (error) {
+            console.log('💥 Error obteniendo stats:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: 'Error obteniendo estadísticas' }));
+        }
+        return;
+    }
+
+    // ACTIVIDAD RECIENTE
+    if (req.url === '/admin/dashboard/activity' && req.method === 'GET') {
+        try {
+            const activity = await Dashboard.getRecentActivity();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true, data: activity }));
+        } catch (error) {
+            console.log('💥 Error obteniendo actividad:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: 'Error obteniendo actividad' }));
+        }
+        return;
+    }
+
+    // PRÓXIMAS CITAS
+    if (req.url === '/admin/dashboard/appointments' && req.method === 'GET') {
+        try {
+            const appointments = await Dashboard.getUpcomingAppointments();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true, data: appointments }));
+        } catch (error) {
+            console.log('💥 Error obteniendo citas:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: 'Error obteniendo citas' }));
+        }
+        return;
+    }
+
+    // SERVICIOS - GET ALL
+    if (req.url === '/admin/services' && req.method === 'GET') {
+        try {
+            const services = await Service.getAll();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true, data: services }));
+        } catch (error) {
+            console.log('💥 Error obteniendo servicios:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: 'Error obteniendo servicios' }));
+        }
+        return;
+    }
+
+    // SERVICIOS - CREATE
+    if (req.url === '/admin/services' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        
+        req.on('end', async () => {
+            try {
+                const serviceData = JSON.parse(body);
+                const id = await Service.create(serviceData);
+                res.writeHead(201, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ 
+                    success: true, 
+                    message: 'Servicio creado exitosamente', 
+                    id: id 
+                }));
+            } catch (error) {
+                console.log('💥 Error creando servicio:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ 
+                    success: false, 
+                    error: 'Error creando servicio: ' + error.message 
+                }));
+            }
+        });
+        return;
+    }
+
+    // SERVICIOS - UPDATE
+    if (req.url.startsWith('/admin/services/') && req.method === 'PUT') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        
+        req.on('end', async () => {
+            try {
+                const id = req.url.split('/')[3];
+                const serviceData = JSON.parse(body);
+                const updated = await Service.update(id, serviceData);
+                
+                if (updated) {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ 
+                        success: true, 
+                        message: 'Servicio actualizado exitosamente' 
+                    }));
+                } else {
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ 
+                        success: false, 
+                        error: 'Servicio no encontrado' 
+                    }));
+                }
+            } catch (error) {
+                console.log('💥 Error actualizando servicio:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ 
+                    success: false, 
+                    error: 'Error actualizando servicio' 
+                }));
+            }
+        });
+        return;
+    }
+
+    // SERVICIOS - DELETE
+    if (req.url.startsWith('/admin/services/') && req.method === 'DELETE') {
+        try {
+            const id = req.url.split('/')[3];
+            const deleted = await Service.delete(id);
+            
+            if (deleted) {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ 
+                    success: true, 
+                    message: 'Servicio eliminado exitosamente' 
+                }));
+            } else {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ 
+                    success: false, 
+                    error: 'Servicio no encontrado' 
+                }));
+            }
+        } catch (error) {
+            console.log('💥 Error eliminando servicio:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ 
+                success: false, 
+                error: 'Error eliminando servicio' 
+            }));
+        }
+        return;
+    }
+
+    // CITAS - GET ALL
+    if (req.url === '/admin/appointments' && req.method === 'GET') {
+        try {
+            const appointments = await Appointment.getAll();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true, data: appointments }));
+        } catch (error) {
+            console.log('💥 Error obteniendo citas:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: 'Error obteniendo citas' }));
+        }
+        return;
+    }
+
+    // CITAS - UPDATE STATUS
+    if (req.url.startsWith('/admin/appointments/') && req.method === 'PUT') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        
+        req.on('end', async () => {
+            try {
+                const id = req.url.split('/')[3];
+                const { nuevoEstado } = JSON.parse(body);
+                const updated = await Appointment.updateStatus(id, nuevoEstado);
+                
+                if (updated) {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ 
+                        success: true, 
+                        message: 'Estado de cita actualizado' 
+                    }));
+                } else {
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ 
+                        success: false, 
+                        error: 'Cita no encontrada' 
+                    }));
+                }
+            } catch (error) {
+                console.log(' Error actualizando cita:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ 
+                    success: false, 
+                    error: 'Error actualizando cita' 
                 }));
             }
         });
