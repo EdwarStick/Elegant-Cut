@@ -93,6 +93,10 @@ function Header() {
                         <i className="bi bi-person-badge"></i>
                         <span className="nav-label">Barberos</span>
                     </Link>
+                    <Link to="/Pqrs" className="button nav-button" aria-label="Pqrs">
+                        <i className="bi bi-question-circle"></i>
+                        <span className="nav-label">Pqrs</span>
+                    </Link>
 
                     {/* Estado de autenticación en desktop */}
                     {isAuthenticated ? (
@@ -191,6 +195,10 @@ function Header() {
                         <Link to="/Barberos" className="button menu-nav-button" onClick={closeMenu}>
                             <i className="bi bi-person-badge"></i>
                             <span className="menu-nav-label">Barberos</span>
+                        </Link>
+                        <Link to="/Pqrs" className="button menu-nav-button" onClick={closeMenu}>
+                            <i className="bi bi-question-circle"></i>
+                            <span className="menu-nav-label">Pqrs</span>
                         </Link>
 
                         {/* Botones de autenticación en móvil */}
