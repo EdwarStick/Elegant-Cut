@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Scissors, Calendar, Clock, User, Phone, Mail, CreditCard, FileText, Star, MapPin, Award } from 'lucide-react';
 
 function Form_agenda() {
@@ -14,6 +14,67 @@ function Form_agenda() {
     paymentMethod: 'efectivo'
   });
 
+  const [services, setServices] = useState([]);
+  const [barbers, setBarbers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [dataLoaded, setDataLoaded] = useState(false);
+
+  // Cargar servicios y barberos desde la API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Cargar servicios
+        const servicesResponse = await fetch('http://localhost:3001/api/services');
+        if (!servicesResponse.ok) {
+          throw new Error('Error cargando servicios');
+        }
+        const servicesData = await servicesResponse.json();
+
+        // Asegurarnos de que servicesData sea un array
+        setServices(Array.isArray(servicesData) ? servicesData : []);
+
+        // Cargar barberos
+        const barbersResponse = await fetch('http://localhost:3001/api/barbers');
+        if (!barbersResponse.ok) {
+          throw new Error('Error cargando barberos');
+        }
+        const barbersData = await barbersResponse.json();
+
+        // Asegurarnos de que barbersData sea un array
+        setBarbers(Array.isArray(barbersData) ? barbersData : []);
+
+        // Generar horarios
+        const slots = [
+          '08:00', '09:00', '10:00', '11:00', '12:00',
+          '14:00', '15:00', '16:00', '17:00', '18:00'
+        ];
+        setTimeSlots(slots);
+
+        setDataLoaded(true);
+
+      } catch (error) {
+        console.error('Error cargando datos:', error);
+        console.log('Respuesta de servicios:', services);
+        console.log('Respuesta de barberos:', barbers);
+        alert('Error cargando servicios y barberos. Verifica que el backend esté corriendo en puerto 3001.');
+
+        // Datos de prueba como fallback
+        setServices([
+          { id_servicio: 1, nombre: 'Corte Básico', precio: 15000, duracion: 30 },
+          { id_servicio: 2, nombre: 'Corte con Estilo', precio: 20000, duracion: 45 }
+        ]);
+        setBarbers([
+          { id_usuario: 1, prim_nombre: 'Carlos', apellido1: 'Rodríguez' },
+          { id_usuario: 2, prim_nombre: 'Luis', apellido1: 'García' }
+        ]);
+        setDataLoaded(true);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -22,41 +83,64 @@ function Form_agenda() {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!formData.name || !formData.phone || !formData.date || !formData.time || !formData.barber || !formData.service) {
       alert('Por favor completa todos los campos obligatorios');
       return;
     }
 
-    const appointmentData = {
-      cliente: formData.name,
-      telefono: formData.phone,
-      email: formData.email,
-      fecha: formData.date,
-      horario: formData.time,
-      barbero: formData.barber,
-      servicio: formData.service,
-      notas: formData.notes,
-      metodoPago: formData.paymentMethod,
-      estado: 'pendiente',
-      fechaCreacion: new Date().toISOString()
-    };
+    setLoading(true);
 
-    console.log('Datos de la cita:', appointmentData);
-    
-    alert(`¡Cita agendada exitosamente!\n\n${formData.name}, tu cita está confirmada para el ${formatDate(formData.date)} a las ${formData.time}`);
-    
-    setFormData({
-      name: '',
-      phone: '',
-      email: '',
-      date: '',
-      time: '',
-      barber: '',
-      service: '',
-      notes: '',
-      paymentMethod: 'efectivo'
-    });
+    try {
+      const appointmentData = {
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        date: formData.date,
+        time: formData.time,
+        barber: formData.barber,
+        service: formData.service,
+        notes: formData.notes,
+        paymentMethod: formData.paymentMethod
+      };
+
+      console.log('Enviando datos:', appointmentData);
+
+      const response = await fetch('http://localhost:3001/api/appointments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(appointmentData)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert(`¡Cita agendada exitosamente! ID: ${result.appointmentId}\n\n${formData.name}, tu cita está confirmada para el ${formatDate(formData.date)} a las ${formData.time}`);
+
+        // Reset form
+        setFormData({
+          name: '',
+          phone: '',
+          email: '',
+          date: '',
+          time: '',
+          barber: '',
+          service: '',
+          notes: '',
+          paymentMethod: 'efectivo'
+        });
+      } else {
+        alert('Error al agendar la cita: ' + result.message);
+      }
+
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de conexión. Por favor intenta nuevamente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const formatDate = (dateString) => {
@@ -64,30 +148,21 @@ function Form_agenda() {
     return new Date(dateString).toLocaleDateString('es-ES', options);
   };
 
-  const services = [
-    { id: 'corte-basico', name: 'Corte Básico', price: 15000, duration: '30 min' },
-    { id: 'corte-estilo', name: 'Corte con Estilo', price: 20000, duration: '45 min' },
-    { id: 'barba', name: 'Arreglo de Barba', price: 10000, duration: '20 min' },
-    { id: 'combo', name: 'Corte + Barba', price: 25000, duration: '60 min' },
-    { id: 'cejas', name: 'Diseño de Cejas', price: 8000, duration: '15 min' },
-    { id: 'mascarilla', name: 'Mascarilla Facial', price: 18000, duration: '30 min' },
-    { id: 'manicure', name: 'Manicure Básico', price: 12000, duration: '25 min' }
-  ];
+  // Asegurarnos de que services y barbers sean arrays antes de usar find
+  const selectedService = Array.isArray(services) ? services.find(s => s.id_servicio == formData.service) : null;
+  const selectedBarber = Array.isArray(barbers) ? barbers.find(b => b.id_usuario == formData.barber) : null;
 
-  const barbers = [
-    { id: 'carlos', name: 'Carlos Rodríguez', specialty: 'Cortes clásicos', rating: 4.9 },
-    { id: 'luis', name: 'Luis García', specialty: 'Diseños modernos', rating: 4.8 },
-    { id: 'pedro', name: 'Pedro Martínez', specialty: 'Barba y afeitado', rating: 5.0 },
-    { id: 'ana', name: 'Ana López', specialty: 'Estilista premium', rating: 4.9 }
-  ];
-
-  const timeSlots = [
-    '08:00', '09:00', '10:00', '11:00', '12:00',
-    '14:00', '15:00', '16:00', '17:00', '18:00'
-  ];
-
-  const selectedService = services.find(s => s.id === formData.service);
-  const selectedBarber = barbers.find(b => b.id === formData.barber);
+  // Mostrar loading mientras se cargan los datos
+  if (!dataLoaded) {
+    return (
+      <div className="form-agenda-container">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Cargando servicios y barberos...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="form-agenda-container">
@@ -173,19 +248,17 @@ function Form_agenda() {
                 {selectedService && (
                   <div className="summary-item">
                     <span className="summary-label">Servicio:</span>
-                    <span className="summary-value">{selectedService.name}</span>
-                    <span className="summary-price">${selectedService.price.toLocaleString()}</span>
-                    <span className="summary-duration">{selectedService.duration}</span>
+                    <span className="summary-value">{selectedService.nombre}</span>
+                    <span className="summary-price">${selectedService.precio?.toLocaleString()}</span>
+                    <span className="summary-duration">{selectedService.duracion} min</span>
                   </div>
                 )}
                 {selectedBarber && (
                   <div className="summary-item">
                     <span className="summary-label">Barbero:</span>
-                    <span className="summary-value">{selectedBarber.name}</span>
-                    <div className="barber-rating">
-                      <Star size={14} fill="gold" stroke="gold" />
-                      <span>{selectedBarber.rating}</span>
-                    </div>
+                    <span className="summary-value">
+                      {selectedBarber.prim_nombre} {selectedBarber.apellido1}
+                    </span>
                   </div>
                 )}
                 {formData.date && (
@@ -212,7 +285,7 @@ function Form_agenda() {
             </div>
 
             <div className="appointment-form">
-              
+
               {/* INFORMACIÓN PERSONAL */}
               <div className="form-section">
                 <div className="section-header">
@@ -226,13 +299,14 @@ function Form_agenda() {
                     </label>
                     <div className="input-wrapper">
                       <User className="input-icon" size={18} />
-                      <input 
-                        type="text" 
-                        id="name" 
+                      <input
+                        type="text"
+                        id="name"
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
                         placeholder="Juan Pérez"
+                        disabled={loading}
                       />
                     </div>
                   </div>
@@ -243,13 +317,14 @@ function Form_agenda() {
                     </label>
                     <div className="input-wrapper">
                       <Phone className="input-icon" size={18} />
-                      <input 
-                        type="tel" 
-                        id="phone" 
+                      <input
+                        type="tel"
+                        id="phone"
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
                         placeholder="310 123 4567"
+                        disabled={loading}
                       />
                     </div>
                   </div>
@@ -258,13 +333,14 @@ function Form_agenda() {
                     <label htmlFor="email">Email (opcional)</label>
                     <div className="input-wrapper">
                       <Mail className="input-icon" size={18} />
-                      <input 
-                        type="email" 
-                        id="email" 
+                      <input
+                        type="email"
+                        id="email"
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
                         placeholder="tucorreo@ejemplo.com"
+                        disabled={loading}
                       />
                     </div>
                   </div>
@@ -282,38 +358,46 @@ function Form_agenda() {
                     <label htmlFor="service">
                       Selecciona tu servicio <span className="required">*</span>
                     </label>
-                    <select 
-                      id="service" 
+                    <select
+                      id="service"
                       name="service"
                       value={formData.service}
                       onChange={handleInputChange}
+                      disabled={loading || services.length === 0}
                     >
                       <option value="">Elige un servicio</option>
-                      {services.map(service => (
-                        <option key={service.id} value={service.id}>
-                          {service.name} - ${service.price.toLocaleString()} ({service.duration})
+                      {Array.isArray(services) && services.map(service => (
+                        <option key={service.id_servicio} value={service.id_servicio}>
+                          {service.nombre} - ${service.precio?.toLocaleString()} ({service.duracion} min)
                         </option>
                       ))}
                     </select>
+                    {services.length === 0 && (
+                      <p className="error-message">No hay servicios disponibles</p>
+                    )}
                   </div>
 
                   <div className="form-group">
                     <label htmlFor="barber">
                       Selecciona tu barbero <span className="required">*</span>
                     </label>
-                    <select 
-                      id="barber" 
+                    <select
+                      id="barber"
                       name="barber"
                       value={formData.barber}
                       onChange={handleInputChange}
+                      disabled={loading || barbers.length === 0}
                     >
                       <option value="">Elige un barbero</option>
-                      {barbers.map(barber => (
-                        <option key={barber.id} value={barber.id}>
-                          {barber.name} - {barber.specialty} ⭐{barber.rating}
+                      {Array.isArray(barbers) && barbers.map(barber => (
+                        <option key={barber.id_usuario} value={barber.id_usuario}>
+                          {barber.prim_nombre} {barber.apellido1} - {barber.especialidad || 'Barbero profesional'}
                         </option>
                       ))}
                     </select>
+                    {barbers.length === 0 && (
+                      <p className="error-message">No hay barberos disponibles</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -331,13 +415,14 @@ function Form_agenda() {
                     </label>
                     <div className="input-wrapper">
                       <Calendar className="input-icon" size={18} />
-                      <input 
-                        type="date" 
-                        id="date" 
+                      <input
+                        type="date"
+                        id="date"
                         name="date"
                         value={formData.date}
                         onChange={handleInputChange}
                         min={new Date().toISOString().split('T')[0]}
+                        disabled={loading}
                       />
                     </div>
                   </div>
@@ -348,11 +433,12 @@ function Form_agenda() {
                     </label>
                     <div className="input-wrapper">
                       <Clock className="input-icon" size={18} />
-                      <select 
-                        id="time" 
+                      <select
+                        id="time"
                         name="time"
                         value={formData.time}
                         onChange={handleInputChange}
+                        disabled={loading}
                       >
                         <option value="">Selecciona una hora</option>
                         {timeSlots.map(time => (
@@ -372,13 +458,14 @@ function Form_agenda() {
                 </div>
                 <div className="form-group">
                   <label htmlFor="notes">Notas o requerimientos especiales</label>
-                  <textarea 
-                    id="notes" 
+                  <textarea
+                    id="notes"
                     name="notes"
                     value={formData.notes}
                     onChange={handleInputChange}
                     placeholder="Ej: Alergia a productos específicos, preferencias de estilo, etc."
                     rows="4"
+                    disabled={loading}
                   />
                 </div>
               </div>
@@ -391,12 +478,13 @@ function Form_agenda() {
                 </div>
                 <div className="payment-options">
                   <label className={`payment-option ${formData.paymentMethod === 'efectivo' ? 'active' : ''}`}>
-                    <input 
-                      type="radio" 
-                      name="paymentMethod" 
-                      value="efectivo" 
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="efectivo"
                       checked={formData.paymentMethod === 'efectivo'}
                       onChange={handleInputChange}
+                      disabled={loading}
                     />
                     <div className="payment-content">
                       <CreditCard size={24} />
@@ -404,14 +492,15 @@ function Form_agenda() {
                       <p>Paga en la barbería</p>
                     </div>
                   </label>
-                  
+
                   <label className={`payment-option ${formData.paymentMethod === 'transferencia' ? 'active' : ''}`}>
-                    <input 
-                      type="radio" 
-                      name="paymentMethod" 
-                      value="transferencia" 
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="transferencia"
                       checked={formData.paymentMethod === 'transferencia'}
                       onChange={handleInputChange}
+                      disabled={loading}
                     />
                     <div className="payment-content">
                       <Phone size={24} />
@@ -423,9 +512,13 @@ function Form_agenda() {
               </div>
 
               {/* BOTÓN DE ENVÍO */}
-              <button onClick={handleSubmit} className="submit-btn">
+              <button
+                onClick={handleSubmit}
+                className="submit-btn"
+                disabled={loading}
+              >
                 <Calendar size={20} />
-                Confirmar mi cita
+                {loading ? 'Agendando cita...' : 'Confirmar mi cita'}
               </button>
 
               <p className="form-disclaimer">

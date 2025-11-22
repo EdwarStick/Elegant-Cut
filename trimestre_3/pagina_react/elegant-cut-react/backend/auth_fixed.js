@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const pool = require('./config/database'); // Importar MySQL
-const EmailService = require('./emailService'); // Añadir este import
+const EmailService = require('./emailService'); // Añadir este import......
 const Dashboard = require('./models/Dashboard');
 const Service = require('./models/Service');
 const Appointment = require('./models/Appointment');
@@ -31,7 +31,7 @@ const server = http.createServer(async (req, res) => {
         req.on('end', async () => {
             try {
                 const { username, password } = JSON.parse(body);
-                console.log('🔐 Login attempt for:', username);
+                console.log(' Login attempt for:', username);
 
                 // Buscar usuario en MySQL
                 const [users] = await pool.execute(
@@ -378,6 +378,137 @@ const server = http.createServer(async (req, res) => {
     }
 
     // =============================================
+    // 🎯 NUEVAS RUTAS PARA EL FORMULARIO DE CITAS
+    // =============================================
+
+    // OBTENER SERVICIOS (para el formulario)
+    if (req.url === '/api/services' && req.method === 'GET') {
+        try {
+            const [services] = await pool.execute(
+                'SELECT id_servicio, nombre, precio, duracion FROM servicios WHERE estado = 1'
+            );
+            
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(services));
+        } catch (error) {
+            console.error('Error obteniendo servicios:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Error obteniendo servicios' }));
+        }
+        return;
+    }
+
+    // OBTENER BARBEROS (para el formulario)
+    if (req.url === '/api/barbers' && req.method === 'GET') {
+        try {
+            const [barbers] = await pool.execute(
+                `SELECT id_usuario, prim_nombre, seg_nombre, apellido1, apellido2 
+                 FROM usuarios WHERE id_rol = 2 AND estado = 1`
+            );
+            
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(barbers));
+        } catch (error) {
+            console.error('Error obteniendo barberos:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Error obteniendo barberos' }));
+        }
+        return;
+    }
+
+    // AGENDAR CITA (para el formulario) - CORREGIDO
+    if (req.url === '/api/appointments' && req.method === 'POST') {
+        let body = '';
+        
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+
+        req.on('end', async () => {
+            const connection = await pool.getConnection();
+            
+            try {
+                await connection.beginTransaction();
+
+                const { name, phone, email, date, time, barber, service, notes } = JSON.parse(body);
+                console.log('📅 Intentando agendar cita para:', name);
+
+                // 1. Buscar o crear usuario (cliente)
+                let userId;
+                const [userExists] = await connection.execute(
+                    'SELECT id_usuario FROM usuarios WHERE telefono = ? OR email = ?',
+                    [phone, email || '']
+                );
+
+                if (userExists.length > 0) {
+                    userId = userExists[0].id_usuario;
+                    await connection.execute(
+                        'UPDATE usuarios SET prim_nombre = ?, email = ? WHERE id_usuario = ?',
+                        [name, email || '', userId]
+                    );
+                } else {
+                    const [userResult] = await connection.execute(
+                        `INSERT INTO usuarios 
+                         (prim_nombre, telefono, email, id_rol, estado, created_at) 
+                         VALUES (?, ?, ?, 3, 1, NOW())`,
+                        [name, phone, email || null]
+                    );
+                    userId = userResult.insertId;
+                }
+
+                // 2. Buscar id_horarios
+                const horaNumerica = parseInt(time.replace(':', ''));
+                const [horarioResult] = await connection.execute(
+                    'SELECT id_horarios FROM horarios WHERE hora_inicio = ?',
+                    [horaNumerica]
+                );
+
+                if (horarioResult.length === 0) {
+                    throw new Error('Horario no disponible');
+                }
+                const idHorarios = horarioResult[0].id_horarios;
+
+                // 3. Insertar en reservas - CORREGIDO: usar 'reservas' en lugar de 'reserves'
+                const [reservaResult] = await connection.execute(
+                    `INSERT INTO reservas 
+                     (fecha, observaciones, id_usuario, id_estado_cita, id_horarios) 
+                     VALUES (?, ?, ?, 1, ?)`,
+                    [date, notes || '', userId, idHorarios]
+                );
+
+                const reservaId = reservaResult.insertId;
+
+                // 4. Insertar en detalle_cita_servicio
+                await connection.execute(
+                    'INSERT INTO detalle_cita_servicio (id_reservas, id_servicio) VALUES (?, ?)',
+                    [reservaId, service]
+                );
+
+                await connection.commit();
+
+                res.writeHead(201, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: true,
+                    message: 'Cita agendada exitosamente',
+                    appointmentId: reservaId
+                }));
+
+            } catch (error) {
+                await connection.rollback();
+                console.error('Error al agendar cita:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: false,
+                    message: 'Error al agendar la cita: ' + error.message
+                }));
+            } finally {
+                connection.release();
+            }
+        });
+        return;
+    }
+
+    // =============================================
     // ENDPOINTS DEL PANEL DE ADMINISTRACIÓN
     // =============================================
 
@@ -587,4 +718,11 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, () => {
     console.log(' Servidor con MySQL corriendo en http://localhost:' + PORT);
+    console.log(' Rutas disponibles:');
+    console.log('   - /auth/login');
+    console.log('   - /auth/register');
+    console.log('   - /api/services');
+    console.log('   - /api/barbers');
+    console.log('   - /api/appointments');
+    console.log('   - /admin/dashboard/*');
 });

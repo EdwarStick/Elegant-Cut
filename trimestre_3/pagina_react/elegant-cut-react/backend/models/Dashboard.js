@@ -65,7 +65,7 @@ class Dashboard {
     }
   }
 
-  // Obtener próximas citas - VERSIÓN SIMPLIFICADA
+  // Obtener próximas citas - VERSIÓN CORREGIDA
   static async getUpcomingAppointments() {
     try {
       const [rows] = await pool.execute(
@@ -79,7 +79,7 @@ class Dashboard {
          LEFT JOIN usuarios u ON r.id_usuario = u.id_usuario
          LEFT JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
          LEFT JOIN servicios s ON dcs.id_servicio = s.id_servicio
-         LEFT JOIN horarios h ON r.id_horaries = h.id_horarios
+         LEFT JOIN horarios h ON r.id_horarios = h.id_horarios  -- ← CORREGIDO: id_horarios
          WHERE r.fecha >= CURDATE()
          ORDER BY r.fecha ASC, hora_inicio ASC
          LIMIT 5`
