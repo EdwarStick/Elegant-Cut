@@ -1,6 +1,63 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function Pqrs() {
+  const [formData, setFormData] = useState({
+    requestType: '',
+    userName: '',
+    userId: '',
+    userEmail: '',
+    userPhone: '',
+    subject: '',
+    description: '',
+    responseMedium: 'email'
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:3001/api/pqrs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert(`PQRS enviada con éxito. Su radicado es: ${result.radicado}`);
+        setFormData({
+          requestType: '',
+          userName: '',
+          userId: '',
+          userEmail: '',
+          userPhone: '',
+          subject: '',
+          description: '',
+          responseMedium: 'email'
+        });
+      } else {
+        alert('Error: ' + result.error);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de conexión al enviar la PQRS');
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div>
       <main>
@@ -15,11 +72,17 @@ function Pqrs() {
         {/* Formulario de PQRS */}
         <section id="form-tab" className="tab-content active">
           <h2>Formulario de PQRS</h2>
-          <form id="pqrs-form">
+          <form id="pqrs-form" onSubmit={handleSubmit}>
 
             <div className="form-group">
               <label htmlFor="request-type">Tipo de solicitud <span className="required">*</span></label>
-              <select id="request-type" name="request-type" required>
+              <select
+                id="request-type"
+                name="requestType"
+                required
+                value={formData.requestType}
+                onChange={handleInputChange}
+              >
                 <option value="">Seleccione una opción</option>
                 <option value="peticion">Petición</option>
                 <option value="queja">Queja</option>
@@ -31,72 +94,110 @@ function Pqrs() {
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="user-name">Nombre completo <span className="required">*</span></label>
-                <input type="text" id="user-name" name="user-name" required />
+                <input
+                  type="text"
+                  id="user-name"
+                  name="userName"
+                  required
+                  value={formData.userName}
+                  onChange={handleInputChange}
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="user-id">Identificación <span className="required">*</span></label>
-                <input type="text" id="user-id" name="user-id" required />
+                <input
+                  type="text"
+                  id="user-id"
+                  name="userId"
+                  required
+                  value={formData.userId}
+                  onChange={handleInputChange}
+                />
               </div>
             </div>
 
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="user-email">Email <span className="required">*</span></label>
-                <input type="email" id="user-email" name="user-email" required />
-                <span className="error-message" id="email-error"></span>
+                <input
+                  type="email"
+                  id="user-email"
+                  name="userEmail"
+                  required
+                  value={formData.userEmail}
+                  onChange={handleInputChange}
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="user-phone">Teléfono <span className="required">*</span></label>
-                <input type="tel" id="user-phone" name="user-phone" required />
-                <span className="error-message" id="phone-error"></span>
+                <input
+                  type="tel"
+                  id="user-phone"
+                  name="userPhone"
+                  required
+                  value={formData.userPhone}
+                  onChange={handleInputChange}
+                />
               </div>
             </div>
 
             <div className="form-group">
               <label htmlFor="subject">Asunto <span className="required">*</span></label>
-              <input type="text" id="subject" name="subject" maxLength="100" required />
-              <div className="char-counter"><span id="subject-counter">0</span>/100</div>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                maxLength="100"
+                required
+                value={formData.subject}
+                onChange={handleInputChange}
+              />
+              <div className="char-counter"><span>{formData.subject.length}</span>/100</div>
             </div>
 
             <div className="form-group">
               <label htmlFor="description">Descripción detallada <span className="required">*</span></label>
-              <textarea id="description" name="description" rows="6" maxLength="1000" required></textarea>
-              <div className="char-counter"><span id="description-counter">0</span>/1000</div>
+              <textarea
+                id="description"
+                name="description"
+                rows="6"
+                maxLength="1000"
+                required
+                value={formData.description}
+                onChange={handleInputChange}
+              ></textarea>
+              <div className="char-counter"><span>{formData.description.length}</span>/1000</div>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="attachments">Adjuntar archivos</label>
-              <input
-                type="file"
-                id="attachments"
-                name="attachments"
-                multiple
-                accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-              />
-              <small>Formatos permitidos: PDF, JPG, PNG, DOC, DOCX (Máx. 5MB por archivo)</small>
-            </div>
+            {/* Adjuntos omitidos por simplicidad en esta versión */}
 
             <div className="form-group">
               <label>Medio de respuesta preferido <span className="required">*</span></label>
               <div className="radio-group">
                 <label className="radio-option">
-                  <input type="radio" name="response-medium" value="email" defaultChecked />
+                  <input
+                    type="radio"
+                    name="responseMedium"
+                    value="email"
+                    checked={formData.responseMedium === 'email'}
+                    onChange={handleInputChange}
+                  />
                   <span className="radio-checkmark"></span>
                   Email
                 </label>
 
                 <label className="radio-option">
-                  <input type="radio" name="response-medium" value="phone" />
+                  <input
+                    type="radio"
+                    name="responseMedium"
+                    value="phone"
+                    checked={formData.responseMedium === 'phone'}
+                    onChange={handleInputChange}
+                  />
                   <span className="radio-checkmark"></span>
                   Teléfono
-                </label>
-
-                <label className="radio-option">
-                  <input type="radio" name="response-medium" value="mail" />
-                  <span className="radio-checkmark"></span>
-                  Correo físico
                 </label>
               </div>
             </div>
@@ -110,8 +211,12 @@ function Pqrs() {
             </div>
 
             <div className="form-actions">
-              <button type="reset" className="btn btn-secondary">Limpiar</button>
-              <button type="submit" className="btn btn-primary">Enviar PQRS</button>
+              <button type="button" className="btn btn-secondary" onClick={() => setFormData({
+                requestType: '', userName: '', userId: '', userEmail: '', userPhone: '', subject: '', description: '', responseMedium: 'email'
+              })}>Limpiar</button>
+              <button type="submit" className="btn btn-primary" disabled={loading}>
+                {loading ? 'Enviando...' : 'Enviar PQRS'}
+              </button>
             </div>
 
           </form>

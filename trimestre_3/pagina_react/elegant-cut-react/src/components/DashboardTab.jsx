@@ -18,7 +18,7 @@ const DashboardTab = () => {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      
+
       // Cargar estadísticas
       const statsResponse = await fetch('http://localhost:3001/admin/dashboard/stats');
       const statsData = await statsResponse.json();
@@ -125,7 +125,7 @@ const DashboardTab = () => {
         <div className="recent-activity">
           <div className="section-header">
             <h3>Actividad Reciente</h3>
-            <button 
+            <button
               className="btn btn-sm btn-outline-primary"
               onClick={loadDashboardData}
               disabled={loading}
@@ -133,7 +133,7 @@ const DashboardTab = () => {
               <i className="bi bi-arrow-clockwise"></i>
             </button>
           </div>
-          
+
           <div className="activity-list">
             {recentActivity.length > 0 ? (
               recentActivity.map((activity, index) => (
@@ -164,7 +164,7 @@ const DashboardTab = () => {
         <div className="upcoming-appointments">
           <div className="section-header">
             <h3>Próximas Citas</h3>
-            <button 
+            <button
               className="btn btn-sm btn-outline-primary"
               onClick={loadDashboardData}
               disabled={loading}
@@ -172,7 +172,7 @@ const DashboardTab = () => {
               <i className="bi bi-arrow-clockwise"></i>
             </button>
           </div>
-          
+
           <div className="appointments-list">
             {upcomingAppointments.length > 0 ? (
               upcomingAppointments.map((appointment, index) => (

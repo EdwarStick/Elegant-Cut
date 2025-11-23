@@ -1,0 +1,371 @@
+/* Variables Globales */
+:root {
+    --primary-color: #d4af37;
+    /* Dorado elegante */
+    --primary-hover: #b59026;
+    --secondary-color: #1a1a1a;
+    /* Negro suave */
+    --text-color: #333;
+    --text-light: #f5f5f5;
+    --bg-gradient: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --input-bg: #f0f2f5;
+    --transition: all 0.3s ease;
+}
+
+/* Contenedor Principal */
+.login-form-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-gradient);
+    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Fondo decorativo (círculos) */
+.login-form-container::before,
+.login-form-container::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    z-index: 0;
+}
+
+.login-form-container::before {
+    background: linear-gradient(to right, #d4af37, #f1c40f);
+    top: -50px;
+    left: -50px;
+    opacity: 0.2;
+}
+
+.login-form-container::after {
+    background: linear-gradient(to right, #2c3e50, #3498db);
+    bottom: -50px;
+    right: -50px;
+    opacity: 0.2;
+}
+
+/* Efecto Libro 3D */
+.book-container {
+    perspective: 1000px;
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    min-height: 600px;
+    position: relative;
+    z-index: 1;
+}
+
+.book {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.book.flipped {
+    transform: rotateY(180deg);
+}
+
+/* Páginas */
+.page {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    top: 0;
+    left: 0;
+    display: none;
+    /* Ocultar por defecto */
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.page.active {
+    display: block;
+    opacity: 1;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+/* Página de Registro (Reverso) */
+#register-page {
+    transform: rotateY(180deg);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Caja del Formulario (Glassmorphism) */
+.form-box {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: var(--shadow);
+    border: var(--glass-border);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.form-title {
+    color: var(--secondary-color);
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.form-title::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background: var(--primary-color);
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+/* Inputs */
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.form-input {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background: var(--input-bg);
+    font-size: 1rem;
+    color: var(--text-color);
+    transition: var(--transition);
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: var(--primary-color);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+}
+
+.form-input::placeholder {
+    color: #aaa;
+}
+
+/* Botones */
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(to right, #1a1a1a, #2c3e50);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(to right, #2c3e50, #1a1a1a);
+}
+
+.submit-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Links y Switch */
+.forgot-password {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.forgot-link {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.forgot-link:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.switch-form {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.95rem;
+    color: #666;
+}
+
+.switch-link {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 5px;
+    transition: var(--transition);
+}
+
+.switch-link:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+/* Verificación de Código */
+.verification-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.verification-icon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.verification-subtitle {
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.user-info {
+    background: rgba(212, 175, 55, 0.1);
+    padding: 8px 15px;
+    border-radius: 20px;
+    display: inline-block;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+}
+
+.username {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.code-input {
+    text-align: center;
+    font-size: 1.5rem;
+    letter-spacing: 10px;
+    font-weight: 700;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    background: #fff;
+}
+
+.code-hint {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 8px;
+}
+
+.verification-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.back-btn,
+.resend-btn {
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+.back-btn {
+    color: #666;
+}
+
+.back-btn:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.resend-btn {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.resend-btn:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+/* Scrollbar personalizado para el formulario de registro si es muy largo */
+.form-box {
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+.form-box::-webkit-scrollbar {
+    width: 6px;
+}
+
+.form-box::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.form-box::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+.form-box::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+/* Responsividad */
+@media (max-width: 480px) {
+    .book-container {
+        min-height: 100vh;
+        max-width: 100%;
+    }
+
+    .form-box {
+        border-radius: 0;
+        padding: 30px 20px;
+    }
+
+    .form-title {
+        font-size: 1.5rem;
+    }
+}
