@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/pqrs/pqrs.css';
 
 function Pqrs() {
   return (

@@ -1,0 +1,218 @@
+--------------------------------------------------------------------------------
+ANALISIS Y RECOMENDACIONES SQL - ELEGANT CUT
+--------------------------------------------------------------------------------
+
+Este documento contiene el análisis del código actual y las recomendaciones SQL necesarias
+para que el sistema funcione correctamente, incluyendo la nueva funcionalidad de PQRS.
+
+================================================================================
+1. ESTRUCTURA DE BASE DE DATOS RECOMENDADA (SCHEMA)
+================================================================================
+
+Para que todo el sistema funcione (Login, Registro, Citas, Dashboard, PQRS), 
+se recomienda la siguiente estructura de tablas. Ejecuta estos scripts en tu MySQL.
+
+-- 1. Tabla de Roles
+CREATE TABLE IF NOT EXISTS rol (
+    id_rol INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_rol VARCHAR(50) NOT NULL UNIQUE -- Ej: 'admin', 'barbero', 'cliente'
+);
+
+-- Insertar roles base si no existen
+INSERT IGNORE INTO rol (nombre_rol) VALUES ('admin'), ('barbero'), ('cliente');
+
+-- 2. Tabla de Usuarios
+CREATE TABLE IF NOT EXISTS usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE, -- Opcional si usas email para login
+    password_hash VARCHAR(255) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    prim_nombre VARCHAR(50) NOT NULL,
+    seg_nombre VARCHAR(50),
+    apellido1 VARCHAR(50) NOT NULL,
+    apellido2 VARCHAR(50),
+    telefono VARCHAR(20),
+    id_rol INT,
+    estado TINYINT(1) DEFAULT 1, -- 1: Activo, 0: Inactivo
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_rol) REFERENCES rol(id_rol)
+);
+
+-- 3. Tabla de Servicios
+CREATE TABLE IF NOT EXISTS servicios (
+    id_servicio INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    precio DECIMAL(10, 2) NOT NULL,
+    duracion INT NOT NULL, -- Duración en minutos
+    estado TINYINT(1) DEFAULT 1
+);
+
+-- 4. Tabla de Horarios (Bloques de tiempo)
+CREATE TABLE IF NOT EXISTS horarios (
+    id_horarios INT AUTO_INCREMENT PRIMARY KEY,
+    hora_inicio INT NOT NULL, -- Ej: 900 para 9:00 AM, 1430 para 2:30 PM
+    hora_fin INT      -- Opcional, calculado según duración
+);
+
+-- 5. Tabla de Estados de Cita
+CREATE TABLE IF NOT EXISTS estado_cita (
+    id_estado_cita INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_estado VARCHAR(50) NOT NULL -- Ej: 'pendiente', 'confirmada', 'cancelada', 'completada'
+);
+
+INSERT IGNORE INTO estado_cita (nombre_estado) VALUES ('pendiente'), ('confirmada'), ('cancelada'), ('completada');
+
+-- 6. Tabla de Reservas (Citas)
+CREATE TABLE IF NOT EXISTS reservas (
+    id_reservas INT AUTO_INCREMENT PRIMARY KEY,
+    fecha DATE NOT NULL,
+    observaciones TEXT,
+    id_usuario INT NOT NULL, -- Cliente
+    id_estado_cita INT DEFAULT 1,
+    id_horarios INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (id_estado_cita) REFERENCES estado_cita(id_estado_cita),
+    FOREIGN KEY (id_horarios) REFERENCES horarios(id_horarios)
+);
+
+-- 7. Tabla Detalle Cita-Servicio (Relación muchos a muchos)
+CREATE TABLE IF NOT EXISTS detalle_cita_servicio (
+    id_detalle INT AUTO_INCREMENT PRIMARY KEY,
+    id_reservas INT NOT NULL,
+    id_servicio INT NOT NULL,
+    FOREIGN KEY (id_reservas) REFERENCES reservas(id_reservas),
+    FOREIGN KEY (id_servicio) REFERENCES servicios(id_servicio)
+);
+
+-- 8. [NUEVA] Tabla de PQRS (Requerida para el módulo PQRS)
+CREATE TABLE IF NOT EXISTS pqrs (
+    id_pqrs INT AUTO_INCREMENT PRIMARY KEY,
+    radicado VARCHAR(20) NOT NULL UNIQUE, -- Código único de seguimiento (ej: PQRS-2023-001)
+    tipo_solicitud ENUM('peticion', 'queja', 'reclamo', 'sugerencia') NOT NULL,
+    nombre_completo VARCHAR(100) NOT NULL,
+    identificacion VARCHAR(20) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20) NOT NULL,
+    asunto VARCHAR(100) NOT NULL,
+    descripcion TEXT NOT NULL,
+    archivos_url TEXT, -- JSON o rutas separadas por comas de archivos adjuntos
+    medio_respuesta ENUM('email', 'telefono', 'mail') DEFAULT 'email',
+    estado ENUM('pendiente', 'en_proceso', 'resuelto', 'cerrado') DEFAULT 'pendiente',
+    respuesta_admin TEXT, -- Respuesta oficial de la barbería
+    id_usuario INT, -- Opcional: si el usuario estaba logueado al crearla
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+);
+
+================================================================================
+2. CONSULTAS SQL NECESARIAS (QUERIES)
+================================================================================
+
+Aquí están las consultas que tu backend necesita ejecutar.
+
+--- A. AUTENTICACIÓN ---
+
+1. Login:
+   SELECT u.*, r.nombre_rol as role 
+   FROM usuarios u 
+   LEFT JOIN rol r ON u.id_rol = r.id_rol 
+   WHERE (u.username = ? OR u.email = ?) AND u.estado = 1;
+
+2. Registro (Verificar existencia):
+   SELECT id_usuario FROM usuarios WHERE username = ? OR email = ?;
+
+3. Registro (Insertar):
+   INSERT INTO usuarios (username, password_hash, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, id_rol, estado) 
+   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1);
+
+--- B. CITAS Y RESERVAS ---
+
+4. Obtener Servicios Activos:
+   SELECT id_servicio, nombre, precio, duracion FROM servicios WHERE estado = 1;
+
+5. Obtener Barberos Disponibles:
+   SELECT id_usuario, prim_nombre, apellido1 FROM usuarios WHERE id_rol = (SELECT id_rol FROM rol WHERE nombre_rol = 'barbero') AND estado = 1;
+
+6. Crear Cita (Transacción):
+   -- Paso 1: Crear/Actualizar usuario (si es nuevo o invitado)
+   -- Paso 2: Insertar reserva
+   INSERT INTO reservas (fecha, observaciones, id_usuario, id_estado_cita, id_horarios) VALUES (?, ?, ?, 1, ?);
+   -- Paso 3: Relacionar servicio
+   INSERT INTO detalle_cita_servicio (id_reservas, id_servicio) VALUES (?, ?);
+
+7. Ver Mis Citas (Cliente):
+   SELECT r.*, s.nombre as servicio, h.hora_inicio 
+   FROM reservas r
+   JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
+   JOIN servicios s ON dcs.id_servicio = s.id_servicio
+   JOIN horarios h ON r.id_horarios = h.id_horarios
+   WHERE r.id_usuario = ?
+   ORDER BY r.fecha DESC;
+
+--- C. DASHBOARD ADMIN ---
+
+8. Estadísticas Generales:
+   -- Total Clientes
+   SELECT COUNT(*) FROM usuarios WHERE id_rol = (SELECT id_rol FROM rol WHERE nombre_rol = 'cliente');
+   -- Citas Hoy
+   SELECT COUNT(*) FROM reservas WHERE fecha = CURDATE();
+   -- Ingresos Hoy
+   SELECT SUM(s.precio) 
+   FROM reservas r 
+   JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
+   JOIN servicios s ON dcs.id_servicio = s.id_servicio
+   WHERE r.fecha = CURDATE();
+
+--- D. [NUEVO] MÓDULO PQRS ---
+
+9. Crear PQRS:
+   INSERT INTO pqrs (radicado, tipo_solicitud, nombre_completo, identificacion, email, telefono, asunto, descripcion, medio_respuesta, id_usuario)
+   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+10. Consultar Estado (Por Radicado):
+    SELECT * FROM pqrs WHERE radicado = ?;
+
+11. Ver Historial (Por Usuario):
+    SELECT * FROM pqrs WHERE id_usuario = ? ORDER BY created_at DESC;
+
+12. Admin: Listar todas las PQRS:
+    SELECT * FROM pqrs ORDER BY estado ASC, created_at DESC;
+
+13. Admin: Responder PQRS:
+    UPDATE pqrs SET estado = 'resuelto', respuesta_admin = ?, updated_at = NOW() WHERE id_pqrs = ?;
+
+================================================================================
+3. RECOMENDACIONES Y MEJORAS
+================================================================================
+
+1. GENERACIÓN DE RADICADO PQRS:
+   No dejes que el usuario invente el radicado. Genéralo automáticamente en el backend.
+   Formato sugerido: "PQRS-YYYYMMDD-XXXX" (donde XXXX es un número aleatorio o secuencial).
+   Ejemplo en JS: `const radicado = 'PQRS-' + Date.now().toString().slice(-8);`
+
+2. SEGURIDAD EN CONTRASEÑAS:
+   Ya estás usando `bcrypt`, ¡excelente! Asegúrate de que el `salt rounds` sea al menos 10.
+
+3. VALIDACIÓN DE DATOS:
+   - En el frontend (React), valida que los campos obligatorios no estén vacíos antes de enviar.
+   - En el backend, valida nuevamente (nunca confíes solo en el frontend).
+   - Para el email, usa una expresión regular (Regex) para asegurar formato válido.
+
+4. MANEJO DE ARCHIVOS (PQRS):
+   El formulario permite adjuntar archivos. Necesitas configurar `multer` en tu backend para guardar estos archivos en una carpeta `uploads/` y guardar solo la RUTA (string) en la base de datos (columna `archivos_url`).
+   NO guardes el archivo binario (BLOB) directamente en la base de datos, la hará muy lenta.
+
+5. INDICES (PERFORMANCE):
+   Agrega índices a las columnas que más buscas para que sea rápido:
+   - `ALTER TABLE usuarios ADD INDEX idx_email (email);`
+   - `ALTER TABLE reservas ADD INDEX idx_fecha (fecha);`
+   - `ALTER TABLE pqrs ADD INDEX idx_radicado (radicado);`
+
+6. ESTADOS DE CITA:
+   Usa una tabla `estado_cita` en lugar de strings sueltos. Esto evita errores de dedo (ej: "cancelada" vs "Cancelada"). Ya lo incluí en el esquema arriba.
+
+7. HORARIOS:
+   La tabla `horarios` es útil, pero asegúrate de tener poblados los datos (ej: id:1 -> 800, id:2 -> 900, etc.) para que el frontend pueda consultarlos y mostrarlos en el select.

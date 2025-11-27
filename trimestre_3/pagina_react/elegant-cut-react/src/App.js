@@ -12,7 +12,8 @@ import Servicios_caballero from './pages/Servicios_caballero'
 import Form_agenda from './pages/Form_agenda'
 import AdminPanel from './pages/AdminPanel'
 import Pqrs from './pages/Pqrs'
-import ProtectedRoute from './components/ProtectedRoute' // Añade esta importación
+import Perfil from './pages/Perfil'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   return (
@@ -20,14 +21,14 @@ function App() {
       <Routes>
         {/* RUTAS SIN HEADER/FOOTER */}
         <Route path="/login" element={<LoginForm />} />
-        
-        {/* RUTA ADMIN PROTEGIDA - CAMBIA ESTA LÍNEA */}
+
+        {/* RUTA ADMIN PROTEGIDA */}
         <Route path="/admin" element={
           <ProtectedRoute requiredRole="admin">
             <AdminPanel />
           </ProtectedRoute>
         } />
-        
+
         {/* RUTAS CON HEADER/FOOTER */}
         <Route path="/*" element={
           <>
@@ -41,6 +42,7 @@ function App() {
               <Route path="/Servicios_caballero" element={<Servicios_caballero />} />
               <Route path="/Form_agenda" element={<Form_agenda />} />
               <Route path="/Pqrs" element={<Pqrs />} />
+              <Route path="/perfil" element={<Perfil />} />
             </Routes>
             <Footer />
           </>

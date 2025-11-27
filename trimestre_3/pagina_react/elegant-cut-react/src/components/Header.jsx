@@ -4,27 +4,28 @@ import { useAuth } from '../hooks/UseAuth.js';
 
 function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [showWelcome, setShowWelcome] = useState(false);
     const { isAuthenticated, user, logout } = useAuth();
     const navigate = useNavigate();
-    
+
     const toggleMenu = () => {
         console.log('🔄 Menu toggle - Estado actual:', menuOpen);
         console.log('🔄 Nuevo estado:', !menuOpen);
-        
+
         // Debug del elemento nav
         const navElement = document.querySelector('.nav');
         console.log('🎯 Elemento nav encontrado:', navElement);
         console.log('🎯 Clases del nav antes:', navElement?.className);
-        
+
         setMenuOpen(!menuOpen);
-        
+
         // Verificar después de un breve delay
         setTimeout(() => {
             console.log('✅ Estado después del setState:', !menuOpen);
             const updatedNav = document.querySelector('.nav');
             console.log('✅ Clases actuales del nav:', updatedNav?.className);
             console.log('✅ Body classes:', document.body.className);
-            
+
             // Debug visual adicional
             if (updatedNav) {
                 console.log('🎨 Estilos computados del nav:');
@@ -56,7 +57,7 @@ function Header() {
     const handleProfile = () => {
         closeMenu();
         if (isAuthenticated) {
-            navigate('/profile');
+            navigate('/perfil');
         } else {
             navigate('/login');
         }
@@ -65,7 +66,7 @@ function Header() {
     // Desactivar scroll cuando menú está abierto
     useEffect(() => {
         console.log('📱 Efecto menuOpen cambiado a:', menuOpen);
-        
+
         if (menuOpen) {
             document.body.classList.add('menu-open');
             document.body.style.overflow = "hidden";
@@ -89,6 +90,19 @@ function Header() {
         console.log('🔍 Elemento nav en montaje:', document.querySelector('.nav'));
     }, []);
 
+    // Efecto para la notificación de bienvenida
+    useEffect(() => {
+        if (isAuthenticated) {
+            setShowWelcome(true);
+            const timer = setTimeout(() => {
+                setShowWelcome(false);
+            }, 5000);
+            return () => clearTimeout(timer);
+        } else {
+            setShowWelcome(false);
+        }
+    }, [isAuthenticated]);
+
     return (
         <div>
             {/* Header que se oculta cuando el menú está abierto */}
@@ -97,10 +111,10 @@ function Header() {
                 {/* Logo principal */}
                 <div className="brand-container">
                     <div className="logo">
-                        <img 
-                            src={`${process.env.PUBLIC_URL}/assets/images/logo.png`} 
-                            alt="ElegantCut Barbería" 
-                            className="logo-img" 
+                        <img
+                            src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+                            alt="ElegantCut Barbería"
+                            className="logo-img"
                         />
                     </div>
                     <div className="brand-name">
@@ -118,7 +132,7 @@ function Header() {
                         <i className="bi bi-star"></i>
                         <span className="nav-label">Reseñas</span>
                     </Link>
-                    <button 
+                    <button
                         className="button nav-button"
                         onClick={handleProfile}
                     >
@@ -143,9 +157,11 @@ function Header() {
                     {/* Autenticación en escritorio */}
                     {isAuthenticated ? (
                         <div className="user-info-desktop">
-                            <span className="user-welcome">
-                                Hola, {user?.name}
-                            </span>
+                            {showWelcome && (
+                                <span className="user-welcome welcome-notification">
+                                    Hola, {user?.name}
+                                </span>
+                            )}
                             <button
                                 className="button logout-button"
                                 onClick={handleLogout}
@@ -166,11 +182,11 @@ function Header() {
                 </div>
 
                 {/* Botón hamburguesa */}
-                <button 
-                    id="abrir" 
-                    className="abrir-menu" 
+                <button
+                    id="abrir"
+                    className="abrir-menu"
                     aria-label="Abrir menú"
-                    onClick={toggleMenu} 
+                    onClick={toggleMenu}
                 >
                     <i className="bi bi-list"></i>
                 </button>
@@ -179,9 +195,9 @@ function Header() {
             {/* Menú móvil */}
             <nav className={`nav ${menuOpen ? 'visible' : ''}`} id="nav">
                 {/* Botón cerrar */}
-                <button 
-                    id="cerrar" 
-                    className="cerrar-menu" 
+                <button
+                    id="cerrar"
+                    className="cerrar-menu"
                     aria-label="Cerrar menú"
                     onClick={closeMenu}
                 >
@@ -190,9 +206,9 @@ function Header() {
 
                 {/* Logo móvil pequeño - ORGANIZADO AL PRINCIPIO */}
                 <div className="mobile-brand">
-                    <img 
-                        src={`${process.env.PUBLIC_URL}/assets/images/logo.png`} 
-                        alt="ElegantCut Barbería" 
+                    <img
+                        src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+                        alt="ElegantCut Barbería"
                         className="mobile-logo-small"
                     />
                     <div className="mobile-brand-text">ELEGANTCUT</div>
@@ -209,7 +225,7 @@ function Header() {
                         <i className="bi bi-star"></i>
                         <span className="menu-nav-label">Reseñas</span>
                     </Link>
-                    <button 
+                    <button
                         className="button menu-nav-button"
                         onClick={handleProfile}
                     >
@@ -233,7 +249,7 @@ function Header() {
 
                     {/* Botón salir / login */}
                     {isAuthenticated ? (
-                        <button 
+                        <button
                             className="button menu-nav-button logout-mobile"
                             onClick={handleLogout}
                         >
@@ -241,7 +257,7 @@ function Header() {
                             <span className="menu-nav-label">Cerrar Sesión</span>
                         </button>
                     ) : (
-                        <button 
+                        <button
                             className="button menu-nav-button login-mobile"
                             onClick={handleLogin}
                         >

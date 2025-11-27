@@ -1,10 +1,14 @@
-const pool = require('./config/database');
+// const pool = require('./config/database'); // Ya no se usa para códigos
 const nodemailer = require('nodemailer');
 
 class EmailService {
-  // Configurar Gmail - CORREGIDO
+  // Almacenamiento en memoria (Map)
+  // Clave: email, Valor: { codigo, tipo, expiraEn }
+  static codigosMemoria = new Map();
+
+  // Configurar Gmail
   static crearTransporter() {
-    return nodemailer.createTransport({ // ← createTransport sin "r"
+    return nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: 'jn147860@gmail.com', // Tu Gmail
@@ -18,14 +22,18 @@ class EmailService {
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
 
-  // Guardar código
+  // Guardar código (En memoria)
   static async guardarCodigo(email, codigo, tipo) {
     try {
-      const expiraEn = new Date(Date.now() + 15 * 60 * 1000); // 15 minutos
-      await pool.execute(
-        'INSERT INTO codigos_verificacion (email, codigo, tipo, expira_en) VALUES (?, ?, ?, ?)',
-        [email, codigo, tipo, expiraEn]
-      );
+      const expiraEn = Date.now() + 15 * 60 * 1000; // 15 minutos
+
+      this.codigosMemoria.set(email, {
+        codigo,
+        tipo,
+        expiraEn
+      });
+
+      console.log('💾 Código guardado en memoria para:', email);
       return true;
     } catch (error) {
       console.log('Error guardando código:', error);
@@ -33,26 +41,33 @@ class EmailService {
     }
   }
 
-  // Verificar código
+  // Verificar código (En memoria)
   static async verificarCodigo(email, codigo, tipo) {
     try {
-      const [rows] = await pool.execute(
-        `SELECT * FROM codigos_verificacion 
-         WHERE email = ? AND codigo = ? AND tipo = ? AND usado = FALSE AND expira_en > NOW()`,
-        [email, codigo, tipo]
-      );
+      const datos = this.codigosMemoria.get(email);
 
-      if (rows.length === 0) {
-        return { valido: false, mensaje: 'Código inválido o expirado' };
+      // 1. Verificar si existe
+      if (!datos) {
+        return { valido: false, mensaje: 'Código no encontrado o expirado' };
       }
 
-      await pool.execute(
-        'UPDATE codigos_verificacion SET usado = TRUE WHERE id = ?',
-        [rows[0].id]
-      );
+      // 2. Verificar tipo y código
+      if (datos.codigo !== codigo || datos.tipo !== tipo) {
+        return { valido: false, mensaje: 'Código incorrecto' };
+      }
+
+      // 3. Verificar expiración
+      if (Date.now() > datos.expiraEn) {
+        this.codigosMemoria.delete(email);
+        return { valido: false, mensaje: 'El código ha expirado' };
+      }
+
+      // 4. Código válido -> Borrar de memoria para que no se use dos veces
+      this.codigosMemoria.delete(email);
 
       return { valido: true };
     } catch (error) {
+      console.log('Error verificando código:', error);
       return { valido: false, mensaje: 'Error del servidor' };
     }
   }
@@ -61,7 +76,7 @@ class EmailService {
   static async enviarCodigoRecuperacion(email, codigo) {
     try {
       const transporter = this.crearTransporter();
-      
+
       const info = await transporter.sendMail({
         from: '"ElegantCut Barbería" <jn147860@gmail.com>', // Tu Gmail
         to: email,
