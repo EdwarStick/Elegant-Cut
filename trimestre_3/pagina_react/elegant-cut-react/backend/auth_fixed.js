@@ -945,6 +945,22 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // MI NUEVA CONSULTA
+    if (req.url === '/api/mis-consultas/ejemplo' && req.method === 'GET') {
+        try {
+            // Ejecutamos la consulta usando 'pool' que ya está importado arriba
+            const [resultados] = await pool.execute('SELECT * FROM servicios');
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(resultados));
+        } catch (error) {
+            console.log('Error en mi consulta:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: error.message }));
+        }
+        return;
+    }
+
     // Ruta no encontrada
     res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'Ruta no encontrada' }));

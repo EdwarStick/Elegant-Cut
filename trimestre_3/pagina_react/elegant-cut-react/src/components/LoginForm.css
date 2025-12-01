@@ -24,7 +24,7 @@
     background: var(--bg-gradient);
     padding: 20px;
     font-family: 'Poppins', sans-serif;
-    overflow: hidden;
+    overflow-y: auto;
     position: relative;
 }
 
@@ -59,7 +59,7 @@
     width: 100%;
     max-width: 450px;
     height: auto;
-    min-height: 600px;
+    min-height: 700px;
     position: relative;
     z-index: 1;
 }
