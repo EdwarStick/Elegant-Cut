@@ -5,7 +5,7 @@ const db = require('../config/database');
 // Agendar nueva cita
 router.post('/appointments', async (req, res) => {
   const connection = await db.getConnection();
-  
+
   try {
     await connection.beginTransaction();
 
@@ -20,7 +20,7 @@ router.post('/appointments', async (req, res) => {
 
     if (userExists.length > 0) {
       userId = userExists[0].id_usuario;
-      
+
       // Actualizar datos del usuario si es necesario
       await connection.execute(
         'UPDATE usuarios SET prim_nombre = ?, email = ? WHERE id_usuario = ?',
@@ -51,7 +51,7 @@ router.post('/appointments', async (req, res) => {
 
     // 3. Insertar en reservas (id_estado_clin = 1 para pendiente)
     const [reservaResult] = await connection.execute(
-      `INSERT INTO reserves 
+      `INSERT INTO reservas 
        (fecha, observaciones, id_usuario, id_estado_clin, id_horarios) 
        VALUES (?, ?, ?, 1, ?)`,
       [date, notes || '', userId, idHorarios]
