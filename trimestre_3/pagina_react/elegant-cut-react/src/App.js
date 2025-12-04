@@ -14,6 +14,7 @@ import AdminPanel from './pages/AdminPanel'
 import Pqrs from './pages/Pqrs'
 import ProtectedRoute from './components/ProtectedRoute'
 import EjemploDB from './pages/EjemploDB' // Importamos la página de prueba
+import Perfil from './pages/Perfil'
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
         {/* RUTAS SIN HEADER/FOOTER */}
         <Route path="/login" element={<LoginForm />} />
 
-        {/* RUTA ADMIN PROTEGIDA - CAMBIA ESTA LÍNEA */}
+        {/* RUTA ADMIN PROTEGIDA */}
         <Route path="/admin" element={
           <ProtectedRoute requiredRole="admin">
             <AdminPanel />
@@ -44,6 +45,7 @@ function App() {
               <Route path="/Form_agenda" element={<Form_agenda />} />
               <Route path="/Pqrs" element={<Pqrs />} />
               <Route path="/ejemplo-db" element={<EjemploDB />} /> {/* Ruta de prueba */}
+              <Route path="/perfil" element={<Perfil />} />
             </Routes>
             <Footer />
           </>

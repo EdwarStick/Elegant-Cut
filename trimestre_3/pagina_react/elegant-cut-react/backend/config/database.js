@@ -15,11 +15,11 @@ const pool = mysql.createPool(dbConfig);
 // Verificar conexión
 pool.getConnection()
   .then(connection => {
-    console.log('✅ Conectado a MySQL - ElegantCut');
+    console.log('Conectado a MySQL - ElegantCut');
     connection.release();
   })
   .catch(error => {
-    console.log('❌ Error conectando a MySQL:', error.message);
+    console.log('Error conectando a MySQL:', error.message);
   });
 
 module.exports = pool;

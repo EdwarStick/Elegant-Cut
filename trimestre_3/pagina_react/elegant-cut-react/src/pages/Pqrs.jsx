@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../styles/pqrs/pqrs.css';
 
 function Pqrs() {
   const [formData, setFormData] = useState({
