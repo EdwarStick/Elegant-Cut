@@ -1,10 +1,14 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const pool = require('./config/database'); // Importar MySQL
-const EmailService = require('./emailService'); // Añadir este import......
+const EmailService = require('./emailService');
 const Dashboard = require('./models/Dashboard');
 const Service = require('./models/Service');
 const Appointment = require('./models/Appointment');
+const User = require('./models/User');
+const Barber = require('./models/Barber');
+const Client = require('./models/Client');
+const handleAdminRoutes = require('./routes/adminRoutes');
 
 const JWT_SECRET = "Clave-secreta-elegant-cut-2025";
 const PORT = 3001;
@@ -16,7 +20,7 @@ const server = http.createServer(async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    
+
     if (req.method === 'OPTIONS') {
         res.writeHead(200);
         res.end();
@@ -27,22 +31,16 @@ const server = http.createServer(async (req, res) => {
     if (req.url === '/auth/login' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => body += chunk.toString());
-        
+
         req.on('end', async () => {
             try {
                 const { username, password } = JSON.parse(body);
                 console.log(' Login attempt for:', username);
 
-                // Buscar usuario en MySQL
-                const [users] = await pool.execute(
-                    `SELECT u.*, r.nombre_rol as role 
-                     FROM usuarios u 
-                     LEFT JOIN rol r ON u.id_rol = r.id_rol 
-                     WHERE u.username = ? AND u.estado = 1`,
-                    [username]
-                );
+                // Buscar usuario usando el Modelo
+                const user = await User.findByUsernameWithRole(username);
 
-                if (users.length === 0) {
+                if (!user) {
                     res.writeHead(401, { 'Content-Type': 'application/json' });
                     return res.end(JSON.stringify({
                         success: false,
@@ -50,7 +48,6 @@ const server = http.createServer(async (req, res) => {
                     }));
                 }
 
-                const user = users[0];
                 console.log('👤 User found:', user.prim_nombre, 'Role:', user.role);
 
                 // Verificar contraseña
@@ -65,8 +62,8 @@ const server = http.createServer(async (req, res) => {
 
                 // Generar JWT token
                 const token = jwt.sign(
-                    { 
-                        username: user.username, 
+                    {
+                        username: user.username,
                         name: `${user.prim_nombre} ${user.apellido1}`,
                         role: user.role,
                         userId: user.id_usuario
@@ -79,8 +76,8 @@ const server = http.createServer(async (req, res) => {
                 res.end(JSON.stringify({
                     success: true,
                     token: token,
-                    user: { 
-                        username: user.username, 
+                    user: {
+                        username: user.username,
                         name: `${user.prim_nombre} ${user.apellido1}`,
                         role: user.role,
                         userId: user.id_usuario
@@ -103,19 +100,17 @@ const server = http.createServer(async (req, res) => {
     if (req.url === '/auth/register' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => body += chunk.toString());
-        
+
         req.on('end', async () => {
             try {
-                const { username, password, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, role = 'cliente' } = JSON.parse(body);
+                const userData = JSON.parse(body);
+                const { username, email, prim_nombre, apellido1, role = 'cliente' } = userData;
                 console.log('📝 Registro para:', username);
 
                 // Verificar si usuario ya existe
-                const [existingUsers] = await pool.execute(
-                    'SELECT id_usuario FROM usuarios WHERE username = ? OR email = ?',
-                    [username, email]
-                );
+                const exists = await User.exists(username, email);
 
-                if (existingUsers.length > 0) {
+                if (exists) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     return res.end(JSON.stringify({
                         success: false,
@@ -123,39 +118,16 @@ const server = http.createServer(async (req, res) => {
                     }));
                 }
 
-                // Hashear contraseña
-                const hashedPassword = await bcrypt.hash(password, 10);
-
-                // Obtener id_rol
-                const [roles] = await pool.execute(
-                    'SELECT id_rol FROM rol WHERE nombre_rol = ?',
-                    [role]
-                );
-
-                if (roles.length === 0) {
-                    res.writeHead(400, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({
-                        success: false,
-                        error: 'Rol no válido'
-                    }));
-                }
-
-                const id_rol = roles[0].id_rol;
-
-                // Crear usuario - CORREGIDO: usar todos los campos
-                const [result] = await pool.execute(
-                    `INSERT INTO usuarios (username, password_hash, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, id_rol, estado) 
-                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
-                    [username, hashedPassword, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, id_rol]
-                );
+                // Crear usuario usando el Modelo
+                const userId = await User.create({ ...userData, roleName: role });
 
                 // Generar token
                 const token = jwt.sign(
-                    { 
-                        username, 
+                    {
+                        username,
                         name: `${prim_nombre} ${apellido1}`,
-                        role, 
-                        userId: result.insertId 
+                        role,
+                        userId: userId
                     },
                     JWT_SECRET,
                     { expiresIn: '24h' }
@@ -166,11 +138,11 @@ const server = http.createServer(async (req, res) => {
                     success: true,
                     message: 'Usuario registrado exitosamente',
                     token: token,
-                    user: { 
-                        username, 
+                    user: {
+                        username,
                         name: `${prim_nombre} ${apellido1}`,
-                        role, 
-                        userId: result.insertId 
+                        role,
+                        userId: userId
                     }
                 }));
 
@@ -190,19 +162,16 @@ const server = http.createServer(async (req, res) => {
     if (req.url === '/auth/forgot-password' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => body += chunk.toString());
-        
+
         req.on('end', async () => {
             try {
                 const { username, newPassword } = JSON.parse(body);
                 console.log('🔑 Recuperar contraseña para:', username);
 
                 // Verificar que el usuario existe
-                const [users] = await pool.execute(
-                    'SELECT id_usuario FROM usuarios WHERE username = ?',
-                    [username]
-                );
+                const user = await User.findByUsernameWithRole(username);
 
-                if (users.length === 0) {
+                if (!user) {
                     res.writeHead(404, { 'Content-Type': 'application/json' });
                     return res.end(JSON.stringify({
                         success: false,
@@ -219,16 +188,10 @@ const server = http.createServer(async (req, res) => {
                     }));
                 }
 
-                // Hashear nueva contraseña
-                const hashedPassword = await bcrypt.hash(newPassword, 10);
+                // Actualizar contraseña usando el Modelo
+                const updated = await User.updatePassword(username, newPassword);
 
-                // Actualizar contraseña
-                const [result] = await pool.execute(
-                    'UPDATE usuarios SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE username = ?',
-                    [hashedPassword, username]
-                );
-
-                if (result.affectedRows > 0) {
+                if (updated) {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({
                         success: true,
@@ -258,19 +221,16 @@ const server = http.createServer(async (req, res) => {
     if (req.url === '/auth/solicitar-recuperacion' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => body += chunk.toString());
-        
+
         req.on('end', async () => {
             try {
                 const { email } = JSON.parse(body);
                 console.log('🔑 Solicitando recuperación para:', email);
 
-                // Verificar que el email existe
-                const [users] = await pool.execute(
-                    'SELECT id_usuario, username FROM usuarios WHERE email = ?',
-                    [email]
-                );
+                // Verificar que el email existe usando el Modelo
+                const user = await User.findByEmail(email);
 
-                if (users.length === 0) {
+                if (!user) {
                     res.writeHead(404, { 'Content-Type': 'application/json' });
                     return res.end(JSON.stringify({
                         success: false,
@@ -278,12 +238,12 @@ const server = http.createServer(async (req, res) => {
                     }));
                 }
 
-                const username = users[0].username;
+                const username = user.username;
 
                 // Generar y enviar código
                 const codigo = EmailService.generarCodigo();
                 const guardado = await EmailService.guardarCodigo(email, codigo, 'recuperacion');
-                
+
                 if (!guardado) {
                     res.writeHead(500, { 'Content-Type': 'application/json' });
                     return res.end(JSON.stringify({
@@ -326,15 +286,15 @@ const server = http.createServer(async (req, res) => {
     if (req.url === '/auth/verificar-codigo-recuperacion' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => body += chunk.toString());
-        
+
         req.on('end', async () => {
             try {
                 const { email, codigo, nuevaContrasena } = JSON.parse(body);
                 console.log('✅ Verificando código de recuperación para:', email);
-                
+
                 // Verificar código
                 const verificacion = await EmailService.verificarCodigo(email, codigo, 'recuperacion');
-                
+
                 if (!verificacion.valido) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     return res.end(JSON.stringify({
@@ -343,15 +303,10 @@ const server = http.createServer(async (req, res) => {
                     }));
                 }
 
-                // Código válido → CAMBIAR CONTRASEÑA
-                const hashedPassword = await bcrypt.hash(nuevaContrasena, 10);
+                // Código válido → CAMBIAR CONTRASEÑA usando el Modelo
+                const updated = await User.updatePassword(email, nuevaContrasena, true);
 
-                const [result] = await pool.execute(
-                    'UPDATE usuarios SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE email = ?',
-                    [hashedPassword, email]
-                );
-
-                if (result.affectedRows > 0) {
+                if (updated) {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({
                         success: true,
@@ -384,10 +339,7 @@ const server = http.createServer(async (req, res) => {
     // OBTENER SERVICIOS (para el formulario)
     if (req.url === '/api/services' && req.method === 'GET') {
         try {
-            const [services] = await pool.execute(
-                'SELECT id_servicio, nombre, precio, duracion FROM servicios WHERE estado = 1'
-            );
-            
+            const services = await Service.getAll();
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(services));
         } catch (error) {
@@ -401,11 +353,7 @@ const server = http.createServer(async (req, res) => {
     // OBTENER BARBEROS (para el formulario)
     if (req.url === '/api/barbers' && req.method === 'GET') {
         try {
-            const [barbers] = await pool.execute(
-                `SELECT id_usuario, prim_nombre, seg_nombre, apellido1, apellido2 
-                 FROM usuarios WHERE id_rol = 2 AND estado = 1`
-            );
-            
+            const barbers = await Barber.getAll();
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(barbers));
         } catch (error) {
@@ -419,90 +367,33 @@ const server = http.createServer(async (req, res) => {
     // AGENDAR CITA (para el formulario) - CORREGIDO
     if (req.url === '/api/appointments' && req.method === 'POST') {
         let body = '';
-        
+
         req.on('data', chunk => {
             body += chunk.toString();
         });
 
         req.on('end', async () => {
-            const connection = await pool.getConnection();
-            
             try {
-                await connection.beginTransaction();
+                const appointmentData = JSON.parse(body);
+                console.log('📅 Intentando agendar cita para:', appointmentData.name);
 
-                const { name, phone, email, date, time, barber, service, notes } = JSON.parse(body);
-                console.log('📅 Intentando agendar cita para:', name);
-
-                // 1. Buscar o crear usuario (cliente)
-                let userId;
-                const [userExists] = await connection.execute(
-                    'SELECT id_usuario FROM usuarios WHERE telefono = ? OR email = ?',
-                    [phone, email || '']
-                );
-
-                if (userExists.length > 0) {
-                    userId = userExists[0].id_usuario;
-                    await connection.execute(
-                        'UPDATE usuarios SET prim_nombre = ?, email = ? WHERE id_usuario = ?',
-                        [name, email || '', userId]
-                    );
-                } else {
-                    const [userResult] = await connection.execute(
-                        `INSERT INTO usuarios 
-                         (prim_nombre, telefono, email, id_rol, estado, created_at) 
-                         VALUES (?, ?, ?, 3, 1, NOW())`,
-                        [name, phone, email || null]
-                    );
-                    userId = userResult.insertId;
-                }
-
-                // 2. Buscar id_horarios
-                const horaNumerica = parseInt(time.replace(':', ''));
-                const [horarioResult] = await connection.execute(
-                    'SELECT id_horarios FROM horarios WHERE hora_inicio = ?',
-                    [horaNumerica]
-                );
-
-                if (horarioResult.length === 0) {
-                    throw new Error('Horario no disponible');
-                }
-                const idHorarios = horarioResult[0].id_horarios;
-
-                // 3. Insertar en reservas - CORREGIDO: usar 'reservas' en lugar de 'reserves'
-                const [reservaResult] = await connection.execute(
-                    `INSERT INTO reservas 
-                     (fecha, observaciones, id_usuario, id_estado_cita, id_horarios) 
-                     VALUES (?, ?, ?, 1, ?)`,
-                    [date, notes || '', userId, idHorarios]
-                );
-
-                const reservaId = reservaResult.insertId;
-
-                // 4. Insertar en detalle_cita_servicio
-                await connection.execute(
-                    'INSERT INTO detalle_cita_servicio (id_reservas, id_servicio) VALUES (?, ?)',
-                    [reservaId, service]
-                );
-
-                await connection.commit();
+                // Crear cita usando el Modelo
+                const appointmentId = await Appointment.create(appointmentData);
 
                 res.writeHead(201, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
                     success: true,
                     message: 'Cita agendada exitosamente',
-                    appointmentId: reservaId
+                    appointmentId: appointmentId
                 }));
 
             } catch (error) {
-                await connection.rollback();
                 console.error('Error al agendar cita:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
                     success: false,
                     message: 'Error al agendar la cita: ' + error.message
                 }));
-            } finally {
-                connection.release();
             }
         });
         return;
@@ -572,23 +463,23 @@ const server = http.createServer(async (req, res) => {
     if (req.url === '/admin/services' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => body += chunk.toString());
-        
+
         req.on('end', async () => {
             try {
                 const serviceData = JSON.parse(body);
                 const id = await Service.create(serviceData);
                 res.writeHead(201, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ 
-                    success: true, 
-                    message: 'Servicio creado exitosamente', 
-                    id: id 
+                res.end(JSON.stringify({
+                    success: true,
+                    message: 'Servicio creado exitosamente',
+                    id: id
                 }));
             } catch (error) {
                 console.log('💥 Error creando servicio:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ 
-                    success: false, 
-                    error: 'Error creando servicio: ' + error.message 
+                res.end(JSON.stringify({
+                    success: false,
+                    error: 'Error creando servicio: ' + error.message
                 }));
             }
         });
@@ -599,32 +490,32 @@ const server = http.createServer(async (req, res) => {
     if (req.url.startsWith('/admin/services/') && req.method === 'PUT') {
         let body = '';
         req.on('data', chunk => body += chunk.toString());
-        
+
         req.on('end', async () => {
             try {
                 const id = req.url.split('/')[3];
                 const serviceData = JSON.parse(body);
                 const updated = await Service.update(id, serviceData);
-                
+
                 if (updated) {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ 
-                        success: true, 
-                        message: 'Servicio actualizado exitosamente' 
+                    res.end(JSON.stringify({
+                        success: true,
+                        message: 'Servicio actualizado exitosamente'
                     }));
                 } else {
                     res.writeHead(404, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ 
-                        success: false, 
-                        error: 'Servicio no encontrado' 
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: 'Servicio no encontrado'
                     }));
                 }
             } catch (error) {
                 console.log('💥 Error actualizando servicio:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ 
-                    success: false, 
-                    error: 'Error actualizando servicio' 
+                res.end(JSON.stringify({
+                    success: false,
+                    error: 'Error actualizando servicio'
                 }));
             }
         });
@@ -636,26 +527,26 @@ const server = http.createServer(async (req, res) => {
         try {
             const id = req.url.split('/')[3];
             const deleted = await Service.delete(id);
-            
+
             if (deleted) {
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ 
-                    success: true, 
-                    message: 'Servicio eliminado exitosamente' 
+                res.end(JSON.stringify({
+                    success: true,
+                    message: 'Servicio eliminado exitosamente'
                 }));
             } else {
                 res.writeHead(404, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ 
-                    success: false, 
-                    error: 'Servicio no encontrado' 
+                res.end(JSON.stringify({
+                    success: false,
+                    error: 'Servicio no encontrado'
                 }));
             }
         } catch (error) {
             console.log('💥 Error eliminando servicio:', error);
             res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ 
-                success: false, 
-                error: 'Error eliminando servicio' 
+            res.end(JSON.stringify({
+                success: false,
+                error: 'Error eliminando servicio'
             }));
         }
         return;
@@ -679,37 +570,41 @@ const server = http.createServer(async (req, res) => {
     if (req.url.startsWith('/admin/appointments/') && req.method === 'PUT') {
         let body = '';
         req.on('data', chunk => body += chunk.toString());
-        
+
         req.on('end', async () => {
             try {
                 const id = req.url.split('/')[3];
                 const { nuevoEstado } = JSON.parse(body);
                 const updated = await Appointment.updateStatus(id, nuevoEstado);
-                
+
                 if (updated) {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ 
-                        success: true, 
-                        message: 'Estado de cita actualizado' 
+                    res.end(JSON.stringify({
+                        success: true,
+                        message: 'Estado de cita actualizado'
                     }));
                 } else {
                     res.writeHead(404, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ 
-                        success: false, 
-                        error: 'Cita no encontrada' 
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: 'Cita no encontrada'
                     }));
                 }
             } catch (error) {
                 console.log(' Error actualizando cita:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ 
-                    success: false, 
-                    error: 'Error actualizando cita' 
+                res.end(JSON.stringify({
+                    success: false,
+                    error: 'Error actualizando cita'
                 }));
             }
         });
         return;
-    }
+    } // =============================================\r\n    // INTENTAR MANEJAR RUTAS DE ADMIN\r\n    // =============================================\r\n    const adminHandled = await handleAdminRoutes(req, res);\r\n    if (adminHandled) return; // Si se manej� la ruta, salir\r\n\r\n    // =============================================
+    // INTENTAR MANEJAR RUTAS DE ADMIN
+    // =============================================
+    const adminHandled = await handleAdminRoutes(req, res);
+    if (adminHandled) return; // Si se manejó la ruta, salir
 
     // Ruta no encontrada
     res.writeHead(404, { 'Content-Type': 'application/json' });
