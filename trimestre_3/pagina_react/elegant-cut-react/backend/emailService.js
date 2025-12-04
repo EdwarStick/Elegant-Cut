@@ -99,11 +99,11 @@ class EmailService {
         `
       });
 
-      console.log('✅ Email de recuperación enviado a:', email);
+      console.log('Email de recuperación enviado a:', email);
       return true;
 
     } catch (error) {
-      console.log('❌ Error enviando email:', error);
+      console.log('Error enviando email:', error);
       return false;
     }
   }

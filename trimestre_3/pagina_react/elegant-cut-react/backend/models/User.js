@@ -1,69 +1,60 @@
+```javascript
 const pool = require('../config/database');
 const bcrypt = require('bcryptjs');
 
 class User {
-    // Obtener todos los barberos
+    // --- Métodos de Gestión de Barberos (HEAD) ---
     static async getBarbers() {
         try {
             const [rows] = await pool.execute(
                 `SELECT id_usuario, prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, estado 
-         FROM usuarios 
-         WHERE id_rol = 2 AND estado = 1`
+                 FROM usuarios 
+                 WHERE id_rol = 2 AND estado = 1`
             );
             return rows;
-        } catch (error) {
-            throw error;
-        }
+        } catch (error) { throw error; }
     }
 
-    // Obtener todos los clientes
-    static async getClients() {
-        try {
-            const [rows] = await pool.execute(
-                `SELECT id_usuario, prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, created_at, estado 
-         FROM usuarios 
-         WHERE id_rol = 3`
-            );
-            return rows;
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    // Crear barbero
     static async createBarber(data) {
         try {
             const { prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, username, password } = data;
             const hashedPassword = await bcrypt.hash(password, 10);
 
             const [result] = await pool.execute(
-                `INSERT INTO usuarios (prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, username, password_hash, id_rol, estado) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, 2, 1)`,
+                `INSERT INTO usuarios(prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, username, password_hash, id_rol, estado)
+VALUES(?, ?, ?, ?, ?, ?, ?, ?, 2, 1)`,
                 [prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, username, hashedPassword]
             );
             return result.insertId;
-        } catch (error) {
-            throw error;
-        }
+        } catch (error) { throw error; }
     }
 
-    // Actualizar usuario (barbero o cliente)
+    // --- Métodos de Gestión de Clientes (HEAD) ---
+    static async getClients() {
+        try {
+            const [rows] = await pool.execute(
+                `SELECT id_usuario, prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, created_at, estado 
+                 FROM usuarios 
+                 WHERE id_rol = 3`
+            );
+            return rows;
+        } catch (error) { throw error; }
+    }
+
+    // --- Métodos Generales de Usuario (HEAD/Common) ---
     static async update(id, data) {
         try {
             const { prim_nombre, seg_nombre, apellido1, apellido2, email, telefono } = data;
             const [result] = await pool.execute(
                 `UPDATE usuarios 
-         SET prim_nombre = ?, seg_nombre = ?, apellido1 = ?, apellido2 = ?, email = ?, telefono = ? 
-         WHERE id_usuario = ?`,
+                 SET prim_nombre = ?, seg_nombre = ?, apellido1 = ?, apellido2 = ?, email = ?, telefono = ?
+    WHERE id_usuario = ? `,
                 [prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, id]
             );
             return result.affectedRows > 0;
-        } catch (error) {
-            throw error;
-        }
+        } catch (error) { throw error; }
     }
 
-    // Eliminar usuario (Soft delete)
     static async delete(id) {
         try {
             const [result] = await pool.execute(
@@ -71,10 +62,103 @@ class User {
                 [id]
             );
             return result.affectedRows > 0;
+        } catch (error) { throw error; }
+    }
+
+    // --- Métodos de Autenticación y Búsqueda (Incoming) ---
+    static async findByUsernameWithRole(username) {
+        try {
+            const [users] = await pool.execute(
+                `SELECT u.*, r.nombre_rol as role 
+                 FROM usuarios u 
+                 LEFT JOIN rol r ON u.id_rol = r.id_rol 
+                 WHERE u.username = ? AND u.estado = 1`,
+                [username]
+            );
+            return users[0];
+        } catch (error) { throw error; }
+    }
+
+    static async findByEmail(email) {
+        try {
+            const [users] = await pool.execute(
+                'SELECT * FROM usuarios WHERE email = ?',
+                [email]
+            );
+            return users[0];
+        } catch (error) { throw error; }
+    }
+
+    static async exists(username, email) {
+        try {
+            const [users] = await pool.execute(
+                'SELECT id_usuario FROM usuarios WHERE username = ? OR email = ?',
+                [username, email]
+            );
+            return users.length > 0;
+        } catch (error) { throw error; }
+    }
+
+    static async create(userData) {
+        const { username, password, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, roleName } = userData;
+
+        const connection = await pool.getConnection();
+        try {
+            await connection.beginTransaction();
+
+            const [roles] = await connection.execute(
+                'SELECT id_rol FROM rol WHERE nombre_rol = ?',
+                [roleName]
+            );
+
+            if (roles.length === 0) throw new Error('Rol no válido');
+            const id_rol = roles[0].id_rol;
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            const [result] = await connection.execute(
+                `INSERT INTO usuarios(username, password_hash, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, id_rol, estado)
+VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
+                [username, hashedPassword, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, id_rol]
+            );
+
+            await connection.commit();
+            return result.insertId;
+
         } catch (error) {
+            await connection.rollback();
             throw error;
+        } finally {
+            connection.release();
         }
+    }
+
+    static async updatePassword(identifier, newPassword, isEmail = false) {
+        try {
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            const field = isEmail ? 'email' : 'username';
+
+            const [result] = await pool.execute(
+                `UPDATE usuarios SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE ${ field } = ?`,
+                [hashedPassword, identifier]
+            );
+            return result.affectedRows > 0;
+        } catch (error) { throw error; }
+    }
+
+    static async findAllByRole(roleId) {
+        try {
+            const [users] = await pool.execute(
+                `SELECT id_usuario, username, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, estado, created_at 
+                 FROM usuarios 
+                 WHERE id_rol = ?
+    ORDER BY created_at DESC`,
+                [roleId]
+            );
+            return users;
+        } catch (error) { throw error; }
     }
 }
 
 module.exports = User;
+```

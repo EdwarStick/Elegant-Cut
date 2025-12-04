@@ -2,203 +2,116 @@ import React, { useState, useEffect } from 'react';
 
 const DashboardTab = () => {
   const [stats, setStats] = useState({
-    totalClientes: 0,
-    citasHoy: 0,
+    totalCitas: 0,
     ingresosHoy: 0,
-    ratingPromedio: 0
+    clientesNuevos: 0,
+    citasPendientes: 0
   });
-  const [recentActivity, setRecentActivity] = useState([]);
-  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadDashboardData();
+    fetchStats();
   }, []);
 
-  const loadDashboardData = async () => {
+  const fetchStats = async () => {
     try {
-      setLoading(true);
-
-      // Cargar estadísticas
-      const statsResponse = await fetch('http://localhost:3001/admin/dashboard/stats');
-      const statsData = await statsResponse.json();
-      if (statsData.success) setStats(statsData.data);
-
-      // Cargar actividad reciente
-      const activityResponse = await fetch('http://localhost:3001/admin/dashboard/activity');
-      const activityData = await activityResponse.json();
-      if (activityData.success) setRecentActivity(activityData.data);
-
-      // Cargar próximas citas
-      const appointmentsResponse = await fetch('http://localhost:3001/admin/dashboard/appointments');
-      const appointmentsData = await appointmentsResponse.json();
-      if (appointmentsData.success) setUpcomingAppointments(appointmentsData.data);
-
+      const response = await fetch('http://localhost:3001/admin/dashboard/stats');
+      const data = await response.json();
+      if (data.success) {
+        setStats(data.data);
+      }
     } catch (error) {
-      console.error('Error cargando datos del dashboard:', error);
+      console.error('Error fetching stats:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP'
-    }).format(amount);
-  };
-
-  const formatTime = (minutesAgo) => {
-    if (minutesAgo < 60) return `Hace ${minutesAgo} min`;
-    if (minutesAgo < 1440) return `Hace ${Math.floor(minutesAgo / 60)} h`;
-    return `Hace ${Math.floor(minutesAgo / 1440)} d`;
-  };
-
-  const formatHora = (horaInicio) => {
-    // Convertir minutos a formato HH:MM
-    const horas = Math.floor(horaInicio / 60);
-    const minutos = horaInicio % 60;
-    return `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}`;
-  };
-
-  if (loading) {
-    return (
-      <div className="tab-content active">
-        <div className="loading-container">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Cargando...</span>
+  const StatCard = ({ title, value, icon, color, trend }) => (
+    <div className="col-md-3 mb-4">
+      <div className="card border-0 shadow-sm h-100">
+        <div className="card-body d-flex align-items-center">
+          <div className={`rounded-circle p-3 bg-${color} bg-opacity-10 text-${color} me-3`}>
+            <i className={`bi ${icon} fs-3`}></i>
           </div>
-          <p>Cargando dashboard...</p>
+          <div>
+            <h6 className="text-muted mb-1">{title}</h6>
+            <h3 className="mb-0 fw-bold">{loading ? '...' : value}</h3>
+            {trend && <small className="text-success"><i className="bi bi-arrow-up"></i> {trend}</small>}
+          </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 
   return (
-    <div className="tab-content active">
-      {/* Stats Grid */}
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #3498db, #2980b9)' }}>
-            <i className="bi bi-people"></i>
-          </div>
-          <div className="stat-info">
-            <h3>{stats.totalClientes}</h3>
-            <p>Clientes Registrados</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #2ecc71, #27ae60)' }}>
-            <i className="bi bi-calendar-check"></i>
-          </div>
-          <div className="stat-info">
-            <h3>{stats.citasHoy}</h3>
-            <p>Citas Hoy</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #e74c3c, #c0392b)' }}>
-            <i className="bi bi-currency-dollar"></i>
-          </div>
-          <div className="stat-info">
-            <h3>{formatCurrency(stats.ingresosHoy)}</h3>
-            <p>Ingresos del Día</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #f39c12, #e67e22)' }}>
-            <i className="bi bi-star"></i>
-          </div>
-          <div className="stat-info">
-            <h3>{stats.ratingPromedio}</h3>
-            <p>Rating Promedio</p>
-          </div>
+    <div className="dashboard-container">
+      <div className="tab-header">
+        <h2>Panel de Control</h2>
+        <div className="date-display text-muted">
+          {new Date().toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
         </div>
       </div>
 
-      {/* Content Grid */}
-      <div className="content-grid">
-        {/* Actividad Reciente */}
-        <div className="recent-activity">
-          <div className="section-header">
-            <h3>Actividad Reciente</h3>
-            <button
-              className="btn btn-sm btn-outline-primary"
-              onClick={loadDashboardData}
-              disabled={loading}
-            >
-              <i className="bi bi-arrow-clockwise"></i>
-            </button>
-          </div>
+      <div className="row">
+        <StatCard
+          title="Citas Hoy"
+          value={stats.totalCitas || 0}
+          icon="bi-calendar-check"
+          color="primary"
+        />
+        <StatCard
+          title="Ingresos Hoy"
+          value={`$${(stats.ingresosHoy || 0).toLocaleString()}`}
+          icon="bi-cash-stack"
+          color="success"
+        />
+        <StatCard
+          title="Clientes Nuevos"
+          value={stats.clientesNuevos || 0}
+          icon="bi-people"
+          color="info"
+        />
+        <StatCard
+          title="Pendientes"
+          value={stats.citasPendientes || 0}
+          icon="bi-clock-history"
+          color="warning"
+        />
+      </div>
 
-          <div className="activity-list">
-            {recentActivity.length > 0 ? (
-              recentActivity.map((activity, index) => (
-                <div key={index} className="activity-item">
-                  <div className="activity-icon">
-                    <i className={`bi bi-${activity.tipo === 'cita' ? 'calendar-plus' : 'person-plus'}`}></i>
-                  </div>
-                  <div className="activity-content">
-                    <p>
-                      <strong>{activity.cliente}</strong> - {activity.servicio}
-                    </p>
-                    <span className="activity-time">
-                      {formatTime(activity.minutos_hace)}
-                    </span>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="no-data">
-                <i className="bi bi-inbox"></i>
-                <p>No hay actividad reciente</p>
-              </div>
-            )}
+      <div className="row mt-4">
+        <div className="col-md-8">
+          <div className="card border-0 shadow-sm">
+            <div className="card-header bg-white py-3">
+              <h5 className="mb-0">Actividad Reciente</h5>
+            </div>
+            <div className="card-body">
+              <p className="text-muted text-center py-5">Gráfico de actividad semanal (Próximamente)</p>
+            </div>
           </div>
         </div>
-
-        {/* Próximas Citas */}
-        <div className="upcoming-appointments">
-          <div className="section-header">
-            <h3>Próximas Citas</h3>
-            <button
-              className="btn btn-sm btn-outline-primary"
-              onClick={loadDashboardData}
-              disabled={loading}
-            >
-              <i className="bi bi-arrow-clockwise"></i>
-            </button>
-          </div>
-
-          <div className="appointments-list">
-            {upcomingAppointments.length > 0 ? (
-              upcomingAppointments.map((appointment, index) => (
-                <div key={index} className="appointment-item">
-                  <div className="appointment-time">
-                    {formatHora(appointment.hora_inicio)}
-                  </div>
-                  <div className="appointment-details">
-                    <strong>{appointment.cliente}</strong>
-                    <span>{appointment.servicio}</span>
-                    <small>{formatCurrency(appointment.precio)}</small>
-                  </div>
-                  <div className="appointment-date">
-                    {new Date(appointment.fecha).toLocaleDateString('es-ES', {
-                      day: 'numeric',
-                      month: 'short'
-                    })}
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="no-data">
-                <i className="bi bi-calendar-x"></i>
-                <p>No hay citas programadas</p>
-              </div>
-            )}
+        <div className="col-md-4">
+          <div className="card border-0 shadow-sm">
+            <div className="card-header bg-white py-3">
+              <h5 className="mb-0">Servicios Top</h5>
+            </div>
+            <div className="card-body">
+              <ul className="list-group list-group-flush">
+                <li className="list-group-item d-flex justify-content-between align-items-center">
+                  Corte Clásico
+                  <span className="badge bg-primary rounded-pill">14</span>
+                </li>
+                <li className="list-group-item d-flex justify-content-between align-items-center">
+                  Barba Express
+                  <span className="badge bg-primary rounded-pill">8</span>
+                </li>
+                <li className="list-group-item d-flex justify-content-between align-items-center">
+                  Corte + Barba
+                  <span className="badge bg-primary rounded-pill">5</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

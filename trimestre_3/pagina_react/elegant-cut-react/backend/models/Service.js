@@ -41,11 +41,11 @@ class Service {
     }
   }
 
-  // Eliminar servicio
+  // Eliminar servicio (soft delete - eliminación lógica)
   static async delete(id) {
     try {
       const [result] = await pool.execute(
-        'DELETE FROM servicios WHERE id_servicio = ?',
+        'UPDATE servicios SET estado = 0 WHERE id_servicio = ?',
         [id]
       );
       return result.affectedRows > 0;

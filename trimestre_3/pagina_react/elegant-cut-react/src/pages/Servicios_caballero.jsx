@@ -1,11 +1,123 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 function Servicios_caballero() {
+  const [activeCategory, setActiveCategory] = useState("todos");
+  const [cart, setCart] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const servicesData = [
+    {
+      id: 1,
+      name: "Buzz Cut",
+      price: 25000,
+      category: "cortes",
+      image: "/assets/images/servicios_caballeros/cortes/buzzz cut.png",
+      description: "Un corte limpio, rápido y versátil. Ideal para quienes buscan un look moderno y sin complicaciones.",
+      features: ["Máquina", "45 min"],
+      categoryLabel: "Corte"
+    },
+    {
+      id: 2,
+      name: "Corte Militar (Bascot)",
+      price: 28000,
+      category: "cortes",
+      image: "/assets/images/servicios_caballeros/cortes/Corte Militar (Bascot).png",
+      description: "Estilo clásico y disciplinado, con laterales muy cortos y parte superior ligeramente más larga.",
+      features: ["Tijera/Máquina", "45 min"],
+      categoryLabel: "Corte"
+    },
+    {
+      id: 3,
+      name: "Mullet",
+      price: 35000,
+      category: "cortes",
+      image: "/assets/images/servicios_caballeros/cortes/Mullet.png",
+      description: "Un estilo audaz y retro, corto adelante y largo atrás. Para quienes quieren destacar.",
+      features: ["Estilo", "60 min"],
+      categoryLabel: "Corte"
+    },
+    {
+      id: 4,
+      name: "Slick Back",
+      price: 32000,
+      category: "cortes",
+      image: "/assets/images/servicios_caballeros/cortes/Slick Back.png",
+      description: "Elegancia pura. Cabello peinado hacia atrás con un acabado pulido y sofisticado.",
+      features: ["Clásico", "50 min"],
+      categoryLabel: "Corte"
+    },
+    {
+      id: 5,
+      name: "Corte con Figuras",
+      price: 40000,
+      category: "cortes",
+      image: "/assets/images/servicios_caballeros/cortes/corte con figuras.png",
+      description: "Arte en tu cabello. Diseños personalizados y creativos para un look único.",
+      features: ["Diseño", "60+ min"],
+      categoryLabel: "Corte"
+    },
+    {
+      id: 6,
+      name: "Crop Top",
+      price: 30000,
+      category: "cortes",
+      image: "/assets/images/servicios_caballeros/cortes/crop top.png",
+      description: "Texturizado en la parte superior con flequillo corto. Moderno y fácil de peinar.",
+      features: ["Textura", "50 min"],
+      categoryLabel: "Corte"
+    },
+    {
+      id: 7,
+      name: "Low Fade",
+      price: 30000,
+      category: "cortes",
+      image: "/assets/images/servicios_caballeros/cortes/low fade.png",
+      description: "Degradado suave y bajo que conecta perfectamente con la barba o patillas.",
+      features: ["Degradado", "50 min"],
+      categoryLabel: "Corte"
+    },
+    {
+      id: 8,
+      name: "Undercut",
+      price: 32000,
+      category: "cortes",
+      image: "/assets/images/servicios_caballeros/cortes/undercut.png",
+      description: "Contraste marcado entre laterales rapados y volumen superior. Versátil y actual.",
+      features: ["Contraste", "50 min"],
+      categoryLabel: "Corte"
+    }
+  ];
+
+  const handleCategoryClick = (category) => {
+    setActiveCategory(category);
+  };
+
+  const addToCart = (service) => {
+    setCart([...cart, service]);
+    setIsCartOpen(true); // Open cart when adding item
+  };
+
+  const removeFromCart = (indexToRemove) => {
+    setCart(cart.filter((_, index) => index !== indexToRemove));
+  };
+
+  const toggleCart = () => {
+    setIsCartOpen(!isCartOpen);
+  };
+
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => total + item.price, 0);
+  };
+
+  const filteredServices = activeCategory === "todos"
+    ? servicesData
+    : servicesData.filter(service => service.category === activeCategory);
+
   return (
     <div>
       <main>
-        <div className="menu-overlay" id="overlay"></div>
+        <div className={`menu-overlay ${isCartOpen ? 'active' : ''}`} id="overlay" onClick={() => setIsCartOpen(false)}></div>
 
         {/* CARRUSEL */}
         <div className="carousel-container">
@@ -19,7 +131,7 @@ function Servicios_caballero() {
               {/* Imagen 1 */}
               <div className="carousel-item active">
                 <img
-                  src="../images/servicios_caballeros/carrusel/barberia.png"
+                  src="/assets/images/servicios_caballeros/carrusel/barberia.png"
                   className="d-block w-100"
                   alt="Barbería ElegantCut"
                 />
@@ -35,7 +147,7 @@ function Servicios_caballero() {
               {/* Imagen 2 */}
               <div className="carousel-item">
                 <img
-                  src="../images/servicios_caballeros/carrusel/servicios_general.png"
+                  src="/assets/images/servicios_caballeros/carrusel/servicios_general.png"
                   className="d-block w-100"
                   alt="Nuestros Servicios"
                 />
@@ -51,7 +163,7 @@ function Servicios_caballero() {
               {/* Imagen 3 */}
               <div className="carousel-item">
                 <img
-                  src="../images/servicios_caballeros/carrusel/varios.png"
+                  src="/assets/images/servicios_caballeros/carrusel/varios.png"
                   className="d-block w-100"
                   alt="Ambiente ElegantCut"
                 />
@@ -107,16 +219,28 @@ function Servicios_caballero() {
 
         {/* Filtros de categorías */}
         <div className="category-menu">
-          <button className="category-btn active" data-category="todos">
+          <button
+            className={`category-btn ${activeCategory === 'todos' ? 'active' : ''}`}
+            onClick={() => handleCategoryClick('todos')}
+          >
             Todos los Servicios
           </button>
-          <button className="category-btn" data-category="cortes">
+          <button
+            className={`category-btn ${activeCategory === 'cortes' ? 'active' : ''}`}
+            onClick={() => handleCategoryClick('cortes')}
+          >
             Cortes de Cabello
           </button>
-          <button className="category-btn" data-category="barba">
+          <button
+            className={`category-btn ${activeCategory === 'barba' ? 'active' : ''}`}
+            onClick={() => handleCategoryClick('barba')}
+          >
             Barba y Afeitado
           </button>
-          <button className="category-btn" data-category="otros">
+          <button
+            className={`category-btn ${activeCategory === 'otros' ? 'active' : ''}`}
+            onClick={() => handleCategoryClick('otros')}
+          >
             Tratamientos Especiales
           </button>
         </div>
@@ -125,47 +249,61 @@ function Servicios_caballero() {
         <h2 className="section-title">NUESTROS SERVICIOS</h2>
 
         <div className="services-grid">
-          {/* Servicio 1 - Buzz Cut */}
-          <div className="service-card" data-category="cortes">
-            <div className="category-indicator">Corte</div>
-            <img
-              src="../images/servicios_caballeros/cortes/buzzz cut.png"
-              alt="Buzz Cut"
-              className="service-image"
-            />
-            <div className="service-content">
-              <h3 className="service-title">Buzz Cut</h3>
-              <div className="service-price">$25.000</div>
-              <p className="service-description">
-                Un corte limpio, rápido y versátil. Ideal para quienes buscan un
-                look moderno y sin complicaciones.
-              </p>
-              <div className="service-features">
-                <span className="feature-tag">Máquina</span>
-                <span className="feature-tag">45 min</span>
+          {filteredServices.map((service) => (
+            <div key={service.id} className="service-card" data-category={service.category}>
+              <div className="category-indicator">{service.categoryLabel}</div>
+              <img
+                src={service.image}
+                alt={service.name}
+                className="service-image"
+              />
+              <div className="service-content">
+                <h3 className="service-title">{service.name}</h3>
+                <div className="service-price">${service.price.toLocaleString()}</div>
+                <p className="service-description">
+                  {service.description}
+                </p>
+                <div className="service-features">
+                  {service.features.map((feature, index) => (
+                    <span key={index} className="feature-tag">{feature}</span>
+                  ))}
+                </div>
+                <button
+                  className="service-button"
+                  onClick={() => addToCart(service)}
+                >
+                  Agregar al Carrito
+                </button>
               </div>
-              <button
-                className="service-button"
-                data-service="Buzz Cut"
-                data-price="25000"
-              >
-                Agregar al Carrito
-              </button>
             </div>
-          </div>
-
-          {/*  Aquí puedes dejar el resto de tus servicios igual (ya sabes cómo adaptarlos) */}
+          ))}
         </div>
 
         {/* CARRITO */}
-        <div id="cart">
+        <div id="cart" className={isCartOpen ? 'active' : ''} style={{ right: isCartOpen ? '0' : '-400px' }}>
           <div className="cart-header">
             Carrito de Servicios
-            <i className="bi bi-x-lg close-cart"></i>
+            <i className="bi bi-x-lg close-cart" onClick={() => setIsCartOpen(false)}></i>
           </div>
-          <div className="cart-items"></div>
+          <div className="cart-items">
+            {cart.length === 0 ? (
+              <p style={{ padding: '20px', textAlign: 'center' }}>El carrito está vacío</p>
+            ) : (
+              cart.map((item, index) => (
+                <div key={index} className="cart-item" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #eee' }}>
+                  <div>
+                    <h4>{item.name}</h4>
+                    <p>${item.price.toLocaleString()}</p>
+                  </div>
+                  <button onClick={() => removeFromCart(index)} style={{ background: 'none', border: 'none', color: 'red', cursor: 'pointer' }}>
+                    <i className="bi bi-trash"></i>
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
           <div className="cart-total">
-            Total: <span id="cartTotal">$0</span>
+            Total: <span id="cartTotal">${calculateTotal().toLocaleString()}</span>
           </div>
           <Link to="/form_agenda">
             <button id="agendarBtn">Agendar Cita</button>
@@ -173,9 +311,9 @@ function Servicios_caballero() {
         </div>
 
         {/* BOTÓN FLOTANTE DEL CARRITO */}
-        <div id="cartToggle">
+        <div id="cartToggle" onClick={toggleCart}>
           <i className="bi bi-bag"></i>
-          <span className="cart-count">0</span>
+          <span className="cart-count">{cart.length}</span>
         </div>
       </main>
     </div>

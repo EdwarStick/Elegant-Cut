@@ -1,929 +1,138 @@
-═══════════════════════════════════════════════════════════════════════════════
-                    ANÁLISIS DE CONSULTAS SQL - ELEGANT CUT
-                           Barbería Management System
-═══════════════════════════════════════════════════════════════════════════════
-
-📅 Fecha de análisis: 2025-12-01
-🔍 Archivos analizados: 7 archivos backend
-
-═══════════════════════════════════════════════════════════════════════════════
-                        RESUMEN EJECUTIVO
-═══════════════════════════════════════════════════════════════════════════════
-
-Total de consultas SQL encontradas: 31
-Archivos con consultas SQL: 6
-
-Distribución:
-  - auth_fixed.js: 11 consultas
-  - models/Service.js: 4 consultas
-  - models/Dashboard.js: 5 consultas
-  - models/Appointment.js: 2 consultas
-  - routes/appointments.js: 7 consultas
-  - routes/barbers.js: 1 consulta
-  - routes/services.js: 1 consulta
-
-═══════════════════════════════════════════════════════════════════════════════
-                    CONSULTAS SQL POR ARCHIVO
-═══════════════════════════════════════════════════════════════════════════════
-
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ 1. AUTH_FIXED.JS (Autenticación y Gestión de Usuarios)                     │
-└─────────────────────────────────────────────────────────────────────────────┘
-
-1.1 LOGIN - Buscar usuario (Línea 37-42)
-────────────────────────────────────────────────────────────────────────────────
-SELECT u.*, r.nombre_rol as role 
-FROM usuarios u 
-LEFT JOIN rol r ON u.id_rol = r.id_rol 
-WHERE u.username = ? AND u.estado = 1
-
-Propósito: Autenticar usuario y obtener su rol
-Parámetros: username
-Tablas: usuarios, rol
-
-
-1.2 REGISTRO - Verificar usuario existente (Línea 113-115)
-────────────────────────────────────────────────────────────────────────────────
-SELECT id_usuario FROM usuarios WHERE username = ? OR email = ?
-
-Propósito: Prevenir duplicados en registro
-Parámetros: username, email
-Tablas: usuarios
-
-
-1.3 REGISTRO - Obtener ID de rol (Línea 130-132)
-────────────────────────────────────────────────────────────────────────────────
-SELECT id_rol FROM rol WHERE nombre_rol = ?
-
-Propósito: Convertir nombre de rol a ID
-Parámetros: role (nombre_rol)
-Tablas: rol
-
-
-1.4 REGISTRO - Crear nuevo usuario (Línea 146-149)
-────────────────────────────────────────────────────────────────────────────────
-INSERT INTO usuarios 
-(username, password_hash, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, id_rol, estado) 
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
-
-Propósito: Registrar nuevo usuario
-Parámetros: username, hashedPassword, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, id_rol
-Tablas: usuarios
-
-
-1.5 RECUPERAR CONTRASEÑA - Verificar usuario (Línea 200-202)
-────────────────────────────────────────────────────────────────────────────────
-SELECT id_usuario FROM usuarios WHERE username = ?
-
-Propósito: Validar que el usuario existe antes de cambiar contraseña
-Parámetros: username
-Tablas: usuarios
-
-
-1.6 RECUPERAR CONTRASEÑA - Actualizar contraseña (Línea 226-228)
-────────────────────────────────────────────────────────────────────────────────
-UPDATE usuarios SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE username = ?
-
-Propósito: Actualizar contraseña olvidada
-Parámetros: hashedPassword, username
-Tablas: usuarios
-
-
-1.7 SOLICITAR RECUPERACIÓN - Buscar por email (Línea 268-270)
-────────────────────────────────────────────────────────────────────────────────
-SELECT id_usuario, username FROM usuarios WHERE email = ?
-
-Propósito: Validar email para envío de código de recuperación
-Parámetros: email
-Tablas: usuarios
-
-
-1.8 VERIFICAR CÓDIGO - Actualizar contraseña por email (Línea 349-351)
-────────────────────────────────────────────────────────────────────────────────
-UPDATE usuarios SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE email = ?
-
-Propósito: Cambiar contraseña después de verificar código
-Parámetros: hashedPassword, email
-Tablas: usuarios
-
-
-1.9 OBTENER SERVICIOS - Para formulario (Línea 387-388)
-────────────────────────────────────────────────────────────────────────────────
-SELECT id_servicio, nombre, precio, duracion FROM servicios WHERE estado = 1
-
-Propósito: Listar servicios activos para el formulario de citas
-Parámetros: ninguno
-Tablas: servicios
-
-
-1.10 OBTENER BARBEROS - Para formulario (Línea 404-406)
-────────────────────────────────────────────────────────────────────────────────
-SELECT id_usuario, prim_nombre, seg_nombre, apellido1, apellido2 
-FROM usuarios WHERE id_rol = 2 AND estado = 1
-
-Propósito: Listar barberos activos para el formulario de citas
-Parámetros: ninguno
-Tablas: usuarios
-
-
-1.11 AGENDAR CITA - Múltiples consultas en transacción (Líneas 438-484)
-────────────────────────────────────────────────────────────────────────────────
-a) SELECT id_usuario FROM usuarios WHERE telefono = ? OR email = ?
-   Propósito: Verificar si el cliente ya existe
-   
-b) UPDATE usuarios SET prim_nombre = ?, email = ? WHERE id_usuario = ?
-   Propósito: Actualizar datos del cliente existente
-   
-c) INSERT INTO usuarios (prim_nombre, telefono, email, id_rol, estado, created_at) 
-   VALUES (?, ?, ?, 3, 1, NOW())
-   Propósito: Crear nuevo cliente si no existe
-   
-d) SELECT id_horarios FROM horarios WHERE hora_inicio = ?
-   Propósito: Obtener ID del horario seleccionado
-   
-e) INSERT INTO reservas (fecha, observaciones, id_usuario, id_estado_cita, id_horarios) 
-   VALUES (?, ?, ?, 1, ?)
-   Propósito: Crear la reserva
-   
-f) INSERT INTO detalle_cita_servicio (id_reservas, id_servicio) VALUES (?, ?)
-   Propósito: Asociar servicio a la cita
-
-
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ 2. MODELS/SERVICE.JS (Gestión de Servicios)                                │
-└─────────────────────────────────────────────────────────────────────────────┘
-
-2.1 OBTENER TODOS LOS SERVICIOS (Línea 7-8)
-────────────────────────────────────────────────────────────────────────────────
-SELECT * FROM servicios ORDER BY nombre
-
-Propósito: Listar todos los servicios ordenados alfabéticamente
-Parámetros: ninguno
-Tablas: servicios
-
-
-2.2 CREAR SERVICIO (Línea 20-21)
-────────────────────────────────────────────────────────────────────────────────
-INSERT INTO servicios (nombre, precio, duracion) VALUES (?, ?, ?)
-
-Propósito: Agregar nuevo servicio
-Parámetros: nombre, precio, duracion
-Tablas: servicios
-
-
-2.3 ACTUALIZAR SERVICIO (Línea 34-35)
-────────────────────────────────────────────────────────────────────────────────
-UPDATE servicios SET nombre = ?, precio = ?, duracion = ? WHERE id_servicio = ?
-
-Propósito: Modificar datos de un servicio existente
-Parámetros: nombre, precio, duracion, id
-Tablas: servicios
-
-
-2.4 ELIMINAR SERVICIO (Línea 47-48)
-────────────────────────────────────────────────────────────────────────────────
-DELETE FROM servicios WHERE id_servicio = ?
-
-Propósito: Eliminar servicio (eliminación física)
-Parámetros: id
-Tablas: servicios
-
-
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ 3. MODELS/DASHBOARD.JS (Estadísticas del Panel)                            │
-└─────────────────────────────────────────────────────────────────────────────┘
-
-3.1 TOTAL CLIENTES (Línea 8-10)
-────────────────────────────────────────────────────────────────────────────────
-SELECT COUNT(*) as total 
-FROM usuarios 
-WHERE estado = 1 AND id_rol != 1
-
-Propósito: Contar usuarios activos que no son administradores
-Parámetros: ninguno
-Tablas: usuarios
-
-
-3.2 CITAS DE HOY (Línea 15-16)
-────────────────────────────────────────────────────────────────────────────────
-SELECT COUNT(*) as total FROM reservas WHERE DATE(fecha) = CURDATE()
-
-Propósito: Contar citas programadas para hoy
-Parámetros: ninguno
-Tablas: reservas
-
-
-3.3 INGRESOS DE HOY (Línea 20-24)
-────────────────────────────────────────────────────────────────────────────────
-SELECT COALESCE(SUM(s.precio), 0) as total
-FROM reservas r
-JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
-JOIN servicios s ON dcs.id_servicio = s.id_servicio
-WHERE DATE(r.fecha) = CURDATE()
-
-Propósito: Calcular ingresos totales del día
-Parámetros: ninguno
-Tablas: reservas, detalle_cita_servicio, servicios
-
-
-3.4 ACTIVIDAD RECIENTE (Línea 49-57)
-────────────────────────────────────────────────────────────────────────────────
-SELECT 
-    'usuario' as tipo,
-    u.created_at as fecha,
-    CONCAT(u.prim_nombre, ' ', u.apellido1) as cliente,
-    'Nuevo registro' as servicio,
-    TIMESTAMPDIFF(MINUTE, u.created_at, NOW()) as minutos_hace
-FROM usuarios u
-WHERE u.created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)
-ORDER BY u.created_at DESC
-LIMIT 5
-
-Propósito: Mostrar últimos usuarios registrados en las últimas 24 horas
-Parámetros: ninguno
-Tablas: usuarios
-
-
-3.5 PRÓXIMAS CITAS (Línea 71-82)
-────────────────────────────────────────────────────────────────────────────────
-SELECT 
-    r.fecha,
-    COALESCE(h.hora_inicio, 540) as hora_inicio,
-    CONCAT(u.prim_nombre, ' ', u.apellido1) as cliente,
-    COALESCE(s.nombre, 'Servicio') as servicio,
-    COALESCE(s.precio, 0) as precio
-FROM reservas r
-LEFT JOIN usuarios u ON r.id_usuario = u.id_usuario
-LEFT JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
-LEFT JOIN servicios s ON dcs.id_servicio = s.id_servicio
-LEFT JOIN horarios h ON r.id_horarios = h.id_horarios
-WHERE r.fecha >= CURDATE()
-ORDER BY r.fecha ASC, hora_inicio ASC
-LIMIT 5
-
-Propósito: Mostrar las próximas 5 citas programadas
-Parámetros: ninguno
-Tablas: reservas, usuarios, detalle_cita_servicio, servicios, horarios
-
-
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ 4. MODELS/APPOINTMENT.JS (Gestión de Citas)                                │
-└─────────────────────────────────────────────────────────────────────────────┘
-
-4.1 OBTENER TODAS LAS CITAS (Línea 7-20)
-────────────────────────────────────────────────────────────────────────────────
-SELECT 
-    r.id_reservas,
-    r.fecha,
-    r.observaciones,
-    CONCAT(u.prim_nombre, ' ', u.apellido1) as cliente,
-    u.telefono,
-    COALESCE(ec.nombre_estado, 'pendiente') as estado,
-    COALESCE(h.hora_inicio, 540) as hora_inicio
-FROM reservas r
-LEFT JOIN usuarios u ON r.id_usuario = u.id_usuario
-LEFT JOIN estado_cita ec ON r.id_estado_cita = ec.id_estado_cita
-LEFT JOIN horarios h ON r.id_horarios = h.id_horarios
-ORDER BY r.fecha DESC
-
-Propósito: Listar todas las citas con información del cliente y estado
-Parámetros: ninguno
-Tablas: reservas, usuarios, estado_cita, horarios
-
-
-4.2 ACTUALIZAR ESTADO DE CITA (Línea 35-36)
-────────────────────────────────────────────────────────────────────────────────
-UPDATE reservas SET id_estado_cita = ? WHERE id_reservas = ?
-
-Propósito: Cambiar el estado de una cita (pendiente/confirmada/cancelada)
-Parámetros: nuevoEstado, id
-Tablas: reservas
-
-
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ 5. ROUTES/APPOINTMENTS.JS (Rutas de Citas)                                 │
-└─────────────────────────────────────────────────────────────────────────────┘
-
-5.1-5.7 AGENDAR CITA - Transacción completa (Líneas 16-66)
-────────────────────────────────────────────────────────────────────────────────
-[Mismas consultas que en auth_fixed.js - sección 1.11]
-Nota: Este archivo parece ser una versión alternativa/duplicada de la funcionalidad
-en auth_fixed.js. Contiene las mismas consultas para agendar citas.
-
-
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ 6. ROUTES/BARBERS.JS (Rutas de Barberos)                                   │
-└─────────────────────────────────────────────────────────────────────────────┘
-
-6.1 OBTENER BARBEROS (Línea 8-10)
-────────────────────────────────────────────────────────────────────────────────
-SELECT id_usuario, prim_nombre, seg_nombre, apellido1, apellido2 
-FROM usuarios WHERE id_rol = 2 AND estado = 1
-
-Propósito: Listar barberos activos
-Parámetros: ninguno
-Tablas: usuarios
-
-
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ 7. ROUTES/SERVICES.JS (Rutas de Servicios)                                 │
-└─────────────────────────────────────────────────────────────────────────────┘
-
-7.1 OBTENER SERVICIOS (Línea 8-9)
-────────────────────────────────────────────────────────────────────────────────
-SELECT id_servicio, nombre, precio, duracion FROM servicios WHERE estado = 1
-
-Propósito: Listar servicios activos
-Parámetros: ninguno
-Tablas: servicios
-
-
-═══════════════════════════════════════════════════════════════════════════════
-                    TABLAS UTILIZADAS EN EL SISTEMA
-═══════════════════════════════════════════════════════════════════════════════
-
-1. usuarios
-   - Campos utilizados: id_usuario, username, password_hash, email, prim_nombre, 
-     seg_nombre, apellido1, apellido2, telefono, id_rol, estado, created_at, updated_at
-   - Relaciones: rol (id_rol), reservas (id_usuario)
-
-2. rol
-   - Campos utilizados: id_rol, nombre_rol
-   - Valores conocidos: 1=admin, 2=barbero, 3=cliente
-
-3. servicios
-   - Campos utilizados: id_servicio, nombre, precio, duracion, estado
-   - CRUD completo implementado
-
-4. reservas
-   - Campos utilizados: id_reservas, fecha, observaciones, id_usuario, 
-     id_estado_cita, id_horarios
-   - Relaciones: usuarios, estado_cita, horarios, detalle_cita_servicio
-
-5. estado_cita
-   - Campos utilizados: id_estado_cita, nombre_estado
-   - Valores conocidos: 1=pendiente
-
-6. horarios
-   - Campos utilizados: id_horarios, hora_inicio
-   - Formato: hora_inicio almacenada como número (ej: 800 = 08:00)
-
-7. detalle_cita_servicio
-   - Campos utilizados: id_reservas, id_servicio
-   - Tabla de relación muchos a muchos entre reservas y servicios
-
-
-═══════════════════════════════════════════════════════════════════════════════
-                    RECOMENDACIONES Y MEJORAS
-═══════════════════════════════════════════════════════════════════════════════
-
-🔴 CRÍTICAS (Requieren atención inmediata)
-────────────────────────────────────────────────────────────────────────────────
-
-1. ⚠️ INCONSISTENCIA EN NOMBRE DE TABLA
-   Ubicación: routes/appointments.js línea 54
-   Problema: Usa "reserves" en lugar de "reservas"
-   
-   Consulta actual:
-   INSERT INTO reserves (fecha, observaciones, id_usuario, id_estado_clin, id_horarios)
-   
-   Debe ser:
-   INSERT INTO reservas (fecha, observaciones, id_usuario, id_estado_cita, id_horarios)
-   
-   Impacto: Esta consulta fallará en producción
-   Acción: Corregir inmediatamente
-
-
-2. ⚠️ CÓDIGO DUPLICADO
-   Ubicación: auth_fixed.js y routes/appointments.js
-   Problema: La lógica de agendar citas está duplicada en dos archivos
-   
-   Impacto: Dificulta mantenimiento, puede causar inconsistencias
-   Acción: Consolidar en un solo lugar (preferiblemente en routes/appointments.js)
-   
-
-3. ⚠️ ELIMINACIÓN FÍSICA DE SERVICIOS
-   Ubicación: models/Service.js línea 47
-   Problema: DELETE FROM servicios WHERE id_servicio = ?
-   
-   Impacto: Si un servicio tiene citas asociadas, causará error de integridad referencial
-   Acción: Implementar eliminación lógica (soft delete):
-   
-   Recomendado:
-   UPDATE servicios SET estado = 0, updated_at = CURRENT_TIMESTAMP WHERE id_servicio = ?
-
-
-🟡 IMPORTANTES (Mejoras de seguridad y rendimiento)
-────────────────────────────────────────────────────────────────────────────────
-
-4. 🔒 ÍNDICES FALTANTES
-   Problema: No hay evidencia de índices en las consultas frecuentes
-   
-   Índices recomendados:
-   
-   CREATE INDEX idx_usuarios_username ON usuarios(username);
-   CREATE INDEX idx_usuarios_email ON usuarios(email);
-   CREATE INDEX idx_usuarios_telefono ON usuarios(telefono);
-   CREATE INDEX idx_usuarios_rol_estado ON usuarios(id_rol, estado);
-   CREATE INDEX idx_reservas_fecha ON reservas(fecha);
-   CREATE INDEX idx_reservas_usuario ON reservas(id_usuario);
-   CREATE INDEX idx_servicios_estado ON servicios(estado);
-   CREATE INDEX idx_horarios_hora ON horarios(hora_inicio);
-   
-   Impacto: Mejorará significativamente el rendimiento de búsquedas
-
-
-5. 🔒 VALIDACIÓN DE DATOS
-   Problema: No hay validación de datos antes de INSERT/UPDATE
-   
-   Recomendaciones:
-   - Validar formato de email antes de insertar
-   - Validar longitud de teléfono (10 dígitos)
-   - Validar que precio y duración sean positivos
-   - Validar que las fechas de citas sean futuras
-
-
-6. 📊 CONSULTAS SIN PAGINACIÓN
-   Ubicación: Service.getAll(), Appointment.getAll()
-   Problema: SELECT * sin LIMIT puede devolver miles de registros
-   
-   Recomendado:
-   SELECT * FROM servicios ORDER BY nombre LIMIT ? OFFSET ?
-   
-   Impacto: Puede causar problemas de memoria con muchos registros
-
-
-7. 🔍 FALTA MANEJO DE TRANSACCIONES
-   Ubicación: models/Service.js, models/Appointment.js
-   Problema: Operaciones críticas sin transacciones
-   
-   Recomendado: Usar transacciones para operaciones de actualización/eliminación
-
-
-🟢 MEJORAS OPCIONALES (Optimizaciones y funcionalidades)
-────────────────────────────────────────────────────────────────────────────────
-
-8. 📈 CONSULTAS FALTANTES PARA FUNCIONALIDAD COMPLETA
-   
-   a) CRUD de Clientes:
-   - SELECT para listar clientes con filtros
-   - UPDATE para actualizar información de cliente
-   - Consulta para historial de citas por cliente
-   
-   b) CRUD de Barberos:
-   - INSERT para crear barbero
-   - UPDATE para actualizar barbero
-   - DELETE/soft delete para barbero
-   - Consulta para citas por barbero
-   
-   c) Gestión de PQRS (mencionada en conversaciones previas):
-   - CREATE TABLE pqrs
-   - INSERT para crear PQRS
-   - SELECT para listar PQRS
-   - UPDATE para cambiar estado de PQRS
-   
-   d) Reportes y Estadísticas:
-   - Ingresos por barbero
-   - Servicios más solicitados
-   - Clientes más frecuentes
-   - Horarios con más demanda
-
-
-9. 🔐 AUDITORÍA
-   Problema: No hay registro de cambios (audit trail)
-   
-   Recomendado: Crear tabla de auditoría:
-   
-   CREATE TABLE auditoria (
-       id_auditoria INT PRIMARY KEY AUTO_INCREMENT,
-       tabla VARCHAR(50),
-       operacion ENUM('INSERT', 'UPDATE', 'DELETE'),
-       id_registro INT,
-       usuario_id INT,
-       fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-       datos_anteriores JSON,
-       datos_nuevos JSON
-   );
-
-
-10. 📊 VISTAS ÚTILES
-    Crear vistas para simplificar consultas complejas:
-    
-    CREATE VIEW vista_citas_completas AS
-    SELECT 
-        r.id_reservas,
-        r.fecha,
-        r.observaciones,
-        CONCAT(u.prim_nombre, ' ', u.apellido1) as cliente,
-        u.telefono,
-        u.email,
-        s.nombre as servicio,
-        s.precio,
-        s.duracion,
-        ec.nombre_estado as estado,
-        h.hora_inicio
-    FROM reservas r
-    LEFT JOIN usuarios u ON r.id_usuario = u.id_usuario
-    LEFT JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
-    LEFT JOIN servicios s ON dcs.id_servicio = s.id_servicio
-    LEFT JOIN estado_cita ec ON r.id_estado_cita = ec.id_estado_cita
-    LEFT JOIN horarios h ON r.id_horarios = h.id_horarios;
-
-
-11. 🔄 PROCEDIMIENTOS ALMACENADOS
-    Para operaciones complejas frecuentes:
-    
-    DELIMITER //
-    CREATE PROCEDURE sp_agendar_cita(
-        IN p_nombre VARCHAR(100),
-        IN p_telefono VARCHAR(20),
-        IN p_email VARCHAR(100),
-        IN p_fecha DATE,
-        IN p_hora_inicio INT,
-        IN p_servicio_id INT,
-        IN p_observaciones TEXT,
-        OUT p_reserva_id INT
-    )
-    BEGIN
-        DECLARE v_usuario_id INT;
-        DECLARE v_horario_id INT;
-        
-        START TRANSACTION;
-        
-        -- Buscar o crear usuario
-        SELECT id_usuario INTO v_usuario_id 
-        FROM usuarios 
-        WHERE telefono = p_telefono OR email = p_email
-        LIMIT 1;
-        
-        IF v_usuario_id IS NULL THEN
-            INSERT INTO usuarios (prim_nombre, telefono, email, id_rol, estado, created_at)
-            VALUES (p_nombre, p_telefono, p_email, 3, 1, NOW());
-            SET v_usuario_id = LAST_INSERT_ID();
-        END IF;
-        
-        -- Obtener horario
-        SELECT id_horarios INTO v_horario_id
-        FROM horarios
-        WHERE hora_inicio = p_hora_inicio;
-        
-        -- Crear reserva
-        INSERT INTO reservas (fecha, observaciones, id_usuario, id_estado_cita, id_horarios)
-        VALUES (p_fecha, p_observaciones, v_usuario_id, 1, v_horario_id);
-        SET p_reserva_id = LAST_INSERT_ID();
-        
-        -- Asociar servicio
-        INSERT INTO detalle_cita_servicio (id_reservas, id_servicio)
-        VALUES (p_reserva_id, p_servicio_id);
-        
-        COMMIT;
-    END //
-    DELIMITER ;
-
-
-12. 🔍 BÚSQUEDAS Y FILTROS
-    Consultas adicionales recomendadas:
-    
-    a) Buscar citas por rango de fechas:
-    SELECT * FROM reservas 
-    WHERE fecha BETWEEN ? AND ?
-    ORDER BY fecha, id_horarios;
-    
-    b) Buscar clientes por nombre o teléfono:
-    SELECT * FROM usuarios 
-    WHERE (prim_nombre LIKE ? OR apellido1 LIKE ? OR telefono LIKE ?)
-    AND id_rol = 3
-    ORDER BY prim_nombre;
-    
-    c) Disponibilidad de horarios:
-    SELECT h.* 
-    FROM horarios h
-    LEFT JOIN reservas r ON h.id_horarios = r.id_horarios AND r.fecha = ?
-    WHERE r.id_reservas IS NULL
-    ORDER BY h.hora_inicio;
-
-
-13. 📧 INTEGRACIÓN CON EMAIL SERVICE
-    Problema: emailService.js no usa base de datos
-    
-    Recomendado: Crear tabla para códigos de recuperación:
-    
-    CREATE TABLE codigos_recuperacion (
-        id_codigo INT PRIMARY KEY AUTO_INCREMENT,
-        email VARCHAR(100) NOT NULL,
-        codigo VARCHAR(6) NOT NULL,
-        tipo ENUM('recuperacion', 'verificacion') NOT NULL,
-        expira_en TIMESTAMP NOT NULL,
-        usado BOOLEAN DEFAULT FALSE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        INDEX idx_email_tipo (email, tipo),
-        INDEX idx_expira (expira_en)
-    );
-    
-    Beneficios:
-    - Persistencia de códigos (sobrevive a reinicios del servidor)
-    - Auditoría de intentos de recuperación
-    - Mejor seguridad
-
-
-═══════════════════════════════════════════════════════════════════════════════
-                    CONSULTAS SQL RECOMENDADAS ADICIONALES
-═══════════════════════════════════════════════════════════════════════════════
-
-A continuación, consultas SQL que deberías implementar para completar la
-funcionalidad de tu aplicación:
-
-
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ GESTIÓN DE CLIENTES                                                         │
-└─────────────────────────────────────────────────────────────────────────────┘
-
--- Listar todos los clientes con paginación
-SELECT id_usuario, prim_nombre, seg_nombre, apellido1, apellido2, 
-       email, telefono, created_at
-FROM usuarios 
-WHERE id_rol = 3 AND estado = 1
-ORDER BY created_at DESC
-LIMIT ? OFFSET ?;
-
--- Obtener cliente por ID con sus últimas citas
-SELECT u.*, 
-       COUNT(r.id_reservas) as total_citas,
-       MAX(r.fecha) as ultima_cita
-FROM usuarios u
-LEFT JOIN reservas r ON u.id_usuario = r.id_usuario
-WHERE u.id_usuario = ?
-GROUP BY u.id_usuario;
-
--- Actualizar información de cliente
-UPDATE usuarios 
-SET prim_nombre = ?, seg_nombre = ?, apellido1 = ?, apellido2 = ?,
-    email = ?, telefono = ?, updated_at = CURRENT_TIMESTAMP
-WHERE id_usuario = ? AND id_rol = 3;
-
--- Desactivar cliente (soft delete)
-UPDATE usuarios 
-SET estado = 0, updated_at = CURRENT_TIMESTAMP 
-WHERE id_usuario = ? AND id_rol = 3;
-
-
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ GESTIÓN DE BARBEROS                                                         │
-└─────────────────────────────────────────────────────────────────────────────┘
-
--- Crear barbero
-INSERT INTO usuarios 
-(username, password_hash, email, prim_nombre, seg_nombre, apellido1, apellido2, 
- telefono, id_rol, estado, created_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, 2, 1, NOW());
-
--- Actualizar barbero
-UPDATE usuarios 
-SET prim_nombre = ?, seg_nombre = ?, apellido1 = ?, apellido2 = ?,
-    email = ?, telefono = ?, updated_at = CURRENT_TIMESTAMP
-WHERE id_usuario = ? AND id_rol = 2;
-
--- Estadísticas por barbero
-SELECT 
-    u.id_usuario,
-    CONCAT(u.prim_nombre, ' ', u.apellido1) as barbero,
-    COUNT(r.id_reservas) as total_citas,
-    COUNT(CASE WHEN r.id_estado_cita = 2 THEN 1 END) as citas_completadas,
-    COALESCE(SUM(s.precio), 0) as ingresos_generados
-FROM usuarios u
-LEFT JOIN reservas r ON u.id_usuario = r.id_usuario
-LEFT JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
-LEFT JOIN servicios s ON dcs.id_servicio = s.id_servicio
-WHERE u.id_rol = 2 AND u.estado = 1
-GROUP BY u.id_usuario
-ORDER BY ingresos_generados DESC;
-
-
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ GESTIÓN DE PQRS (Peticiones, Quejas, Reclamos, Sugerencias)                │
-└─────────────────────────────────────────────────────────────────────────────┘
-
--- Crear tabla PQRS (ejecutar una vez)
-CREATE TABLE IF NOT EXISTS pqrs (
-    id_pqrs INT PRIMARY KEY AUTO_INCREMENT,
-    tipo ENUM('peticion', 'queja', 'reclamo', 'sugerencia') NOT NULL,
-    asunto VARCHAR(200) NOT NULL,
-    descripcion TEXT NOT NULL,
-    id_usuario INT,
-    nombre_contacto VARCHAR(100),
-    email_contacto VARCHAR(100),
-    telefono_contacto VARCHAR(20),
-    estado ENUM('pendiente', 'en_proceso', 'resuelto', 'cerrado') DEFAULT 'pendiente',
-    respuesta TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
-    INDEX idx_estado (estado),
-    INDEX idx_tipo (tipo),
-    INDEX idx_fecha (created_at)
-);
-
--- Crear PQRS
-INSERT INTO pqrs 
-(tipo, asunto, descripcion, id_usuario, nombre_contacto, email_contacto, 
- telefono_contacto, estado)
-VALUES (?, ?, ?, ?, ?, ?, ?, 'pendiente');
-
--- Listar PQRS con filtros
-SELECT p.*, 
-       CONCAT(u.prim_nombre, ' ', u.apellido1) as nombre_usuario
-FROM pqrs p
-LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario
-WHERE p.estado = ?
-ORDER BY p.created_at DESC
-LIMIT ? OFFSET ?;
-
--- Actualizar estado de PQRS
-UPDATE pqrs 
-SET estado = ?, respuesta = ?, updated_at = CURRENT_TIMESTAMP
-WHERE id_pqrs = ?;
-
--- Obtener PQRS por ID
-SELECT p.*, 
-       CONCAT(u.prim_nombre, ' ', u.apellido1) as nombre_usuario,
-       u.email as email_usuario
-FROM pqrs p
-LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario
-WHERE p.id_pqrs = ?;
-
-
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ REPORTES Y ESTADÍSTICAS                                                     │
-└─────────────────────────────────────────────────────────────────────────────┘
-
--- Servicios más solicitados
-SELECT 
-    s.id_servicio,
-    s.nombre,
-    s.precio,
-    COUNT(dcs.id_servicio) as veces_solicitado,
-    SUM(s.precio) as ingresos_totales
-FROM servicios s
-LEFT JOIN detalle_cita_servicio dcs ON s.id_servicio = dcs.id_servicio
-LEFT JOIN reservas r ON dcs.id_reservas = r.id_reservas
-WHERE r.fecha BETWEEN ? AND ?
-GROUP BY s.id_servicio
-ORDER BY veces_solicitado DESC
-LIMIT 10;
-
--- Ingresos por mes
-SELECT 
-    DATE_FORMAT(r.fecha, '%Y-%m') as mes,
-    COUNT(r.id_reservas) as total_citas,
-    SUM(s.precio) as ingresos
-FROM reservas r
-JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
-JOIN servicios s ON dcs.id_servicio = s.id_servicio
-WHERE r.fecha >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
-GROUP BY DATE_FORMAT(r.fecha, '%Y-%m')
-ORDER BY mes DESC;
-
--- Clientes más frecuentes
-SELECT 
-    u.id_usuario,
-    CONCAT(u.prim_nombre, ' ', u.apellido1) as cliente,
-    u.telefono,
-    u.email,
-    COUNT(r.id_reservas) as total_citas,
-    MAX(r.fecha) as ultima_visita,
-    SUM(s.precio) as total_gastado
-FROM usuarios u
-JOIN reservas r ON u.id_usuario = r.id_usuario
-JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
-JOIN servicios s ON dcs.id_servicio = s.id_servicio
-WHERE u.id_rol = 3
-GROUP BY u.id_usuario
-HAVING total_citas >= 3
-ORDER BY total_citas DESC
-LIMIT 20;
-
--- Horarios con más demanda
-SELECT 
-    h.hora_inicio,
-    COUNT(r.id_reservas) as total_reservas,
-    COUNT(CASE WHEN r.id_estado_cita = 2 THEN 1 END) as completadas
-FROM horarios h
-LEFT JOIN reservas r ON h.id_horarios = r.id_horarios
-WHERE r.fecha >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
-GROUP BY h.hora_inicio
-ORDER BY total_reservas DESC;
-
-
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ GESTIÓN DE ROLES Y PERMISOS                                                 │
-└─────────────────────────────────────────────────────────────────────────────┘
-
--- Listar todos los roles
-SELECT * FROM rol ORDER BY id_rol;
-
--- Crear nuevo rol
-INSERT INTO rol (nombre_rol, descripcion) VALUES (?, ?);
-
--- Actualizar rol
-UPDATE rol SET nombre_rol = ?, descripcion = ? WHERE id_rol = ?;
-
--- Contar usuarios por rol
-SELECT 
-    r.nombre_rol,
-    COUNT(u.id_usuario) as total_usuarios
-FROM rol r
-LEFT JOIN usuarios u ON r.id_rol = u.id_rol AND u.estado = 1
-GROUP BY r.id_rol
-ORDER BY r.id_rol;
-
-
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ DISPONIBILIDAD Y VALIDACIONES                                               │
-└─────────────────────────────────────────────────────────────────────────────┘
-
--- Verificar disponibilidad de horario
-SELECT COUNT(*) as ocupado
-FROM reservas
-WHERE fecha = ? 
-  AND id_horarios = ?
-  AND id_estado_cita != 3;  -- 3 = cancelado
-
--- Obtener horarios disponibles para una fecha
-SELECT h.*
-FROM horarios h
-LEFT JOIN (
-    SELECT id_horarios 
-    FROM reservas 
-    WHERE fecha = ? AND id_estado_cita != 3
-) r ON h.id_horarios = r.id_horarios
-WHERE r.id_horarios IS NULL
-ORDER BY h.hora_inicio;
-
--- Validar que no haya citas duplicadas
-SELECT COUNT(*) as duplicados
-FROM reservas
-WHERE id_usuario = ?
-  AND fecha = ?
-  AND id_horarios = ?
-  AND id_estado_cita != 3;
-
-
-═══════════════════════════════════════════════════════════════════════════════
-                    PRIORIDADES DE IMPLEMENTACIÓN
-═══════════════════════════════════════════════════════════════════════════════
-
-🔴 URGENTE (Implementar esta semana):
-1. Corregir error en routes/appointments.js (reserves → reservas)
-2. Eliminar código duplicado entre auth_fixed.js y routes/appointments.js
-3. Cambiar DELETE a soft delete en servicios
-4. Agregar índices básicos a la base de datos
-
-🟡 IMPORTANTE (Implementar este mes):
-5. Implementar CRUD completo de clientes
-6. Implementar CRUD completo de barberos
-7. Agregar sistema de PQRS
-8. Implementar paginación en todas las consultas de listado
-9. Agregar validaciones de datos
-10. Crear tabla de códigos de recuperación
-
-🟢 MEJORAS (Implementar en próximos sprints):
-11. Crear vistas para consultas complejas
-12. Implementar procedimientos almacenados
-13. Agregar sistema de auditoría
-14. Implementar reportes avanzados
-15. Optimizar consultas con EXPLAIN
-
-
-═══════════════════════════════════════════════════════════════════════════════
-                    CONCLUSIONES
-═══════════════════════════════════════════════════════════════════════════════
-
-✅ FORTALEZAS:
-- Uso correcto de consultas parametrizadas (previene SQL injection)
-- Implementación de transacciones en operaciones críticas
-- Uso de LEFT JOIN para evitar pérdida de datos
-- Separación de lógica en modelos
-
-⚠️ ÁREAS DE MEJORA:
-- Código duplicado que debe consolidarse
-- Falta de índices para optimización
-- Eliminación física en lugar de lógica
-- Falta de paginación en consultas grandes
-- Validaciones de datos insuficientes
-
-📊 COBERTURA FUNCIONAL:
-- Autenticación: ✅ Completo
-- Servicios: ✅ CRUD completo
-- Citas: ⚠️ Parcial (falta cancelación, reprogramación)
-- Clientes: ⚠️ Básico (falta CRUD completo)
-- Barberos: ⚠️ Solo lectura (falta CRUD)
-- PQRS: ❌ No implementado
-- Reportes: ⚠️ Básico (faltan reportes avanzados)
-
-═══════════════════════════════════════════════════════════════════════════════
-                    FIN DEL ANÁLISIS
-═══════════════════════════════════════════════════════════════════════════════
-
-Generado por: Antigravity AI
-Fecha: 2025-12-01
-Versión: 1.0
+ANÁLISIS DE CONSULTAS SQL - ELEGANT CUT
+=========================================
+
+Este documento detalla el análisis del código backend de la aplicación, identificando la implementación de consultas SQL, específicamente JOINs, Agregaciones y Subconsultas.
+
+1. RESUMEN GENERAL
+------------------
+El proyecto utiliza MySQL con el driver `mysql2/promise`. La mayoría de las consultas complejas se han movido correctamente a modelos (`models/`), aunque todavía existen consultas directas en `auth_fixed.js`.
+
+- JOINs: Ampliamente utilizados para relacionar usuarios, roles, reservas y servicios.
+- AGREGACIONES: Implementadas en los modelos para reportes y estadísticas (COUNT, SUM, MAX).
+- SUBCONSULTAS: Poco utilizadas. Se prefieren los JOINs, lo cual es generalmente mejor para el rendimiento en MySQL, aunque hay casos donde podrían ser útiles.
+
+=========================================
+2. DETALLE DE CONSULTAS IMPLEMENTADAS
+=========================================
+
+A. JOINs (Relaciones entre tablas)
+----------------------------------
+Los JOINs se utilizan para combinar filas de dos o más tablas.
+
+1. Login de Usuario
+   - Ubicación: `backend/auth_fixed.js` (Línea ~38)
+   - Consulta: `SELECT ... FROM usuarios u LEFT JOIN rol r ON u.id_rol = r.id_rol ...`
+   - Propósito: Obtener los datos del usuario junto con el nombre de su rol en una sola consulta.
+
+2. Obtener Citas (Appointments)
+   - Ubicación: `backend/models/Appointment.js` (Método `getAll`)
+   - Consulta: `LEFT JOIN usuarios ... LEFT JOIN estado_cita ... LEFT JOIN horarios ...`
+   - Propósito: Traer información completa de la cita incluyendo nombre del cliente, estado y hora legible.
+
+3. Obtener Barberos con Estadísticas
+   - Ubicación: `backend/models/Barber.js` (Método `getAll`)
+   - Consulta: `LEFT JOIN reservas ... LEFT JOIN detalle_cita_servicio ... LEFT JOIN servicios ...`
+   - Propósito: Relacionar al barbero con sus reservas y los servicios de esas reservas para calcular totales.
+
+4. Obtener Clientes
+   - Ubicación: `backend/models/Client.js` (Método `getAll`)
+   - Consulta: `LEFT JOIN reservas r ON u.id_usuario = r.id_usuario`
+   - Propósito: Vincular clientes con sus reservas para saber cuántas citas han tenido.
+
+B. AGREGACIONES (Cálculos: COUNT, SUM, AVG, MAX)
+------------------------------------------------
+Las agregaciones se usan para realizar cálculos sobre un conjunto de datos.
+
+1. Estadísticas de Barberos
+   - Ubicación: `backend/models/Barber.js` (Método `getAll` y `getStats`)
+   - Implementación:
+     - `COUNT(r.id_reservas)`: Cuenta total de citas.
+     - `SUM(s.precio)`: Suma el precio de los servicios para calcular ingresos.
+     - `AVG(s.precio)`: Calcula el ticket promedio por servicio.
+
+2. Estadísticas de Clientes
+   - Ubicación: `backend/models/Client.js` (Método `getAll`)
+   - Implementación:
+     - `MAX(r.fecha)`: Encuentra la fecha de la última visita del cliente.
+     - `COUNT(r.id_reservas)`: Total de visitas.
+
+3. Dashboard General
+   - Ubicación: `backend/models/Dashboard.js` (Método `getStats`)
+   - Implementación:
+     - `COUNT(*)`: Para contar clientes totales y citas de hoy.
+     - `SUM(s.precio)`: Para calcular los ingresos del día.
+
+C. SUBCONSULTAS (Consultas anidadas)
+------------------------------------
+Actualmente hay muy pocas subconsultas explícitas. La lógica se maneja principalmente con JOINs.
+
+1. Validación de Existencia (Implícita)
+   - Ubicación: `backend/auth_fixed.js`
+   - A menudo se hacen dos consultas separadas: primero `SELECT` para ver si existe, luego `INSERT`. Esto podría optimizarse o manejarse con restricciones de base de datos (UNIQUE constraints), pero la lógica actual es funcional.
+
+=========================================
+3. ÁREAS DE MEJORA Y RECOMENDACIONES
+=========================================
+
+A. Dónde faltan o podrían mejorarse las consultas
+-------------------------------------------------
+
+1. Subconsultas para Filtrado Avanzado
+   - Situación: Actualmente traes todos los datos y filtras con `WHERE`.
+   - Mejora: Podrías usar subconsultas para reportes más complejos.
+   - Ejemplo: "Clientes que NO han venido en el último mes".
+   - Código sugerido (SQL):
+     ```sql
+     SELECT * FROM usuarios 
+     WHERE id_rol = 3 
+     AND id_usuario NOT IN (SELECT id_usuario FROM reservas WHERE fecha > DATE_SUB(NOW(), INTERVAL 1 MONTH));
+     ```
+
+2. Optimización de `auth_fixed.js`
+   - Situación: Hay lógica SQL directa en el controlador de autenticación (rutas `/api/appointments`, `/auth/register`).
+   - Recomendación: Mover estas consultas a los modelos correspondientes (`User.js` o `Appointment.js`).
+   - Por qué: Mantiene el código limpio y reutilizable. Si cambias la base de datos, solo cambias el modelo.
+
+3. Uso de Transacciones
+   - Situación: Ya se usan en `Appointment` y `Barber.create`. ¡Excelente!
+   - Recomendación: Asegurar que cualquier operación que toque dos tablas (ej. crear usuario y asignarle un rol o configuración inicial) esté dentro de un bloque `connection.beginTransaction()` ... `commit()`.
+
+4. Índices (Performance)
+   - Aunque no veo el esquema de la BD, asegúrate de tener índices en las columnas usadas en los JOINs y WHEREs:
+     - `reservas.id_usuario`
+     - `reservas.fecha`
+     - `usuarios.email`
+     - `detalle_cita_servicio.id_reservas`
+
+B. Ejemplo de Refactorización con Subconsulta
+---------------------------------------------
+Para obtener el "Servicio más popular" de un barbero, actualmente haces una consulta separada en `Barber.getStats`. Podrías hacerlo en una sola consulta compleja o mantenerlo así por claridad.
+
+Si quisieras obtener los clientes "VIP" (aquellos que han gastado más que el promedio) usando una subconsulta:
+
+```javascript
+// Ejemplo de consulta avanzada
+const sql = `
+  SELECT u.prim_nombre, SUM(s.precio) as total_gastado
+  FROM usuarios u
+  JOIN reservas r ON u.id_usuario = r.id_usuario
+  JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
+  JOIN servicios s ON dcs.id_servicio = s.id_servicio
+  GROUP BY u.id_usuario
+  HAVING total_gastado > (
+      SELECT AVG(total) FROM (
+          SELECT SUM(s2.precio) as total
+          FROM reservas r2
+          JOIN detalle_cita_servicio dcs2 ON r2.id_reservas = dcs2.id_reservas
+          JOIN servicios s2 ON dcs2.id_servicio = s2.id_servicio
+          GROUP BY r2.id_usuario
+      ) as promedios
+  )
+`;
+```
+
+4. CONCLUSIÓN
+-------------
+Tu código tiene un buen nivel de madurez en cuanto a SQL. Utilizas **JOINs** correctamente para evitar el problema de "N+1 consultas" y **Agregaciones** para los reportes. No es estrictamente necesario forzar el uso de **Subconsultas** si los JOINs resuelven el problema eficientemente, pero son útiles para reportes de excepciones (ej. "usuarios sin actividad").
+
+Se recomienda encarecidamente mover las consultas SQL restantes de `auth_fixed.js` a sus respectivos archivos en la carpeta `models/` para finalizar la arquitectura modular.
