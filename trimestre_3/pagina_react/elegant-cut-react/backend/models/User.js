@@ -1,4 +1,4 @@
-```javascript
+
 const pool = require('../config/database');
 const bcrypt = require('bcryptjs');
 
@@ -139,7 +139,7 @@ VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
             const field = isEmail ? 'email' : 'username';
 
             const [result] = await pool.execute(
-                `UPDATE usuarios SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE ${ field } = ?`,
+                `UPDATE usuarios SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE ${field} = ?`,
                 [hashedPassword, identifier]
             );
             return result.affectedRows > 0;
@@ -161,4 +161,4 @@ VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
 }
 
 module.exports = User;
-```
+
