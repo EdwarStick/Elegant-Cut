@@ -1,8 +1,8 @@
-const pool = require('../config/database');
+const pool = require('../Configuracion/database');
 const bcrypt = require('bcryptjs');
 
 class Barber {
-    // Obtener todos los barberos con estadísticas
+    // Obtener todos los barberos con estadísticas (Admin)
     static async getAll() {
         try {
             const [rows] = await pool.execute(
@@ -15,6 +15,7 @@ class Barber {
           u.apellido2,
           u.email,
           u.telefono,
+          u.foto,
           u.estado,
           u.created_at,
           COUNT(r.id_reservas) as total_citas,
@@ -27,6 +28,28 @@ class Barber {
         WHERE u.id_rol = 2
         GROUP BY u.id_usuario
         ORDER BY u.created_at DESC`
+            );
+            return rows;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Obtener solo barberos activos (Public API)
+    static async getActive() {
+        try {
+            const [rows] = await pool.execute(
+                `SELECT 
+          id_usuario,
+          prim_nombre,
+          seg_nombre,
+          apellido1,
+          apellido2,
+          foto,
+          'Barbero Profesional' as especialidad
+        FROM usuarios 
+        WHERE id_rol = 2 AND estado = 1
+        ORDER BY prim_nombre`
             );
             return rows;
         } catch (error) {
@@ -59,7 +82,7 @@ class Barber {
         try {
             await connection.beginTransaction();
 
-            const { username, password, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono } = barberData;
+            const { username, password, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, foto } = barberData;
 
             // Verificar si el username ya existe
             const [existing] = await connection.execute(
@@ -77,9 +100,9 @@ class Barber {
             // Crear usuario barbero (id_rol = 2)
             const [result] = await connection.execute(
                 `INSERT INTO usuarios 
-         (username, password_hash, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, id_rol, estado, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, 2, 1, NOW())`,
-                [username, hashedPassword, email, prim_nombre, seg_nombre || null, apellido1, apellido2 || null, telefono]
+         (username, password_hash, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, foto, id_rol, estado, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 2, 1, NOW())`,
+                [username, hashedPassword, email, prim_nombre, seg_nombre || null, apellido1, apellido2 || null, telefono, foto || null]
             );
 
             await connection.commit();
@@ -95,23 +118,21 @@ class Barber {
     // Actualizar barbero
     static async update(id, barberData) {
         try {
-            const { prim_nombre, seg_nombre, apellido1, apellido2, email, telefono } = barberData;
+            const { prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, foto } = barberData;
 
             const [result] = await pool.execute(
                 `UPDATE usuarios 
-         SET prim_nombre = ?, seg_nombre = ?, apellido1 = ?, apellido2 = ?,
-             email = ?, telefono = ?, updated_at = CURRENT_TIMESTAMP
-         WHERE id_usuario = ? AND id_rol = 2`,
-                [prim_nombre, seg_nombre || null, apellido1, apellido2 || null, email, telefono, id]
+                 SET prim_nombre = ?, seg_nombre = ?, apellido1 = ?, apellido2 = ?, email = ?, telefono = ?, foto = ?, updated_at = CURRENT_TIMESTAMP
+                 WHERE id_usuario = ? AND id_rol = 2`,
+                [prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, foto, id]
             );
-
             return result.affectedRows > 0;
         } catch (error) {
             throw error;
         }
     }
 
-    // Desactivar barbero (soft delete)
+    // Desactivar barbero (Soft Delete)
     static async deactivate(id) {
         try {
             const [result] = await pool.execute(
@@ -137,17 +158,15 @@ class Barber {
         }
     }
 
-    // Obtener estadísticas detalladas del barbero
+    // Obtener estadísticas detalladas de un barbero
     static async getStats(id) {
         try {
             const [stats] = await pool.execute(
                 `SELECT 
           COUNT(r.id_reservas) as total_citas,
-          COUNT(CASE WHEN r.id_estado_cita = 1 THEN 1 END) as citas_pendientes,
           COUNT(CASE WHEN r.id_estado_cita = 2 THEN 1 END) as citas_completadas,
           COUNT(CASE WHEN r.id_estado_cita = 3 THEN 1 END) as citas_canceladas,
-          COALESCE(SUM(CASE WHEN r.id_estado_cita = 2 THEN s.precio ELSE 0 END), 0) as ingresos_totales,
-          COALESCE(AVG(s.precio), 0) as ingreso_promedio
+          COALESCE(SUM(CASE WHEN r.id_estado_cita = 2 THEN s.precio ELSE 0 END), 0) as ingresos_totales
         FROM reservas r
         LEFT JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
         LEFT JOIN servicios s ON dcs.id_servicio = s.id_servicio
@@ -155,24 +174,22 @@ class Barber {
                 [id]
             );
 
-            // Servicios más solicitados
-            const [topServices] = await pool.execute(
-                `SELECT 
-          s.nombre,
-          COUNT(*) as veces_solicitado
-        FROM reservas r
-        JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
-        JOIN servicios s ON dcs.id_servicio = s.id_servicio
-        WHERE r.id_usuario = ?
-        GROUP BY s.id_servicio
-        ORDER BY veces_solicitado DESC
-        LIMIT 5`,
+            // Obtener servicios más populares
+            const [popularServices] = await pool.execute(
+                `SELECT s.nombre_servicio, COUNT(*) as cantidad
+         FROM reservas r
+         JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
+         JOIN servicios s ON dcs.id_servicio = s.id_servicio
+         WHERE r.id_usuario = ? AND r.id_estado_cita = 2
+         GROUP BY s.id_servicio
+         ORDER BY cantidad DESC
+         LIMIT 5`,
                 [id]
             );
 
             return {
-                ...stats[0],
-                servicios_populares: topServices
+                summary: stats[0],
+                popularServices
             };
         } catch (error) {
             throw error;

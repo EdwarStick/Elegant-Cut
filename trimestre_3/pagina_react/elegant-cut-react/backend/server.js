@@ -1,14 +1,14 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const pool = require('./config/database'); // Importar MySQL
+const pool = require('./Configuracion/database'); // Importar MySQL
 const EmailService = require('./emailService');
-const Dashboard = require('./models/Dashboard');
-const Service = require('./models/Service');
-const Appointment = require('./models/Appointment');
-const User = require('./models/User');
-const Barber = require('./models/Barber');
-const Client = require('./models/Client');
-const handleAdminRoutes = require('./routes/adminRoutes');
+const Dashboard = require('./Modelos/Dashboard');
+const Service = require('./Modelos/Service');
+const Appointment = require('./Modelos/Appointment');
+const User = require('./Modelos/User');
+const Barber = require('./Modelos/Barber');
+const Client = require('./Modelos/Client');
+const handleAdminRoutes = require('./Rutas/adminRoutes');
 
 const JWT_SECRET = "Clave-secreta-elegant-cut-2025";
 const PORT = 3001;
@@ -353,7 +353,7 @@ const server = http.createServer(async (req, res) => {
     // OBTENER BARBEROS (para el formulario)
     if (req.url === '/api/barbers' && req.method === 'GET') {
         try {
-            const barbers = await Barber.getAll();
+            const barbers = await Barber.getActive();
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(barbers));
         } catch (error) {

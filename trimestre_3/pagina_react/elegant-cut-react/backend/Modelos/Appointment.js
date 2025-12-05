@@ -1,4 +1,4 @@
-const pool = require('../config/database');
+const pool = require('../Configuracion/database');
 
 class Appointment {
   // Obtener todas las citas - VERSIÓN QUE FUNCIONA SIN DETALLE

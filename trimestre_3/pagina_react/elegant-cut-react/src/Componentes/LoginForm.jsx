@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AuthClient } from '../utils/authClient';
+import { AuthClient } from '../Utilidades/authClient';
 import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
@@ -7,9 +7,9 @@ function LoginForm() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showCodigoVerificacion, setShowCodigoVerificacion] = useState(false);
   const [loginData, setLoginData] = useState({ usuario: '', contrasena: '' });
-  const [registerData, setRegisterData] = useState({ 
-    email: '', 
-    usuario: '', 
+  const [registerData, setRegisterData] = useState({
+    email: '',
+    usuario: '',
     contrasena: '',
     prim_nombre: '',
     seg_nombre: '',
@@ -17,11 +17,11 @@ function LoginForm() {
     apellido2: '',
     telefono: ''
   });
-  const [forgotPasswordData, setForgotPasswordData] = useState({ 
+  const [forgotPasswordData, setForgotPasswordData] = useState({
     email: '',
     codigo: '',
-    nuevaContrasena: '', 
-    confirmarContrasena: '' 
+    nuevaContrasena: '',
+    confirmarContrasena: ''
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
@@ -71,10 +71,10 @@ function LoginForm() {
 
     try {
       const result = await AuthClient.login(loginData.usuario, loginData.contrasena);
-      
+
       if (result.success) {
         mostrarMensaje('¡Login exitoso! Redirigiendo...', 'success');
-        
+
         // Redirigir según el rol
         setTimeout(() => {
           if (result.user.role === 'admin') {
@@ -118,10 +118,10 @@ function LoginForm() {
         telefono: registerData.telefono || '',
         role: 'cliente'
       });
-      
+
       if (result.success) {
         mostrarMensaje('¡Registro exitoso!', 'success');
-        
+
         setTimeout(() => {
           switchToLogin();
         }, 1500);
@@ -149,7 +149,7 @@ function LoginForm() {
 
     try {
       const result = await AuthClient.solicitarRecuperacion(forgotPasswordData.email);
-      
+
       if (result.success) {
         mostrarMensaje('Código enviado a tu email', 'success');
         setEmailSolicitado(forgotPasswordData.email);
@@ -202,10 +202,10 @@ function LoginForm() {
         forgotPasswordData.codigo,
         forgotPasswordData.nuevaContrasena
       );
-      
+
       if (result.success) {
         mostrarMensaje('¡Contraseña actualizada exitosamente!', 'success');
-        
+
         // Limpiar y volver al login
         setTimeout(() => {
           setForgotPasswordData({ email: '', codigo: '', nuevaContrasena: '', confirmarContrasena: '' });
@@ -234,16 +234,16 @@ function LoginForm() {
     <div className="login-form-container">
       <div className="book-container">
         <div className={`book ${isFlipped ? 'flipped' : ''}`}>
-          
+
           {/* Página 1: Iniciar Sesión */}
           <div className={`page ${!isFlipped && !showForgotPassword && !showCodigoVerificacion ? 'active' : ''}`} id="login-page">
             <div className="form-box">
               <h2 className="form-title">Iniciar Sesión</h2>
-              
+
               {/* Mensaje */}
               {message.text && (
-                <div 
-                  className="mensaje-login" 
+                <div
+                  className="mensaje-login"
                   style={{
                     padding: '10px',
                     margin: '10px 0',
@@ -256,30 +256,30 @@ function LoginForm() {
                   {message.text}
                 </div>
               )}
-              
+
               <form className="login-form" onSubmit={handleLogin}>
                 <div className="form-group">
-                  <input 
-                    type="text" 
-                    name="usuario" 
-                    placeholder="Ingrese su nombre de usuario" 
+                  <input
+                    type="text"
+                    name="usuario"
+                    placeholder="Ingrese su nombre de usuario"
                     required
                     className="form-input"
                     value={loginData.usuario}
-                    onChange={(e) => setLoginData({...loginData, usuario: e.target.value})}
+                    onChange={(e) => setLoginData({ ...loginData, usuario: e.target.value })}
                     disabled={loading}
                   />
                 </div>
 
                 <div className="form-group">
-                  <input 
-                    type="password" 
-                    name="contrasena" 
-                    placeholder="Ingrese su contraseña" 
+                  <input
+                    type="password"
+                    name="contrasena"
+                    placeholder="Ingrese su contraseña"
                     required
                     className="form-input"
                     value={loginData.contrasena}
-                    onChange={(e) => setLoginData({...loginData, contrasena: e.target.value})}
+                    onChange={(e) => setLoginData({ ...loginData, contrasena: e.target.value })}
                     disabled={loading}
                   />
                 </div>
@@ -287,10 +287,10 @@ function LoginForm() {
                 <button type="submit" className="submit-btn" disabled={loading}>
                   {loading ? 'Procesando...' : 'Ingresar'}
                 </button>
-                
+
                 <div className="forgot-password">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="forgot-link"
                     onClick={showForgotPasswordForm}
                     disabled={loading}
@@ -298,9 +298,9 @@ function LoginForm() {
                     ¿Olvidaste tu contraseña?
                   </button>
                 </div>
-                
+
                 <div className="switch-form">
-                  <p>¿No tienes cuenta? 
+                  <p>¿No tienes cuenta?
                     <button type="button" className="switch-link" onClick={switchToRegister}>
                       Regístrate aquí
                     </button>
@@ -314,11 +314,11 @@ function LoginForm() {
           <div className={`page ${isFlipped ? 'active' : ''}`} id="register-page">
             <div className="form-box">
               <h2 className="form-title">Crear Cuenta</h2>
-              
+
               {/* Mensaje */}
               {message.text && (
-                <div 
-                  className="mensaje-login" 
+                <div
+                  className="mensaje-login"
                   style={{
                     padding: '10px',
                     margin: '10px 0',
@@ -331,105 +331,105 @@ function LoginForm() {
                   {message.text}
                 </div>
               )}
-              
+
               <form className="register-form" onSubmit={handleRegister}>
                 <div className="form-group">
-                  <input 
-                    type="email" 
-                    name="email" 
-                    placeholder="Ingrese su correo electrónico" 
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Ingrese su correo electrónico"
                     required
                     className="form-input"
                     value={registerData.email}
-                    onChange={(e) => setRegisterData({...registerData, email: e.target.value})}
+                    onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
                     disabled={loading}
                   />
                 </div>
-                
+
                 <div className="form-group">
-                  <input 
-                    type="text" 
-                    name="usuario" 
-                    placeholder="Nombre de usuario" 
+                  <input
+                    type="text"
+                    name="usuario"
+                    placeholder="Nombre de usuario"
                     required
                     className="form-input"
                     value={registerData.usuario}
-                    onChange={(e) => setRegisterData({...registerData, usuario: e.target.value})}
+                    onChange={(e) => setRegisterData({ ...registerData, usuario: e.target.value })}
                     disabled={loading}
                   />
                 </div>
 
                 <div className="form-group">
-                  <input 
-                    type="text" 
-                    name="prim_nombre" 
-                    placeholder="Primer nombre *" 
+                  <input
+                    type="text"
+                    name="prim_nombre"
+                    placeholder="Primer nombre *"
                     required
                     className="form-input"
                     value={registerData.prim_nombre}
-                    onChange={(e) => setRegisterData({...registerData, prim_nombre: e.target.value})}
+                    onChange={(e) => setRegisterData({ ...registerData, prim_nombre: e.target.value })}
                     disabled={loading}
                   />
                 </div>
 
                 <div className="form-group">
-                  <input 
-                    type="text" 
-                    name="seg_nombre" 
-                    placeholder="Segundo nombre" 
+                  <input
+                    type="text"
+                    name="seg_nombre"
+                    placeholder="Segundo nombre"
                     className="form-input"
                     value={registerData.seg_nombre}
-                    onChange={(e) => setRegisterData({...registerData, seg_nombre: e.target.value})}
+                    onChange={(e) => setRegisterData({ ...registerData, seg_nombre: e.target.value })}
                     disabled={loading}
                   />
                 </div>
 
                 <div className="form-group">
-                  <input 
-                    type="text" 
-                    name="apellido1" 
-                    placeholder="Primer apellido *" 
+                  <input
+                    type="text"
+                    name="apellido1"
+                    placeholder="Primer apellido *"
                     required
                     className="form-input"
                     value={registerData.apellido1}
-                    onChange={(e) => setRegisterData({...registerData, apellido1: e.target.value})}
+                    onChange={(e) => setRegisterData({ ...registerData, apellido1: e.target.value })}
                     disabled={loading}
                   />
                 </div>
 
                 <div className="form-group">
-                  <input 
-                    type="text" 
-                    name="apellido2" 
-                    placeholder="Segundo apellido" 
+                  <input
+                    type="text"
+                    name="apellido2"
+                    placeholder="Segundo apellido"
                     className="form-input"
                     value={registerData.apellido2}
-                    onChange={(e) => setRegisterData({...registerData, apellido2: e.target.value})}
+                    onChange={(e) => setRegisterData({ ...registerData, apellido2: e.target.value })}
                     disabled={loading}
                   />
                 </div>
 
                 <div className="form-group">
-                  <input 
-                    type="text" 
-                    name="telefono" 
-                    placeholder="Teléfono" 
+                  <input
+                    type="text"
+                    name="telefono"
+                    placeholder="Teléfono"
                     className="form-input"
                     value={registerData.telefono}
-                    onChange={(e) => setRegisterData({...registerData, telefono: e.target.value})}
+                    onChange={(e) => setRegisterData({ ...registerData, telefono: e.target.value })}
                     disabled={loading}
                   />
                 </div>
 
                 <div className="form-group">
-                  <input 
-                    type="password" 
-                    name="contrasena" 
-                    placeholder="Contraseña" 
+                  <input
+                    type="password"
+                    name="contrasena"
+                    placeholder="Contraseña"
                     required
                     className="form-input"
                     value={registerData.contrasena}
-                    onChange={(e) => setRegisterData({...registerData, contrasena: e.target.value})}
+                    onChange={(e) => setRegisterData({ ...registerData, contrasena: e.target.value })}
                     disabled={loading}
                   />
                 </div>
@@ -437,9 +437,9 @@ function LoginForm() {
                 <button type="submit" className="submit-btn" disabled={loading}>
                   {loading ? 'Procesando...' : 'Registrar'}
                 </button>
-                
+
                 <div className="switch-form">
-                  <p>¿Ya tienes cuenta? 
+                  <p>¿Ya tienes cuenta?
                     <button type="button" className="switch-link" onClick={switchToLogin}>
                       Inicia sesión aquí
                     </button>
@@ -453,11 +453,11 @@ function LoginForm() {
           <div className={`page ${showForgotPassword && !showCodigoVerificacion ? 'active' : ''}`} id="forgot-password-page">
             <div className="form-box">
               <h2 className="form-title">Recuperar Contraseña</h2>
-              
+
               {/* Mensaje */}
               {message.text && (
-                <div 
-                  className="mensaje-login" 
+                <div
+                  className="mensaje-login"
                   style={{
                     padding: '10px',
                     margin: '10px 0',
@@ -470,17 +470,17 @@ function LoginForm() {
                   {message.text}
                 </div>
               )}
-              
+
               <form className="forgot-password-form" onSubmit={handleSolicitarCodigo}>
                 <div className="form-group">
-                  <input 
-                    type="email" 
-                    name="email" 
-                    placeholder="Ingrese su email registrado" 
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Ingrese su email registrado"
                     required
                     className="form-input"
                     value={forgotPasswordData.email}
-                    onChange={(e) => setForgotPasswordData({...forgotPasswordData, email: e.target.value})}
+                    onChange={(e) => setForgotPasswordData({ ...forgotPasswordData, email: e.target.value })}
                     disabled={loading}
                   />
                 </div>
@@ -488,7 +488,7 @@ function LoginForm() {
                 <button type="submit" className="submit-btn" disabled={loading}>
                   {loading ? 'Enviando código...' : 'Enviar Código de Verificación'}
                 </button>
-                
+
                 <div className="switch-form">
                   <p>
                     <button type="button" className="switch-link" onClick={switchToLogin}>
@@ -517,11 +517,11 @@ function LoginForm() {
                   </p>
                 )}
               </div>
-              
+
               {/* Mensaje */}
               {message.text && (
-                <div 
-                  className="mensaje-login" 
+                <div
+                  className="mensaje-login"
                   style={{
                     padding: '10px',
                     margin: '10px 0',
@@ -534,19 +534,19 @@ function LoginForm() {
                   {message.text}
                 </div>
               )}
-              
+
               <form className="verification-form" onSubmit={handleVerificarCodigo}>
                 <div className="form-group">
                   <label className="code-label">Código de 6 dígitos</label>
-                  <input 
-                    type="text" 
-                    name="codigo" 
-                    placeholder="Ej: 123456" 
+                  <input
+                    type="text"
+                    name="codigo"
+                    placeholder="Ej: 123456"
                     required
                     maxLength="6"
                     className="code-input"
                     value={forgotPasswordData.codigo}
-                    onChange={(e) => setForgotPasswordData({...forgotPasswordData, codigo: e.target.value.replace(/\D/g, '')})}
+                    onChange={(e) => setForgotPasswordData({ ...forgotPasswordData, codigo: e.target.value.replace(/\D/g, '') })}
                     disabled={loading}
                     style={{
                       textAlign: 'center',
@@ -561,27 +561,27 @@ function LoginForm() {
                 </div>
 
                 <div className="form-group">
-                  <input 
-                    type="password" 
-                    name="nuevaContrasena" 
-                    placeholder="Nueva contraseña" 
+                  <input
+                    type="password"
+                    name="nuevaContrasena"
+                    placeholder="Nueva contraseña"
                     required
                     className="form-input"
                     value={forgotPasswordData.nuevaContrasena}
-                    onChange={(e) => setForgotPasswordData({...forgotPasswordData, nuevaContrasena: e.target.value})}
+                    onChange={(e) => setForgotPasswordData({ ...forgotPasswordData, nuevaContrasena: e.target.value })}
                     disabled={loading}
                   />
                 </div>
 
                 <div className="form-group">
-                  <input 
-                    type="password" 
-                    name="confirmarContrasena" 
-                    placeholder="Confirmar nueva contraseña" 
+                  <input
+                    type="password"
+                    name="confirmarContrasena"
+                    placeholder="Confirmar nueva contraseña"
                     required
                     className="form-input"
                     value={forgotPasswordData.confirmarContrasena}
-                    onChange={(e) => setForgotPasswordData({...forgotPasswordData, confirmarContrasena: e.target.value})}
+                    onChange={(e) => setForgotPasswordData({ ...forgotPasswordData, confirmarContrasena: e.target.value })}
                     disabled={loading}
                   />
                 </div>
@@ -589,18 +589,18 @@ function LoginForm() {
                 <button type="submit" className="submit-btn verification-btn" disabled={loading}>
                   {loading ? 'Verificando...' : 'Verificar y Cambiar Contraseña'}
                 </button>
-                
+
                 <div className="verification-actions">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="back-btn"
                     onClick={volverAEmail}
                     disabled={loading}
                   >
                     <i className="bi bi-arrow-left"></i> Volver atrás
                   </button>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="resend-btn"
                     onClick={handleSolicitarCodigo}
                     disabled={loading}

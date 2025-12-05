@@ -1,4 +1,4 @@
-const pool = require('../config/database');
+const pool = require('../Configuracion/database');
 
 class Client {
     // Obtener todos los clientes con paginación y búsqueda

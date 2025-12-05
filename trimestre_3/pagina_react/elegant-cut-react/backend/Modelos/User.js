@@ -1,4 +1,4 @@
-const pool = require('../config/database');
+const pool = require('../Configuracion/database');
 const bcrypt = require('bcryptjs');
 
 class User {
@@ -93,6 +93,35 @@ class User {
             const [result] = await pool.execute(
                 `UPDATE usuarios SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE ${field} = ?`,
                 [hashedPassword, identifier]
+            );
+            return result.affectedRows > 0;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Actualizar usuario
+    static async update(id, userData) {
+        try {
+            const { prim_nombre, seg_nombre, apellido1, apellido2, email, telefono } = userData;
+            const [result] = await pool.execute(
+                `UPDATE usuarios 
+                 SET prim_nombre = ?, seg_nombre = ?, apellido1 = ?, apellido2 = ?, email = ?, telefono = ?, updated_at = CURRENT_TIMESTAMP
+                 WHERE id_usuario = ?`,
+                [prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, id]
+            );
+            return result.affectedRows > 0;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Desactivar usuario (Soft Delete)
+    static async deactivate(id) {
+        try {
+            const [result] = await pool.execute(
+                'UPDATE usuarios SET estado = 0, updated_at = CURRENT_TIMESTAMP WHERE id_usuario = ?',
+                [id]
             );
             return result.affectedRows > 0;
         } catch (error) {

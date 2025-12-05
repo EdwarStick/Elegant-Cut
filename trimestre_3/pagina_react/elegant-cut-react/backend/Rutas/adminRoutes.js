@@ -1,9 +1,9 @@
-const Client = require('../models/Client');
-const Barber = require('../models/Barber');
-const Appointment = require('../models/Appointment');
-const Dashboard = require('../models/Dashboard');
-const Service = require('../models/Service');
-const User = require('../models/User');
+const Client = require('../Modelos/Client');
+const Barber = require('../Modelos/Barber');
+const Appointment = require('../Modelos/Appointment');
+const Dashboard = require('../Modelos/Dashboard');
+const Service = require('../Modelos/Service');
+const User = require('../Modelos/User');
 
 async function handleAdminRoutes(req, res) {
     const url = new URL(req.url, `http://${req.headers.host}`);
@@ -96,10 +96,17 @@ async function handleAdminRoutes(req, res) {
             }
 
             if (method === 'DELETE') {
-                const deactivated = await Barber.deactivate(id);
+                const deactivated = await User.deactivate(id);
                 if (!deactivated) return sendResponse(res, 404, { success: false, error: 'Barbero no encontrado' });
                 return sendResponse(res, 200, { success: true, message: 'Barbero desactivado' });
             }
+        }
+
+        if (path.match(/^\/admin\/barbers\/\d+\/toggle$/) && method === 'PUT') {
+            const id = path.split('/')[3];
+            const result = await Barber.toggleStatus(id);
+            if (!result) return sendResponse(res, 404, { success: false, error: 'Barbero no encontrado' });
+            return sendResponse(res, 200, { success: true, message: 'Estado actualizado', newStatus: result.newStatus });
         }
 
         if (path.match(/^\/admin\/barbers\/\d+\/stats$/) && method === 'GET') {
@@ -123,6 +130,23 @@ async function handleAdminRoutes(req, res) {
                 // Asegurar que se crea como admin
                 const id = await User.create({ ...userData, roleName: 'administrador' });
                 return sendResponse(res, 201, { success: true, message: 'Administrador creado', id });
+            }
+        }
+
+        if (path.match(/^\/admin\/administrators\/\d+$/)) {
+            const id = path.split('/')[3];
+
+            if (method === 'PUT') {
+                const body = await getBody(req);
+                const updated = await User.update(id, JSON.parse(body));
+                if (!updated) return sendResponse(res, 404, { success: false, error: 'Administrador no encontrado' });
+                return sendResponse(res, 200, { success: true, message: 'Administrador actualizado' });
+            }
+
+            if (method === 'DELETE') {
+                const deactivated = await User.deactivate(id);
+                if (!deactivated) return sendResponse(res, 404, { success: false, error: 'Administrador no encontrado' });
+                return sendResponse(res, 200, { success: true, message: 'Administrador eliminado' });
             }
         }
 

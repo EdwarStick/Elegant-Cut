@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { AuthClient } from '../utils/authClient';
+import { AuthClient } from '../Utilidades/authClient';
 
 export function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -13,7 +13,7 @@ export function useAuth() {
   const checkAuth = () => {
     const token = AuthClient.getToken();
     const userData = AuthClient.getUser();
-    
+
     if (token && userData && AuthClient.isTokenValid()) {
       setIsAuthenticated(true);
       setUser(userData);
@@ -31,7 +31,7 @@ export function useAuth() {
   const login = async (username, password) => {
     try {
       const result = await AuthClient.login(username, password);
-      
+
       if (result.success) {
         setIsAuthenticated(true);
         setUser(result.user);
