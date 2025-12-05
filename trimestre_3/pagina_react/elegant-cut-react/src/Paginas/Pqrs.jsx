@@ -1,5 +1,10 @@
+<<<<<<< HEAD:trimestre_3/pagina_react/elegant-cut-react/src/pages/Pqrs.jsx
 import React, { useState } from 'react';
 import '../styles/pqrs/pqrs.css';
+=======
+import React from 'react';
+import '../Estilos/pqrs/pqrs.css';
+>>>>>>> 7037219b3134a283b98268ebcafa67af7e92038f:trimestre_3/pagina_react/elegant-cut-react/src/Paginas/Pqrs.jsx
 
 function Pqrs() {
   const [formData, setFormData] = useState({

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AuthClient } from '../utils/authClient';
+import { AuthClient } from '../Utilidades/authClient';
 import { useNavigate } from 'react-router-dom';
 import './LoginForm.css';
 

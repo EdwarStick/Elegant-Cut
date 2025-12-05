@@ -1,49 +1,58 @@
-const pool = require('../config/database');
+const pool = require('../Configuracion/database');
 
 class Dashboard {
-  // Obtener estadísticas - VERSIÓN CORREGIDA
+  // Obtener estadísticas completas
   static async getStats() {
     try {
-      // Total clientes (todos los usuarios activos que no son admin)
-      const [clientes] = await pool.execute(
-        `SELECT COUNT(*) as total 
-         FROM usuarios 
-         WHERE estado = 1 AND id_rol != 1`
-      );
-      
-      // Citas de hoy
+      // Citas de hoy por estado
       const [citasHoy] = await pool.execute(
-        'SELECT COUNT(*) as total FROM reservas WHERE DATE(fecha) = CURDATE()'
+        `SELECT 
+          COUNT(*) as totalCitas,
+          COUNT(CASE WHEN id_estado_cita = 1 THEN 1 END) as citasPendientes,
+          COUNT(CASE WHEN id_estado_cita = 2 THEN 1 END) as citasCompletadas,
+          COUNT(CASE WHEN id_estado_cita = 3 THEN 1 END) as citasCanceladas
+         FROM reservas 
+         WHERE DATE(fecha) = CURDATE()`
       );
-      
-      // Ingresos de hoy (sin filtrar por estado)
+
+      // Ingresos de hoy (solo citas completadas)
       const [ingresosHoy] = await pool.execute(
         `SELECT COALESCE(SUM(s.precio), 0) as total
          FROM reservas r
          JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
          JOIN servicios s ON dcs.id_servicio = s.id_servicio
-         WHERE DATE(r.fecha) = CURDATE()`
+         WHERE DATE(r.fecha) = CURDATE() AND r.id_estado_cita = 2`
+      );
+
+      // Clientes nuevos (registrados hoy)
+      const [clientesNuevos] = await pool.execute(
+        `SELECT COUNT(*) as total 
+         FROM usuarios 
+         WHERE DATE(created_at) = CURDATE() AND id_rol = 3`
       );
 
       return {
-        totalClientes: clientes[0].total,
-        citasHoy: citasHoy[0].total,
-        ingresosHoy: ingresosHoy[0].total,
-        ratingPromedio: 4.8
+        totalCitas: citasHoy[0].totalCitas || 0,
+        citasPendientes: citasHoy[0].citasPendientes || 0,
+        citasCompletadas: citasHoy[0].citasCompletadas || 0,
+        citasCanceladas: citasHoy[0].citasCanceladas || 0,
+        ingresosHoy: parseFloat(ingresosHoy[0].total) || 0,
+        clientesNuevos: clientesNuevos[0].total || 0
       };
     } catch (error) {
-      console.log('Error en Dashboard.getStats:', error);
-      // Devolver valores por defecto en caso de error
+      console.error('❌ Error en Dashboard.getStats:', error);
       return {
-        totalClientes: 0,
-        citasHoy: 0,
+        totalCitas: 0,
+        citasPendientes: 0,
+        citasCompletadas: 0,
+        citasCanceladas: 0,
         ingresosHoy: 0,
-        ratingPromedio: 4.8
+        clientesNuevos: 0
       };
     }
   }
 
-  // Obtener actividad reciente - VERSIÓN SIMPLIFICADA
+  // Obtener actividad reciente
   static async getRecentActivity() {
     try {
       const [rows] = await pool.execute(
@@ -60,18 +69,18 @@ class Dashboard {
       );
       return rows;
     } catch (error) {
-      console.log('Error en Dashboard.getRecentActivity:', error);
+      console.error('❌ Error en Dashboard.getRecentActivity:', error);
       return [];
     }
   }
 
-  // Obtener próximas citas - VERSIÓN CORREGIDA
+  // Obtener próximas citas
   static async getUpcomingAppointments() {
     try {
       const [rows] = await pool.execute(
         `SELECT 
             r.fecha,
-            COALESCE(h.hora_inicio, 540) as hora_inicio, -- 9:00 AM por defecto
+            COALESCE(h.hora_inicio, 540) as hora_inicio,
             CONCAT(u.prim_nombre, ' ', u.apellido1) as cliente,
             COALESCE(s.nombre, 'Servicio') as servicio,
             COALESCE(s.precio, 0) as precio
@@ -79,14 +88,14 @@ class Dashboard {
          LEFT JOIN usuarios u ON r.id_usuario = u.id_usuario
          LEFT JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
          LEFT JOIN servicios s ON dcs.id_servicio = s.id_servicio
-         LEFT JOIN horarios h ON r.id_horarios = h.id_horarios  -- ← CORREGIDO: id_horarios
+         LEFT JOIN horarios h ON r.id_horarios = h.id_horarios
          WHERE r.fecha >= CURDATE()
          ORDER BY r.fecha ASC, hora_inicio ASC
          LIMIT 5`
       );
       return rows;
     } catch (error) {
-      console.log('Error en Dashboard.getUpcomingAppointments:', error);
+      console.error('❌ Error en Dashboard.getUpcomingAppointments:', error);
       return [];
     }
   }

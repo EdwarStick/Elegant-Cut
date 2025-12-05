@@ -1,21 +1,20 @@
-.admin-layout {
+.admin-panel {
     display: flex;
     min-height: 100vh;
     background-color: #f4f6f9;
 }
 
-.admin-main {
+.admin-content {
     flex: 1;
     display: flex;
     flex-direction: column;
     margin-left: 260px;
-    /* Ancho del sidebar */
     transition: margin-left 0.3s ease;
 }
 
-.admin-content {
-    padding: 2rem;
+.admin-main {
     flex: 1;
+    padding: 2rem;
     overflow-y: auto;
 }
 
@@ -36,6 +35,17 @@
     color: #2c3e50;
     font-size: 1.5rem;
     font-weight: 600;
+}
+
+.tab-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-container {
+    width: 100%;
 }
 
 .crud-table {
@@ -93,11 +103,11 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-    .admin-main {
+    .admin-content {
         margin-left: 0;
     }
 
-    .admin-content {
+    .admin-main {
         padding: 1rem;
     }
 }

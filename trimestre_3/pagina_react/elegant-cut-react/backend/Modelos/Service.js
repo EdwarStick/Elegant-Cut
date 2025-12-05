@@ -1,11 +1,11 @@
-const pool = require('../config/database');
+const pool = require('../Configuracion/database');
 
 class Service {
-  // Obtener todos los servicios
+  // Obtener todos los servicios (activos)
   static async getAll() {
     try {
       const [rows] = await pool.execute(
-        'SELECT * FROM servicios ORDER BY nombre'
+        'SELECT * FROM servicios WHERE estado = 1 ORDER BY nombre_servicio'
       );
       return rows;
     } catch (error) {
@@ -16,10 +16,10 @@ class Service {
   // Crear servicio
   static async create(serviceData) {
     try {
-      const { nombre, precio, duracion } = serviceData;
+      const { nombre_servicio, precio, duracion_minutos, descripcion, imagen_pro } = serviceData;
       const [result] = await pool.execute(
-        'INSERT INTO servicios (nombre, precio, duracion) VALUES (?, ?, ?)',
-        [nombre, precio, duracion]
+        'INSERT INTO servicios (nombre_servicio, precio, duracion_minutos, descripcion, imagen_pro, estado) VALUES (?, ?, ?, ?, ?, 1)',
+        [nombre_servicio, precio, duracion_minutos, descripcion, imagen_pro || null]
       );
       return result.insertId;
     } catch (error) {
@@ -30,10 +30,10 @@ class Service {
   // Actualizar servicio
   static async update(id, serviceData) {
     try {
-      const { nombre, precio, duracion } = serviceData;
+      const { nombre_servicio, precio, duracion_minutos, descripcion, imagen_pro } = serviceData;
       const [result] = await pool.execute(
-        'UPDATE servicios SET nombre = ?, precio = ?, duracion = ? WHERE id_servicio = ?',
-        [nombre, precio, duracion, id]
+        'UPDATE servicios SET nombre_servicio = ?, precio = ?, duracion_minutos = ?, descripcion = ?, imagen_pro = ? WHERE id_servicio = ?',
+        [nombre_servicio, precio, duracion_minutos, descripcion, imagen_pro || null, id]
       );
       return result.affectedRows > 0;
     } catch (error) {

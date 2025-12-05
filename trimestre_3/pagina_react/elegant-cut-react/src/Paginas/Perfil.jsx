@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthClient } from '../utils/authClient';
+import { AuthClient } from '../Utilidades/authClient';
 
 function Perfil() {
     const navigate = useNavigate();

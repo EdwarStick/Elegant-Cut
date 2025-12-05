@@ -303,16 +303,17 @@ function Servicios_caballero() {
             )}
           </div>
           <div className="cart-total">
-            Total: <span id="cartTotal">${calculateTotal().toLocaleString()}</span>
+            <span>Total:</span>
+            <span>${calculateTotal().toLocaleString()}</span>
           </div>
-          <Link to="/form_agenda">
-            <button id="agendarBtn">Agendar Cita</button>
+          <Link to="/Form_agenda">
+            <button id="agendarBtn" style={{ width: '100%' }}>AGENDAR CITA</button>
           </Link>
         </div>
 
         {/* BOTÓN FLOTANTE DEL CARRITO */}
         <div id="cartToggle" onClick={toggleCart}>
-          <i className="bi bi-bag"></i>
+          <i className="bi bi-cart-fill" style={{ fontSize: '1.5rem' }}></i>
           <span className="cart-count">{cart.length}</span>
         </div>
       </main>

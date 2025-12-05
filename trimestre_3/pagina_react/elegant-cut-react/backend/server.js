@@ -1,14 +1,18 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+<<<<<<< HEAD:trimestre_3/pagina_react/elegant-cut-react/backend/auth_fixed.js
 const pool = require('./config/database');
+=======
+const pool = require('./Configuracion/database'); // Importar MySQL
+>>>>>>> 7037219b3134a283b98268ebcafa67af7e92038f:trimestre_3/pagina_react/elegant-cut-react/backend/server.js
 const EmailService = require('./emailService');
-const Dashboard = require('./models/Dashboard');
-const Service = require('./models/Service');
-const Appointment = require('./models/Appointment');
-const User = require('./models/User');
-const Barber = require('./models/Barber');
-const Client = require('./models/Client');
-const handleAdminRoutes = require('./routes/adminRoutes');
+const Dashboard = require('./Modelos/Dashboard');
+const Service = require('./Modelos/Service');
+const Appointment = require('./Modelos/Appointment');
+const User = require('./Modelos/User');
+const Barber = require('./Modelos/Barber');
+const Client = require('./Modelos/Client');
+const handleAdminRoutes = require('./Rutas/adminRoutes');
 
 // SQL para crear la tabla PQRS si no existe
 const CREATE_PQRS_TABLE = `
@@ -355,7 +359,7 @@ const server = http.createServer(async (req, res) => {
 
     if (req.url === '/api/barbers' && req.method === 'GET') {
         try {
-            const barbers = await Barber.getAll();
+            const barbers = await Barber.getActive();
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(barbers));
         } catch (error) {

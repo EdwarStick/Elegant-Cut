@@ -1,44 +1,23 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
-import Home from './pages/Home'
-import Reseñas from './pages/Reseñas'
-import Header from './components/Header'
-import Footer from './components/Footer'
-import Barberos from './pages/Barberos'
-import './App.css'
-import LoginForm from './components/LoginForm'
-import Servicios_dama from './pages/Servicios_dama'
-import Servicios_caballero from './pages/Servicios_caballero'
-import Form_agenda from './pages/Form_agenda'
-import AdminPanel from './pages/AdminPanel'
-import Pqrs from './pages/Pqrs'
-import ProtectedRoute from './components/ProtectedRoute'
-import EjemploDB from './pages/EjemploDB' // Importamos la página de prueba
-import Perfil from './pages/Perfil'
-
-// Importar componentes de Admin
-import DashboardTab from './components/DashboardTab'
-import ServicesTab from './components/ServicesTab'
-import BarbersTab from './components/BarbersTab'
-import AdminsTab from './components/AdminsTab'
-import AppointmentsTab from './components/AppointmentsTab'
-import ClientsTab from './components/ClientsTab'
-import SettingsTab from './components/SettingsTab'
+import AppointmentsTab from './Componentes/AppointmentsTab'
+import ClientsTab from './Componentes/ClientsTab'
+import SettingsTab from './Componentes/SettingsTab'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* RUTAS SIN HEADER/FOOTER */}
         <Route path="/login" element={<LoginForm />} />
 
-        {/* RUTAS ADMIN PROTEGIDAS CON NESTED ROUTES */}
-        <Route path="/admin" element={
-          <ProtectedRoute requiredRole="admin">
-            <AdminPanel />
-          </ProtectedRoute>
-        }>
-          {/* Redirigir /admin a /admin/dashboard */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminPanel />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardTab />} />
           <Route path="citas" element={<AppointmentsTab />} />
@@ -49,7 +28,6 @@ function App() {
           <Route path="configuracion" element={<SettingsTab />} />
         </Route>
 
-        {/* RUTAS CON HEADER/FOOTER */}
         <Route path="/*" element={
           <>
             <Header />
