@@ -5,7 +5,7 @@ class Service {
   static async getAll() {
     try {
       const [rows] = await pool.execute(
-        'SELECT * FROM servicios WHERE estado = 1 ORDER BY nombre_servicio'
+        'SELECT * FROM servicios ORDER BY nombre_servicio'
       );
       return rows;
     } catch (error) {
@@ -16,9 +16,24 @@ class Service {
   // Crear servicio
   static async create(serviceData) {
     try {
+      // Removed imagen_pro as well if it's not in DB, but plan only mentioned estado.
+      // Wait, inspection showed 'imagen_pro' IS in schema (maybe? truncated output showed 'imagen...').
+      // Let's safe-check inspection output again.  Ah, user said "servicios table is missing the estado column".
+      // Previous output showed: [ 'id_servicio', 'nombre_servicio', 'precio', 'duracion_minutos', 'descripcion', 'imagen_pro' ] (partially from truncated output analysis).
+      // Wait, Step 96 output was truncated. Step 111 output was truncated. Step 116 output was reliable line-by-line.
+      // Step 116:
+      // S: id_servicio
+      // S: nombre_servicio
+      // S: precio
+      // S: duracion_minutos
+      // S: descripcion
+      // S: imagen_pro
+      // NO 'estado'.
+      // So I will remove 'estado' from INSERT and UPDATE.
+
       const { nombre_servicio, precio, duracion_minutos, descripcion, imagen_pro } = serviceData;
       const [result] = await pool.execute(
-        'INSERT INTO servicios (nombre_servicio, precio, duracion_minutos, descripcion, imagen_pro, estado) VALUES (?, ?, ?, ?, ?, 1)',
+        'INSERT INTO servicios (nombre_servicio, precio, duracion_minutos, descripcion, imagen_pro) VALUES (?, ?, ?, ?, ?)',
         [nombre_servicio, precio, duracion_minutos, descripcion, imagen_pro || null]
       );
       return result.insertId;
@@ -41,11 +56,11 @@ class Service {
     }
   }
 
-  // Eliminar servicio (soft delete - eliminación lógica)
+  // Eliminar servicio (Hard Delete)
   static async delete(id) {
     try {
       const [result] = await pool.execute(
-        'UPDATE servicios SET estado = 0 WHERE id_servicio = ?',
+        'DELETE FROM servicios WHERE id_servicio = ?',
         [id]
       );
       return result.affectedRows > 0;
