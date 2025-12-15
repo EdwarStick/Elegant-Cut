@@ -15,7 +15,14 @@ class Barber {
           u.apellido2,
           u.email,
           u.telefono,
-          u.foto,
+          u.id_usuario,
+          u.username,
+          u.prim_nombre,
+          u.seg_nombre,
+          u.apellido1,
+          u.apellido2,
+          u.email,
+          u.telefono,
           u.estado,
           u.created_at,
           COUNT(r.id_reservas) as total_citas,
@@ -45,7 +52,8 @@ class Barber {
           seg_nombre,
           apellido1,
           apellido2,
-          foto,
+          apellido1,
+          apellido2,
           'Barbero Profesional' as especialidad
         FROM usuarios 
         WHERE id_rol = 2 AND estado = 1
@@ -100,9 +108,9 @@ class Barber {
             // Crear usuario barbero (id_rol = 2)
             const [result] = await connection.execute(
                 `INSERT INTO usuarios 
-         (username, password_hash, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, foto, id_rol, estado, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 2, 1, NOW())`,
-                [username, hashedPassword, email, prim_nombre, seg_nombre || null, apellido1, apellido2 || null, telefono, foto || null]
+         (username, password_hash, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, id_rol, estado, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, 2, 1, NOW())`,
+                [username, hashedPassword, email, prim_nombre, seg_nombre || null, apellido1, apellido2 || null, telefono]
             );
 
             await connection.commit();
@@ -118,13 +126,13 @@ class Barber {
     // Actualizar barbero
     static async update(id, barberData) {
         try {
-            const { prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, foto } = barberData;
+            const { prim_nombre, seg_nombre, apellido1, apellido2, email, telefono } = barberData;
 
             const [result] = await pool.execute(
                 `UPDATE usuarios 
-                 SET prim_nombre = ?, seg_nombre = ?, apellido1 = ?, apellido2 = ?, email = ?, telefono = ?, foto = ?, updated_at = CURRENT_TIMESTAMP
+                 SET prim_nombre = ?, seg_nombre = ?, apellido1 = ?, apellido2 = ?, email = ?, telefono = ?, updated_at = CURRENT_TIMESTAMP
                  WHERE id_usuario = ? AND id_rol = 2`,
-                [prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, foto, id]
+                [prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, id]
             );
             return result.affectedRows > 0;
         } catch (error) {
@@ -155,6 +163,35 @@ class Barber {
             return result.affectedRows > 0;
         } catch (error) {
             throw error;
+        }
+    }
+
+    // Alternar estado (Toggle Status)
+    static async toggleStatus(id) {
+        const connection = await pool.getConnection();
+        try {
+            // 1. Obtener estado actual
+            const [rows] = await connection.execute(
+                'SELECT estado FROM usuarios WHERE id_usuario = ? AND id_rol = 2',
+                [id]
+            );
+
+            if (rows.length === 0) return null;
+
+            const currentStatus = rows[0].estado;
+            const newStatus = currentStatus === 1 ? 0 : 1;
+
+            // 2. Actualizar estado
+            await connection.execute(
+                'UPDATE usuarios SET estado = ?, updated_at = CURRENT_TIMESTAMP WHERE id_usuario = ?',
+                [newStatus, id]
+            );
+
+            return { newStatus };
+        } catch (error) {
+            throw error;
+        } finally {
+            connection.release();
         }
     }
 
