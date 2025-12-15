@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; // Estos son cajistas de memoria
 import { Link } from "react-router-dom";
 
 function Servicios_caballero() {
-  const [activeCategory, setActiveCategory] = useState("todos");
-  const [cart, setCart] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("todos"); //esto guarda qué categoría esta sellecionada
+  const [cart, setCart] = useState([]);// acá se guardan todos los servicios que se van agregando
+  const [isCartOpen, setIsCartOpen] = useState(false);// acá se controla si el carrito está abierto o cerrado
 
   const servicesData = [
     {
@@ -89,6 +89,124 @@ function Servicios_caballero() {
     }
   ];
 
+  const additionalServices = [
+    // BARBA
+    {
+      id: 9,
+      name: "Perfilado de Barba",
+      price: 15000,
+      category: "barba",
+      image: "/assets/images/servicios_caballeros/barba/perfilado de barba.png",
+      description: "Definición de contornos para una barba prolija y elegante.",
+      features: ["Navaja", "20 min"],
+      categoryLabel: "Barba"
+    },
+    {
+      id: 10,
+      name: "Afeitado Tradicional",
+      price: 25000,
+      category: "barba",
+      image: "/assets/images/servicios_caballeros/barba/afeitado tradicional.png",
+      description: "Experiencia clásica con toalla caliente y navaja.",
+      features: ["Toalla Caliente", "30 min"],
+      categoryLabel: "Barba"
+    },
+    {
+      id: 11,
+      name: "Barba Express",
+      price: 12000,
+      category: "barba",
+      image: "/assets/images/servicios_caballeros/barba/barba express.png",
+      description: "Arreglo rápido con máquina para mantener el largo ideal.",
+      features: ["Máquina", "15 min"],
+      categoryLabel: "Barba"
+    },
+    {
+      id: 12,
+      name: "Tinturación de Barba",
+      price: 25000,
+      category: "barba",
+      image: "/assets/images/servicios_caballeros/barba/baraba tinturacion .png",
+      description: "Cubre canas o unifica el tono de tu barba.",
+      features: ["Color", "40 min"],
+      categoryLabel: "Barba"
+    },
+    {
+      id: 13,
+      name: "Tratamiento de Barba",
+      price: 20000,
+      category: "barba",
+      image: "/assets/images/servicios_caballeros/barba/barba tratamiento .png",
+      description: "Hidratación profunda para una barba suave y manejable.",
+      features: ["Hidratación", "25 min"],
+      categoryLabel: "Barba"
+    },
+    {
+      id: 14,
+      name: "Depilación con Cera",
+      price: 15000,
+      category: "barba",
+      image: "/assets/images/servicios_caballeros/barba/depilacion con cera.png",
+      description: "Eliminación de vello en pómulos, nariz u orejas.",
+      features: ["Cera", "15 min"],
+      categoryLabel: "Barba"
+    },
+    // OTROS SERVICIOS
+    {
+      id: 15,
+      name: "Mascarilla Facial",
+      price: 25000,
+      category: "otros",
+      image: "/assets/images/servicios_caballeros/otros_servicios/mascarilla.png",
+      description: "Limpieza e hidratación para revitalizar tu rostro.",
+      features: ["Limpieza", "30 min"],
+      categoryLabel: "Tratamiento"
+    },
+    {
+      id: 16,
+      name: "Keratina Capilar",
+      price: 60000,
+      category: "otros",
+      image: "/assets/images/servicios_caballeros/otros_servicios/keratina capilar.png",
+      description: "Alisado y restauración profunda del cabello.",
+      features: ["Alisado", "90 min"],
+      categoryLabel: "Tratamiento"
+    },
+    {
+      id: 17,
+      name: "Tinturación Capilar",
+      price: 45000,
+      category: "otros",
+      image: "/assets/images/servicios_caballeros/otros_servicios/tinturacion.png",
+      description: "Cambio de look o cobertura de canas con productos premium.",
+      features: ["Color", "60 min"],
+      categoryLabel: "Tratamiento"
+    },
+    {
+      id: 18,
+      name: "Depilación Facial",
+      price: 20000,
+      category: "otros",
+      image: "/assets/images/servicios_caballeros/otros_servicios/depilacion.png",
+      description: "Depilación de cejas y rostro para una mirada limpia.",
+      features: ["Cera/Hilo", "20 min"],
+      categoryLabel: "Tratamiento"
+    },
+    {
+      id: 19,
+      name: "Diseño de Figuras",
+      price: 15000,
+      category: "otros",
+      image: "/assets/images/servicios_caballeros/otros_servicios/figuras.png",
+      description: "Diseños artísticos y tribales en tu corte.",
+      features: ["Arte", "30 min"],
+      categoryLabel: "Diseño"
+    }
+  ];
+
+  // Combine existing and new services
+  servicesData.push(...additionalServices);
+  //Cuando haces clic en un botón de filtro, llamas a:
   const handleCategoryClick = (category) => {
     setActiveCategory(category);
   };
@@ -208,10 +326,10 @@ function Servicios_caballero() {
         <div className="seleccion-genero">
           <h2>Selecciona el tipo de servicios</h2>
           <div className="botones-genero">
-            <Link to="/servicios_dama" className="btn-dama">
+            <Link to="/Servicios_dama" className="btn-dama">
               Damas
             </Link>
-            <Link to="/servicios_caballero" className="btn-caballero">
+            <Link to="/Servicios_caballero" className="btn-caballero">
               Caballeros
             </Link>
           </div>
