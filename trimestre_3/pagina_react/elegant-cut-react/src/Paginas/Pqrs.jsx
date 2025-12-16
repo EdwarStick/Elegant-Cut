@@ -227,8 +227,7 @@ export default function Pqrs() {
           </form>
         </section>
 
-        {/* Otras secciones (track, history, info) y modales */}
-        {/* Puedes pegarlas igual que antes, JSX es válido */}
+       
       </main>
     </div>
   );
