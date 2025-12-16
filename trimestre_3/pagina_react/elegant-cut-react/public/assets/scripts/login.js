@@ -1,20 +1,20 @@
 // login.js - Manejo de login con JWT
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Manejar el formulario de login
     const loginForm = document.querySelector('.login-form');
-    
+
     if (loginForm) {
-        loginForm.addEventListener('submit', async function(e) {
+        loginForm.addEventListener('submit', async function (e) {
             e.preventDefault(); // Evitar envío normal del formulario
-            
+
             // Obtener datos del formulario
             const formData = new FormData(loginForm);
             const username = formData.get('usuario');
             const password = formData.get('contrasena');
-            
+
             // Mostrar mensaje de carga
             mostrarMensaje('Procesando login...', 'info');
-            
+
             try {
                 // Enviar petición al servidor JWT
                 const respuesta = await fetch('http://localhost:3000/auth/login', {
@@ -27,16 +27,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         password: password
                     })
                 });
-                
+
                 const datos = await respuesta.json();
-                
+
                 if (datos.success) {
                     // Login exitoso - guardar token y redirigir
                     localStorage.setItem('jwt_token', datos.token);
                     localStorage.setItem('user_data', JSON.stringify(datos.user));
-                    
+
                     mostrarMensaje('¡Login exitoso! Redirigiendo...', 'success');
-                    
+
                     //  REDIRECCIÓN SEGÚN ROL 
                     setTimeout(() => {
                         if (datos.user.role === 'admin') {
@@ -46,18 +46,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }, 1000);
                     //  HASTA AQUÍ 
-                    
+
                 } else {
                     // Login fallido
                     mostrarMensaje('Error: ' + datos.error, 'error');
                 }
-                
+
             } catch (error) {
                 mostrarMensaje('Error de conexión: ' + error.message, 'error');
             }
         });
     }
-    
+
     // Función para mostrar mensajes
     function mostrarMensaje(mensaje, tipo) {
         // Eliminar mensaje anterior si existe
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (mensajeAnterior) {
             mensajeAnterior.remove();
         }
-        
+
         // Crear nuevo mensaje
         const mensajeDiv = document.createElement('div');
         mensajeDiv.className = `mensaje-login mensaje-${tipo}`;
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
             ${tipo === 'success' ? 'background: #e8f5e8; color: #2e7d32; border: 1px solid #4caf50;' : ''}
             ${tipo === 'info' ? 'background: #e3f2fd; color: #1565c0; border: 1px solid #2196f3;' : ''}
         `;
-        
+
         // Insertar después del formulario
         const formBox = document.querySelector('.form-box');
         formBox.appendChild(mensajeDiv);

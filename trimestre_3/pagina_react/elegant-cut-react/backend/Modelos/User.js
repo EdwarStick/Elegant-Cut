@@ -1,8 +1,75 @@
+<<<<<<< HEAD:trimestre_3/pagina_react/elegant-cut-react/backend/models/User.js
+
+const pool = require('../config/database');
+=======
 const pool = require('../Configuracion/database');
+>>>>>>> 7037219b3134a283b98268ebcafa67af7e92038f:trimestre_3/pagina_react/elegant-cut-react/backend/Modelos/User.js
 const bcrypt = require('bcryptjs');
 
 class User {
-    // Buscar usuario por username con su rol (JOIN)
+    // --- Métodos de Gestión de Barberos (HEAD) ---
+    static async getBarbers() {
+        try {
+            const [rows] = await pool.execute(
+                `SELECT id_usuario, prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, estado 
+                 FROM usuarios 
+                 WHERE id_rol = 2 AND estado = 1`
+            );
+            return rows;
+        } catch (error) { throw error; }
+    }
+
+    static async createBarber(data) {
+        try {
+            const { prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, username, password } = data;
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            const [result] = await pool.execute(
+                `INSERT INTO usuarios(prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, username, password_hash, id_rol, estado)
+VALUES(?, ?, ?, ?, ?, ?, ?, ?, 2, 1)`,
+                [prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, username, hashedPassword]
+            );
+            return result.insertId;
+        } catch (error) { throw error; }
+    }
+
+    // --- Métodos de Gestión de Clientes (HEAD) ---
+    static async getClients() {
+        try {
+            const [rows] = await pool.execute(
+                `SELECT id_usuario, prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, created_at, estado 
+                 FROM usuarios 
+                 WHERE id_rol = 3`
+            );
+            return rows;
+        } catch (error) { throw error; }
+    }
+
+    // --- Métodos Generales de Usuario (HEAD/Common) ---
+    static async update(id, data) {
+        try {
+            const { prim_nombre, seg_nombre, apellido1, apellido2, email, telefono } = data;
+            const [result] = await pool.execute(
+                `UPDATE usuarios 
+                 SET prim_nombre = ?, seg_nombre = ?, apellido1 = ?, apellido2 = ?, email = ?, telefono = ?
+    WHERE id_usuario = ? `,
+                [prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, id]
+            );
+            return result.affectedRows > 0;
+        } catch (error) { throw error; }
+    }
+
+    static async delete(id) {
+        try {
+            const [result] = await pool.execute(
+                'UPDATE usuarios SET estado = 0 WHERE id_usuario = ?',
+                [id]
+            );
+            return result.affectedRows > 0;
+        } catch (error) { throw error; }
+    }
+
+    // --- Métodos de Autenticación y Búsqueda (Incoming) ---
     static async findByUsernameWithRole(username) {
         try {
             const [users] = await pool.execute(
@@ -13,12 +80,9 @@ class User {
                 [username]
             );
             return users[0];
-        } catch (error) {
-            throw error;
-        }
+        } catch (error) { throw error; }
     }
 
-    // Buscar por email
     static async findByEmail(email) {
         try {
             const [users] = await pool.execute(
@@ -26,12 +90,9 @@ class User {
                 [email]
             );
             return users[0];
-        } catch (error) {
-            throw error;
-        }
+        } catch (error) { throw error; }
     }
 
-    // Verificar si existe usuario o email
     static async exists(username, email) {
         try {
             const [users] = await pool.execute(
@@ -39,12 +100,9 @@ class User {
                 [username, email]
             );
             return users.length > 0;
-        } catch (error) {
-            throw error;
-        }
+        } catch (error) { throw error; }
     }
 
-    // Crear nuevo usuario
     static async create(userData) {
         const { username, password, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, roleName } = userData;
 
@@ -52,12 +110,16 @@ class User {
         try {
             await connection.beginTransaction();
 
+<<<<<<< HEAD
             // Obtener ID del rol (Case insensitive)
+=======
+>>>>>>> e9d8bbe9531668bc8e446c167d6d6edde4a02368
             const [roles] = await connection.execute(
                 'SELECT id_rol FROM rol WHERE LOWER(nombre_rol) = LOWER(?)',
                 [roleName]
             );
 
+<<<<<<< HEAD
             if (roles.length === 0) {
                 // Fallback: Try searching for 'Admin' if 'administrador' failed
                 if (roleName.toLowerCase() === 'administrador') {
@@ -75,14 +137,16 @@ class User {
             } else {
                 var id_rol = roles[0].id_rol;
             }
+=======
+            if (roles.length === 0) throw new Error('Rol no válido');
+            const id_rol = roles[0].id_rol;
+>>>>>>> e9d8bbe9531668bc8e446c167d6d6edde4a02368
 
-            // Hash password
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            // Insertar usuario
             const [result] = await connection.execute(
-                `INSERT INTO usuarios (username, password_hash, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, id_rol, estado) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
+                `INSERT INTO usuarios(username, password_hash, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, id_rol, estado)
+VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
                 [username, hashedPassword, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, id_rol]
             );
 
@@ -97,7 +161,6 @@ class User {
         }
     }
 
-    // Actualizar contraseña
     static async updatePassword(identifier, newPassword, isEmail = false) {
         try {
             const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -108,11 +171,11 @@ class User {
                 [hashedPassword, identifier]
             );
             return result.affectedRows > 0;
-        } catch (error) {
-            throw error;
-        }
+        } catch (error) { throw error; }
     }
 
+<<<<<<< HEAD:trimestre_3/pagina_react/elegant-cut-react/backend/models/User.js
+=======
     // Actualizar usuario
     static async update(id, userData) {
         try {
@@ -143,20 +206,20 @@ class User {
     }
 
     // Obtener usuarios por rol
+>>>>>>> 7037219b3134a283b98268ebcafa67af7e92038f:trimestre_3/pagina_react/elegant-cut-react/backend/Modelos/User.js
     static async findAllByRole(roleId) {
         try {
             const [users] = await pool.execute(
                 `SELECT id_usuario, username, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, estado, created_at 
                  FROM usuarios 
-                 WHERE id_rol = ? 
-                 ORDER BY created_at DESC`,
+                 WHERE id_rol = ?
+    ORDER BY created_at DESC`,
                 [roleId]
             );
             return users;
-        } catch (error) {
-            throw error;
-        }
+        } catch (error) { throw error; }
     }
 }
 
 module.exports = User;
+

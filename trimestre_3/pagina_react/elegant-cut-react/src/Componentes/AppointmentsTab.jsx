@@ -1,139 +1,122 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 const AppointmentsTab = () => {
   const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState('all');
+  const [message, setMessage] = useState({ text: '', type: '' });
 
-  useEffect(() => {
-    loadAppointments();
-  }, [filter]);
-
-  const loadAppointments = async () => {
+  const loadAppointments = useCallback(async () => {
     setLoading(true);
     try {
-      const url = filter === 'all'
-        ? 'http://localhost:3001/admin/appointments'
-        : `http://localhost:3001/admin/appointments?status=${filter}`;
-
-      const response = await fetch(url);
+      const response = await fetch('http://localhost:3001/admin/appointments');
       const data = await response.json();
+      if (data.success) setAppointments(data.data);
+    } catch (error) { showMessage('Error cargando citas', 'error'); }
+    finally { setLoading(false); }
+  }, []);
 
-      if (data.success && data.data) {
-        setAppointments(data.data);
-      } else {
-        setError('No se pudieron cargar las citas');
+  useEffect(() => { loadAppointments(); }, [loadAppointments]);
+
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      const response = await fetch(`http://localhost:3001/admin/appointments/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nuevoEstado: newStatus })
+      });
+      const data = await response.json();
+      if (data.success) {
+        showMessage('Estado de cita actualizado', 'success');
+        loadAppointments();
       }
-    } catch (err) {
-      console.error('Error loading appointments:', err);
-      setError('Error de conexión');
-    } finally {
-      setLoading(false);
-    }
+    } catch (error) { showMessage('Error al actualizar', 'error'); }
   };
+
+  const showMessage = (text, type) => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage({ text: '', type: '' }), 3000);
+  };
+
+  const filteredAppointments = filter === 'all'
+    ? appointments
+    : appointments.filter(apt => apt.estado === filter);
 
   const getStatusBadge = (status) => {
-    const badges = {
-      1: { class: 'bg-warning', text: 'Pendiente' },
-      2: { class: 'bg-success', text: 'Completada' },
-      3: { class: 'bg-danger', text: 'Cancelada' }
+    const map = {
+      'Pendiente': 'bg-warning text-dark',
+      'Confirmada': 'bg-info text-white',
+      'Completada': 'bg-success',
+      'Cancelada': 'bg-danger'
     };
-    return badges[status] || { class: 'bg-secondary', text: 'Desconocido' };
+    return map[status] || 'bg-secondary';
   };
 
-  if (loading) {
-    return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <div className="spinner-border text-primary"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={{ padding: '20px' }}>
-        <div className="alert alert-warning">{error}</div>
-      </div>
-    );
-  }
-
   return (
-    <div style={{ padding: '20px' }}>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+    <div className="tab-content">
+      <div className="tab-header d-flex justify-content-between align-items-center mb-4">
         <h2>Gestión de Citas</h2>
         <div className="btn-group">
-          <button
-            className={`btn btn-sm ${filter === 'all' ? 'btn-primary' : 'btn-outline-primary'}`}
-            onClick={() => setFilter('all')}
-          >
-            Todas
-          </button>
-          <button
-            className={`btn btn-sm ${filter === '1' ? 'btn-warning' : 'btn-outline-warning'}`}
-            onClick={() => setFilter('1')}
-          >
-            Pendientes
-          </button>
-          <button
-            className={`btn btn-sm ${filter === '2' ? 'btn-success' : 'btn-outline-success'}`}
-            onClick={() => setFilter('2')}
-          >
-            Completadas
-          </button>
-          <button
-            className={`btn btn-sm ${filter === '3' ? 'btn-danger' : 'btn-outline-danger'}`}
-            onClick={() => setFilter('3')}
-          >
-            Canceladas
-          </button>
+          <button className={`btn ${filter === 'all' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setFilter('all')}>Todas</button>
+          <button className={`btn ${filter === 'Pendiente' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setFilter('Pendiente')}>Pendientes</button>
+          <button className={`btn ${filter === 'Completada' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setFilter('Completada')}>Completadas</button>
         </div>
       </div>
 
-      {appointments.length === 0 ? (
-        <div className="alert alert-info">
-          <i className="bi bi-info-circle me-2"></i>
-          No hay citas {filter !== 'all' ? 'con este estado' : 'registradas'}
-        </div>
-      ) : (
-        <div className="card border-0 shadow-sm">
-          <div className="table-responsive">
-            <table className="table table-hover mb-0">
-              <thead className="table-light">
-                <tr>
-                  <th>Cliente</th>
-                  <th>Barbero</th>
-                  <th>Fecha y Hora</th>
-                  <th>Servicios</th>
-                  <th>Estado</th>
-                </tr>
-              </thead>
-              <tbody>
-                {appointments.map(apt => (
-                  <tr key={apt.id_reserva}>
-                    <td>{apt.cliente_nombre || 'N/A'}</td>
-                    <td>{apt.barbero_nombre || 'N/A'}</td>
-                    <td>
-                      <div>{new Date(apt.fecha).toLocaleDateString('es-CO')}</div>
-                      <div className="small text-muted">{apt.hora_inicio}</div>
-                    </td>
-                    <td>
-                      <span className="badge bg-light text-dark border">
-                        {apt.servicios || 'Sin servicios'}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={`badge ${getStatusBadge(apt.id_estado_cita).class}`}>
-                        {getStatusBadge(apt.id_estado_cita).text}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      {message.text && (
+        <div className={`alert alert-${message.type === 'error' ? 'danger' : 'success'} mb-4`}>
+          {message.text}
         </div>
       )}
+
+      <div className="table-responsive">
+        <table className="crud-table">
+          <thead>
+            <tr>
+              <th>Fecha/Hora</th>
+              <th>Cliente</th>
+              <th>Servicio</th>
+              <th>Precio</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredAppointments.map(apt => (
+              <tr key={apt.id_reservas}>
+                <td>
+                  <div className="fw-bold">{new Date(apt.fecha).toLocaleDateString()}</div>
+                  <div className="text-muted small">
+                    {String(apt.hora_inicio).padStart(4, '0').replace(/(\d{2})(\d{2})/, '$1:$2')}
+                  </div>
+                </td>
+                <td>{apt.cliente}</td>
+                <td>{apt.servicio}</td>
+                <td>${parseInt(apt.precio).toLocaleString()}</td>
+                <td>
+                  <span className={`badge ${getStatusBadge(apt.estado)}`}>
+                    {apt.estado}
+                  </span>
+                </td>
+                <td>
+                  <div className="action-buttons">
+                    {apt.estado === 'Pendiente' && (
+                      <>
+                        <button className="btn btn-sm btn-outline-success" onClick={() => handleStatusChange(apt.id_reservas, 2)} title="Completar">
+                          <i className="bi bi-check-lg"></i>
+                        </button>
+                        <button className="btn btn-sm btn-outline-danger" onClick={() => handleStatusChange(apt.id_reservas, 3)} title="Cancelar">
+                          <i className="bi bi-x-lg"></i>
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

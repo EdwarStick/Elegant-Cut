@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AuthClient } from '../Utilidades/authClient';
 import { useNavigate } from 'react-router-dom';
+import './LoginForm.css';
 
 function LoginForm() {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -236,7 +237,7 @@ function LoginForm() {
         <div className={`book ${isFlipped ? 'flipped' : ''}`}>
 
           {/* Página 1: Iniciar Sesión */}
-          <div className={`page ${!isFlipped && !showForgotPassword && !showCodigoVerificacion ? 'active' : ''}`} id="login-page">
+          <div className={`page ${!showForgotPassword && !showCodigoVerificacion ? 'active' : ''}`} id="login-page">
             <div className="form-box">
               <h2 className="form-title">Iniciar Sesión</h2>
 
@@ -311,7 +312,7 @@ function LoginForm() {
           </div>
 
           {/* Página 2: Registro */}
-          <div className={`page ${isFlipped ? 'active' : ''}`} id="register-page">
+          <div className="page active" id="register-page">
             <div className="form-box">
               <h2 className="form-title">Crear Cuenta</h2>
 
