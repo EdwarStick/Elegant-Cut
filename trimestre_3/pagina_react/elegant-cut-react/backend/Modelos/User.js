@@ -52,16 +52,29 @@ class User {
         try {
             await connection.beginTransaction();
 
-            // Obtener ID del rol
+            // Obtener ID del rol (Case insensitive)
             const [roles] = await connection.execute(
-                'SELECT id_rol FROM rol WHERE nombre_rol = ?',
+                'SELECT id_rol FROM rol WHERE LOWER(nombre_rol) = LOWER(?)',
                 [roleName]
             );
 
             if (roles.length === 0) {
-                throw new Error('Rol no válido');
+                // Fallback: Try searching for 'Admin' if 'administrador' failed
+                if (roleName.toLowerCase() === 'administrador') {
+                    const [rolesFallback] = await connection.execute(
+                        "SELECT id_rol FROM rol WHERE nombre_rol LIKE '%Admin%' OR nombre_rol LIKE '%admin%'"
+                    );
+                    if (rolesFallback.length > 0) {
+                        var id_rol = rolesFallback[0].id_rol;
+                    } else {
+                        throw new Error('Rol no válido');
+                    }
+                } else {
+                    throw new Error('Rol no válido: ' + roleName);
+                }
+            } else {
+                var id_rol = roles[0].id_rol;
             }
-            const id_rol = roles[0].id_rol;
 
             // Hash password
             const hashedPassword = await bcrypt.hash(password, 10);

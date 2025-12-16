@@ -11,7 +11,7 @@ class Appointment {
             r.observaciones,
             CONCAT(u.prim_nombre, ' ', u.apellido1) as cliente,
             u.telefono,
-            COALESCE(ec.nombre_estado, 'pendiente') as estado,
+            COALESCE(ec.nombre_estado_cita, 'pendiente') as estado,
             COALESCE(h.hora_inicio, 540) as hora_inicio
          FROM reservas r
          LEFT JOIN usuarios u ON r.id_usuario = u.id_usuario

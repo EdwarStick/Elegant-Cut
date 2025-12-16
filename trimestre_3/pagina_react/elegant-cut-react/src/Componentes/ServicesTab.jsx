@@ -73,7 +73,7 @@ const ServicesTab = () => {
       }
     } catch (error) {
       console.error('Error saving service:', error);
-      alert('Error de conexión');
+      alert('Error: ' + error.message);
     }
   };
 
@@ -93,7 +93,7 @@ const ServicesTab = () => {
       }
     } catch (error) {
       console.error('Error deleting service:', error);
-      alert('Error de conexión');
+      alert('Error: ' + error.message);
     }
   };
 
