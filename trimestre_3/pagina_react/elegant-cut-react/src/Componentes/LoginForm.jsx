@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import './LoginForm.css';
 
 function LoginForm() {
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [showCodigoVerificacion, setShowCodigoVerificacion] = useState(false);
+  // State for active view: 'login', 'register', 'forgot-password', 'verification'
+  const [activeView, setActiveView] = useState('login');
+
   const [loginData, setLoginData] = useState({ usuario: '', contrasena: '' });
   const [registerData, setRegisterData] = useState({
     email: '',
@@ -30,32 +30,24 @@ function LoginForm() {
   const [usernameRecuperacion, setUsernameRecuperacion] = useState('');
   const navigate = useNavigate();
 
-  // Función para cambiar a registro
+  // Navigation functions
   const switchToRegister = () => {
-    setIsFlipped(true);
-    setShowForgotPassword(false);
-    setShowCodigoVerificacion(false);
+    setActiveView('register');
     setMessage({ text: '', type: '' });
   };
 
-  // Función para cambiar a login
   const switchToLogin = () => {
-    setIsFlipped(false);
-    setShowForgotPassword(false);
-    setShowCodigoVerificacion(false);
+    setActiveView('login');
     setMessage({ text: '', type: '' });
   };
 
-  // Función para mostrar olvidé contraseña
   const showForgotPasswordForm = () => {
-    setShowForgotPassword(true);
-    setShowCodigoVerificacion(false);
+    setActiveView('forgot-password');
     setMessage({ text: '', type: '' });
   };
 
-  // Función para volver atrás desde código de verificación
   const volverAEmail = () => {
-    setShowCodigoVerificacion(false);
+    setActiveView('forgot-password');
     setMessage({ text: '', type: '' });
   };
 
@@ -155,7 +147,7 @@ function LoginForm() {
         mostrarMensaje('Código enviado a tu email', 'success');
         setEmailSolicitado(forgotPasswordData.email);
         setUsernameRecuperacion(result.username);
-        setShowCodigoVerificacion(true);
+        setActiveView('verification');
       } else {
         mostrarMensaje('Error: ' + result.error, 'error');
       }
@@ -210,8 +202,6 @@ function LoginForm() {
         // Limpiar y volver al login
         setTimeout(() => {
           setForgotPasswordData({ email: '', codigo: '', nuevaContrasena: '', confirmarContrasena: '' });
-          setShowForgotPassword(false);
-          setShowCodigoVerificacion(false);
           switchToLogin();
         }, 2000);
       } else {
@@ -226,141 +216,126 @@ function LoginForm() {
 
   // Estilos para mensajes
   const messageStyles = {
-    error: { background: '#ffebee', color: '#c62828', border: '1px solid #f44336' },
-    success: { background: '#e8f5e8', color: '#2e7d32', border: '1px solid #4caf50' },
-    info: { background: '#e3f2fd', color: '#1565c0', border: '1px solid #2196f3' }
+    error: { background: 'rgba(255, 235, 238, 0.9)', color: '#c62828', border: '1px solid #ef5350' },
+    success: { background: 'rgba(232, 245, 233, 0.9)', color: '#2e7d32', border: '1px solid #66bb6a' },
+    info: { background: 'rgba(227, 242, 253, 0.9)', color: '#1565c0', border: '1px solid #42a5f5' }
   };
 
   return (
     <div className="login-form-container">
-      <div className="book-container">
-        <div className={`book ${isFlipped ? 'flipped' : ''}`}>
+      <div className="simple-container">
+        <div className="form-box">
 
-          {/* Página 1: Iniciar Sesión */}
-          <div className={`page ${!showForgotPassword && !showCodigoVerificacion ? 'active' : ''}`} id="login-page">
-            <div className="form-box">
-              <h2 className="form-title">Iniciar Sesión</h2>
+          {/* Header del Formulario */}
+          <h2 className="form-title">
+            {activeView === 'login' && 'Iniciar Sesión'}
+            {activeView === 'register' && 'Crear Cuenta'}
+            {activeView === 'forgot-password' && 'Recuperar Contraseña'}
+            {activeView === 'verification' && 'Verificación de Seguridad'}
+          </h2>
 
-              {/* Mensaje */}
-              {message.text && (
-                <div
-                  className="mensaje-login"
-                  style={{
-                    padding: '10px',
-                    margin: '10px 0',
-                    borderRadius: '5px',
-                    textAlign: 'center',
-                    fontWeight: 'bold',
-                    ...messageStyles[message.type]
-                  }}
-                >
-                  {message.text}
-                </div>
-              )}
-
-              <form className="login-form" onSubmit={handleLogin}>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    name="usuario"
-                    placeholder="Ingrese su nombre de usuario"
-                    required
-                    className="form-input"
-                    value={loginData.usuario}
-                    onChange={(e) => setLoginData({ ...loginData, usuario: e.target.value })}
-                    disabled={loading}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <input
-                    type="password"
-                    name="contrasena"
-                    placeholder="Ingrese su contraseña"
-                    required
-                    className="form-input"
-                    value={loginData.contrasena}
-                    onChange={(e) => setLoginData({ ...loginData, contrasena: e.target.value })}
-                    disabled={loading}
-                  />
-                </div>
-
-                <button type="submit" className="submit-btn" disabled={loading}>
-                  {loading ? 'Procesando...' : 'Ingresar'}
-                </button>
-
-                <div className="forgot-password">
-                  <button
-                    type="button"
-                    className="forgot-link"
-                    onClick={showForgotPasswordForm}
-                    disabled={loading}
-                  >
-                    ¿Olvidaste tu contraseña?
-                  </button>
-                </div>
-
-                <div className="switch-form">
-                  <p>¿No tienes cuenta?
-                    <button type="button" className="switch-link" onClick={switchToRegister}>
-                      Regístrate aquí
-                    </button>
-                  </p>
-                </div>
-              </form>
+          {/* Mensaje Global */}
+          {message.text && (
+            <div
+              className="mensaje-login"
+              style={{
+                padding: '10px',
+                margin: '10px 0',
+                borderRadius: '5px',
+                textAlign: 'center',
+                fontWeight: 'bold',
+                ...messageStyles[message.type]
+              }}
+            >
+              {message.text}
             </div>
-          </div>
+          )}
 
-          {/* Página 2: Registro */}
-          <div className="page active" id="register-page">
-            <div className="form-box">
-              <h2 className="form-title">Crear Cuenta</h2>
+          {/* VISTA: LOGIN */}
+          {activeView === 'login' && (
+            <form className="login-form" onSubmit={handleLogin}>
+              <div className="form-group">
+                <input
+                  type="text"
+                  name="usuario"
+                  placeholder="Ingrese su nombre de usuario"
+                  required
+                  className="form-input"
+                  value={loginData.usuario}
+                  onChange={(e) => setLoginData({ ...loginData, usuario: e.target.value })}
+                  disabled={loading}
+                />
+              </div>
 
-              {/* Mensaje */}
-              {message.text && (
-                <div
-                  className="mensaje-login"
-                  style={{
-                    padding: '10px',
-                    margin: '10px 0',
-                    borderRadius: '5px',
-                    textAlign: 'center',
-                    fontWeight: 'bold',
-                    ...messageStyles[message.type]
-                  }}
+              <div className="form-group">
+                <input
+                  type="password"
+                  name="contrasena"
+                  placeholder="Ingrese su contraseña"
+                  required
+                  className="form-input"
+                  value={loginData.contrasena}
+                  onChange={(e) => setLoginData({ ...loginData, contrasena: e.target.value })}
+                  disabled={loading}
+                />
+              </div>
+
+              <button type="submit" className="submit-btn" disabled={loading}>
+                {loading ? 'Procesando...' : 'Ingresar'}
+              </button>
+
+              <div className="forgot-password">
+                <button
+                  type="button"
+                  className="forgot-link"
+                  onClick={showForgotPasswordForm}
+                  disabled={loading}
                 >
-                  {message.text}
-                </div>
-              )}
+                  ¿Olvidaste tu contraseña?
+                </button>
+              </div>
 
-              <form className="register-form" onSubmit={handleRegister}>
-                <div className="form-group">
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Ingrese su correo electrónico"
-                    required
-                    className="form-input"
-                    value={registerData.email}
-                    onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
-                    disabled={loading}
-                  />
-                </div>
+              <div className="switch-form">
+                <p>¿No tienes cuenta?
+                  <button type="button" className="switch-link" onClick={switchToRegister}>
+                    Regístrate aquí
+                  </button>
+                </p>
+              </div>
+            </form>
+          )}
 
-                <div className="form-group">
-                  <input
-                    type="text"
-                    name="usuario"
-                    placeholder="Nombre de usuario"
-                    required
-                    className="form-input"
-                    value={registerData.usuario}
-                    onChange={(e) => setRegisterData({ ...registerData, usuario: e.target.value })}
-                    disabled={loading}
-                  />
-                </div>
+          {/* VISTA: REGISTRO */}
+          {activeView === 'register' && (
+            <form className="register-form" onSubmit={handleRegister}>
+              <div className="form-group">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Ingrese su correo electrónico"
+                  required
+                  className="form-input"
+                  value={registerData.email}
+                  onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
+                  disabled={loading}
+                />
+              </div>
 
-                <div className="form-group">
+              <div className="form-group">
+                <input
+                  type="text"
+                  name="usuario"
+                  placeholder="Nombre de usuario"
+                  required
+                  className="form-input"
+                  value={registerData.usuario}
+                  onChange={(e) => setRegisterData({ ...registerData, usuario: e.target.value })}
+                  disabled={loading}
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group half">
                   <input
                     type="text"
                     name="prim_nombre"
@@ -372,8 +347,7 @@ function LoginForm() {
                     disabled={loading}
                   />
                 </div>
-
-                <div className="form-group">
+                <div className="form-group half">
                   <input
                     type="text"
                     name="seg_nombre"
@@ -384,8 +358,10 @@ function LoginForm() {
                     disabled={loading}
                   />
                 </div>
+              </div>
 
-                <div className="form-group">
+              <div className="form-row">
+                <div className="form-group half">
                   <input
                     type="text"
                     name="apellido1"
@@ -397,8 +373,7 @@ function LoginForm() {
                     disabled={loading}
                   />
                 </div>
-
-                <div className="form-group">
+                <div className="form-group half">
                   <input
                     type="text"
                     name="apellido2"
@@ -409,209 +384,160 @@ function LoginForm() {
                     disabled={loading}
                   />
                 </div>
+              </div>
 
-                <div className="form-group">
-                  <input
-                    type="text"
-                    name="telefono"
-                    placeholder="Teléfono"
-                    className="form-input"
-                    value={registerData.telefono}
-                    onChange={(e) => setRegisterData({ ...registerData, telefono: e.target.value })}
-                    disabled={loading}
-                  />
-                </div>
+              <div className="form-group">
+                <input
+                  type="text"
+                  name="telefono"
+                  placeholder="Teléfono"
+                  className="form-input"
+                  value={registerData.telefono}
+                  onChange={(e) => setRegisterData({ ...registerData, telefono: e.target.value })}
+                  disabled={loading}
+                />
+              </div>
 
-                <div className="form-group">
-                  <input
-                    type="password"
-                    name="contrasena"
-                    placeholder="Contraseña"
-                    required
-                    className="form-input"
-                    value={registerData.contrasena}
-                    onChange={(e) => setRegisterData({ ...registerData, contrasena: e.target.value })}
-                    disabled={loading}
-                  />
-                </div>
+              <div className="form-group">
+                <input
+                  type="password"
+                  name="contrasena"
+                  placeholder="Contraseña"
+                  required
+                  className="form-input"
+                  value={registerData.contrasena}
+                  onChange={(e) => setRegisterData({ ...registerData, contrasena: e.target.value })}
+                  disabled={loading}
+                />
+              </div>
 
-                <button type="submit" className="submit-btn" disabled={loading}>
-                  {loading ? 'Procesando...' : 'Registrar'}
-                </button>
+              <button type="submit" className="submit-btn" disabled={loading}>
+                {loading ? 'Procesando...' : 'Registrar'}
+              </button>
 
-                <div className="switch-form">
-                  <p>¿Ya tienes cuenta?
-                    <button type="button" className="switch-link" onClick={switchToLogin}>
-                      Inicia sesión aquí
-                    </button>
-                  </p>
-                </div>
-              </form>
-            </div>
-          </div>
+              <div className="switch-form">
+                <p>¿Ya tienes cuenta?
+                  <button type="button" className="switch-link" onClick={switchToLogin}>
+                    Inicia sesión aquí
+                  </button>
+                </p>
+              </div>
+            </form>
+          )}
 
-          {/* Página 3: Solicitar Email para Recuperación */}
-          <div className={`page ${showForgotPassword && !showCodigoVerificacion ? 'active' : ''}`} id="forgot-password-page">
-            <div className="form-box">
-              <h2 className="form-title">Recuperar Contraseña</h2>
+          {/* VISTA: RECUPERAR PASSWORD */}
+          {activeView === 'forgot-password' && (
+            <form className="forgot-password-form" onSubmit={handleSolicitarCodigo}>
+              <div className="form-group">
+                <p className="instruction-text">Ingrese su correo electrónico para recibir un código de verificación.</p>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Ingrese su email registrado"
+                  required
+                  className="form-input"
+                  value={forgotPasswordData.email}
+                  onChange={(e) => setForgotPasswordData({ ...forgotPasswordData, email: e.target.value })}
+                  disabled={loading}
+                />
+              </div>
 
-              {/* Mensaje */}
-              {message.text && (
-                <div
-                  className="mensaje-login"
-                  style={{
-                    padding: '10px',
-                    margin: '10px 0',
-                    borderRadius: '5px',
-                    textAlign: 'center',
-                    fontWeight: 'bold',
-                    ...messageStyles[message.type]
-                  }}
-                >
-                  {message.text}
-                </div>
-              )}
+              <button type="submit" className="submit-btn" disabled={loading}>
+                {loading ? 'Enviando código...' : 'Enviar Código de Verificación'}
+              </button>
 
-              <form className="forgot-password-form" onSubmit={handleSolicitarCodigo}>
-                <div className="form-group">
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Ingrese su email registrado"
-                    required
-                    className="form-input"
-                    value={forgotPasswordData.email}
-                    onChange={(e) => setForgotPasswordData({ ...forgotPasswordData, email: e.target.value })}
-                    disabled={loading}
-                  />
-                </div>
+              <div className="switch-form">
+                <p>
+                  <button type="button" className="switch-link" onClick={switchToLogin}>
+                    Volver al login
+                  </button>
+                </p>
+              </div>
+            </form>
+          )}
 
-                <button type="submit" className="submit-btn" disabled={loading}>
-                  {loading ? 'Enviando código...' : 'Enviar Código de Verificación'}
-                </button>
+          {/* VISTA: VERIFICAR CODIGO */}
+          {activeView === 'verification' && (
+            <form className="verification-form" onSubmit={handleVerificarCodigo}>
 
-                <div className="switch-form">
-                  <p>
-                    <button type="button" className="switch-link" onClick={switchToLogin}>
-                      Volver al login
-                    </button>
-                  </p>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          {/* Página 4: Verificación de Código - DISEÑO MEJORADO */}
-          <div className={`page ${showCodigoVerificacion ? 'active' : ''}`} id="codigo-verificacion-page">
-            <div className="form-box">
-              <div className="verification-header">
-                <div className="verification-icon">
-                  <i className="bi bi-shield-check"></i>
-                </div>
-                <h2 className="form-title">Verificación de Seguridad</h2>
+              <div className="verification-header-inner">
                 <p className="verification-subtitle">
                   Hemos enviado un código a: <strong>{emailSolicitado}</strong>
                 </p>
                 {usernameRecuperacion && (
-                  <p className="user-info">
-                    Usuario: <span className="username">{usernameRecuperacion}</span>
-                  </p>
+                  <p className="user-info-text">Usuario: {usernameRecuperacion}</p>
                 )}
               </div>
 
-              {/* Mensaje */}
-              {message.text && (
-                <div
-                  className="mensaje-login"
-                  style={{
-                    padding: '10px',
-                    margin: '10px 0',
-                    borderRadius: '5px',
-                    textAlign: 'center',
-                    fontWeight: 'bold',
-                    ...messageStyles[message.type]
-                  }}
+              <div className="form-group">
+                <label className="code-label">Código de 6 dígitos</label>
+                <input
+                  type="text"
+                  name="codigo"
+                  placeholder="Ej: 123456"
+                  required
+                  maxLength="6"
+                  className="code-input"
+                  value={forgotPasswordData.codigo}
+                  onChange={(e) => setForgotPasswordData({ ...forgotPasswordData, codigo: e.target.value.replace(/\D/g, '') })}
+                  disabled={loading}
+                />
+                <div className="code-hint">
+                  ⏰ El código expira en 15 minutos
+                </div>
+              </div>
+
+              <div className="form-group">
+                <input
+                  type="password"
+                  name="nuevaContrasena"
+                  placeholder="Nueva contraseña"
+                  required
+                  className="form-input"
+                  value={forgotPasswordData.nuevaContrasena}
+                  onChange={(e) => setForgotPasswordData({ ...forgotPasswordData, nuevaContrasena: e.target.value })}
+                  disabled={loading}
+                />
+              </div>
+
+              <div className="form-group">
+                <input
+                  type="password"
+                  name="confirmarContrasena"
+                  placeholder="Confirmar nueva contraseña"
+                  required
+                  className="form-input"
+                  value={forgotPasswordData.confirmarContrasena}
+                  onChange={(e) => setForgotPasswordData({ ...forgotPasswordData, confirmarContrasena: e.target.value })}
+                  disabled={loading}
+                />
+              </div>
+
+              <button type="submit" className="submit-btn verification-btn" disabled={loading}>
+                {loading ? 'Verificando...' : 'Verificar y Cambiar Contraseña'}
+              </button>
+
+              <div className="verification-actions">
+                <button
+                  type="button"
+                  className="back-btn"
+                  onClick={volverAEmail}
+                  disabled={loading}
                 >
-                  {message.text}
-                </div>
-              )}
-
-              <form className="verification-form" onSubmit={handleVerificarCodigo}>
-                <div className="form-group">
-                  <label className="code-label">Código de 6 dígitos</label>
-                  <input
-                    type="text"
-                    name="codigo"
-                    placeholder="Ej: 123456"
-                    required
-                    maxLength="6"
-                    className="code-input"
-                    value={forgotPasswordData.codigo}
-                    onChange={(e) => setForgotPasswordData({ ...forgotPasswordData, codigo: e.target.value.replace(/\D/g, '') })}
-                    disabled={loading}
-                    style={{
-                      textAlign: 'center',
-                      fontSize: '18px',
-                      letterSpacing: '8px',
-                      fontWeight: 'bold'
-                    }}
-                  />
-                  <div className="code-hint">
-                    ⏰ El código expira en 15 minutos
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <input
-                    type="password"
-                    name="nuevaContrasena"
-                    placeholder="Nueva contraseña"
-                    required
-                    className="form-input"
-                    value={forgotPasswordData.nuevaContrasena}
-                    onChange={(e) => setForgotPasswordData({ ...forgotPasswordData, nuevaContrasena: e.target.value })}
-                    disabled={loading}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <input
-                    type="password"
-                    name="confirmarContrasena"
-                    placeholder="Confirmar nueva contraseña"
-                    required
-                    className="form-input"
-                    value={forgotPasswordData.confirmarContrasena}
-                    onChange={(e) => setForgotPasswordData({ ...forgotPasswordData, confirmarContrasena: e.target.value })}
-                    disabled={loading}
-                  />
-                </div>
-
-                <button type="submit" className="submit-btn verification-btn" disabled={loading}>
-                  {loading ? 'Verificando...' : 'Verificar y Cambiar Contraseña'}
+                  <i className="bi bi-arrow-left"></i> Volver atrás
                 </button>
+                <button
+                  type="button"
+                  className="resend-btn"
+                  onClick={handleSolicitarCodigo}
+                  disabled={loading}
+                >
+                  Reenviar código
+                </button>
+              </div>
+            </form>
+          )}
 
-                <div className="verification-actions">
-                  <button
-                    type="button"
-                    className="back-btn"
-                    onClick={volverAEmail}
-                    disabled={loading}
-                  >
-                    <i className="bi bi-arrow-left"></i> Volver atrás
-                  </button>
-                  <button
-                    type="button"
-                    className="resend-btn"
-                    onClick={handleSolicitarCodigo}
-                    disabled={loading}
-                  >
-                    Reenviar código
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
         </div>
       </div>
     </div>

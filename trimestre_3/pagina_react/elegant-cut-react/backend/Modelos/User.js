@@ -40,6 +40,7 @@ VALUES(?, ?, ?, ?, ?, ?, ?, ?, 2, 1)`,
         } catch (error) { throw error; }
     }
 
+
     // --- Métodos Generales de Usuario (HEAD/Common) ---
 
 
@@ -85,13 +86,29 @@ VALUES(?, ?, ?, ?, ?, ?, ?, ?, 2, 1)`,
         try {
             await connection.beginTransaction();
 
+            // Obtener ID del rol (Case insensitive)
             const [roles] = await connection.execute(
-                'SELECT id_rol FROM rol WHERE nombre_rol = ?',
+                'SELECT id_rol FROM rol WHERE LOWER(nombre_rol) = LOWER(?)',
                 [roleName]
             );
 
-            if (roles.length === 0) throw new Error('Rol no válido');
-            const id_rol = roles[0].id_rol;
+            if (roles.length === 0) {
+                // Fallback: Try searching for 'Admin' if 'administrador' failed
+                if (roleName.toLowerCase() === 'administrador') {
+                    const [rolesFallback] = await connection.execute(
+                        "SELECT id_rol FROM rol WHERE nombre_rol LIKE '%Admin%' OR nombre_rol LIKE '%admin%'"
+                    );
+                    if (rolesFallback.length > 0) {
+                        var id_rol = rolesFallback[0].id_rol;
+                    } else {
+                        throw new Error('Rol no válido');
+                    }
+                } else {
+                    throw new Error('Rol no válido: ' + roleName);
+                }
+            } else {
+                var id_rol = roles[0].id_rol;
+            }
 
             const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -126,15 +143,28 @@ VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
     }
 
 
+
+    static async updatePasswordById(id, newPassword) {
+        try {
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            const [result] = await pool.execute(
+                'UPDATE usuarios SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id_usuario = ?',
+                [hashedPassword, id]
+            );
+            return result.affectedRows > 0;
+        } catch (error) { throw error; }
+    }
+
+
     // Actualizar usuario
     static async update(id, userData) {
         try {
-            const { prim_nombre, seg_nombre, apellido1, apellido2, email, telefono } = userData;
+            const { username, prim_nombre, seg_nombre, apellido1, apellido2, email, telefono } = userData;
             const [result] = await pool.execute(
                 `UPDATE usuarios 
-                 SET prim_nombre = ?, seg_nombre = ?, apellido1 = ?, apellido2 = ?, email = ?, telefono = ?, updated_at = CURRENT_TIMESTAMP
+                 SET username = ?, prim_nombre = ?, seg_nombre = ?, apellido1 = ?, apellido2 = ?, email = ?, telefono = ?, updated_at = CURRENT_TIMESTAMP
                  WHERE id_usuario = ?`,
-                [prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, id]
+                [username, prim_nombre, seg_nombre, apellido1, apellido2, email, telefono, id]
             );
             return result.affectedRows > 0;
         } catch (error) {
@@ -143,7 +173,7 @@ VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
     }
 
     // Desactivar usuario (Soft Delete)
-    static async deactivate(id) {
+    static async delete(id) {
         try {
             const [result] = await pool.execute(
                 'UPDATE usuarios SET estado = 0, updated_at = CURRENT_TIMESTAMP WHERE id_usuario = ?',
@@ -154,6 +184,26 @@ VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
             throw error;
         }
     }
+
+
+
+    // Alias para compatibilidad
+    static async deactivate(id) {
+        return this.delete(id);
+    }
+
+    // Alternar estado (Toggle Status)
+    static async toggleStatus(id) {
+        try {
+            const [rows] = await pool.execute('SELECT estado FROM usuarios WHERE id_usuario = ?', [id]);
+            if (rows.length === 0) return null;
+            const newStatus = rows[0].estado === 1 ? 0 : 1;
+            await pool.execute('UPDATE usuarios SET estado = ?, updated_at = CURRENT_TIMESTAMP WHERE id_usuario = ?', [newStatus, id]);
+            return { newStatus };
+        } catch (error) { throw error; }
+    }
+
+    // Obtener usuarios por rol
 
     static async findAllByRole(roleId) {
         try {

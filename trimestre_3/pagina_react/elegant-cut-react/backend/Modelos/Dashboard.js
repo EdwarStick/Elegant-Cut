@@ -40,7 +40,7 @@ class Dashboard {
         clientesNuevos: clientesNuevos[0].total || 0
       };
     } catch (error) {
-      console.error('❌ Error en Dashboard.getStats:', error);
+      console.error(' Error en Dashboard.getStats:', error);
       return {
         totalCitas: 0,
         citasPendientes: 0,
@@ -69,7 +69,7 @@ class Dashboard {
       );
       return rows;
     } catch (error) {
-      console.error('❌ Error en Dashboard.getRecentActivity:', error);
+      console.error(' Error en Dashboard.getRecentActivity:', error);
       return [];
     }
   }
@@ -95,8 +95,31 @@ class Dashboard {
       );
       return rows;
     } catch (error) {
-      console.error('❌ Error en Dashboard.getUpcomingAppointments:', error);
+      console.error(' Error en Dashboard.getUpcomingAppointments:', error);
       return [];
+    }
+  }
+  // Estadísticas Mensuales
+  static async getMonthlyStats() {
+    try {
+      const [currentMonth] = await pool.execute(
+        `SELECT COUNT(*) as total FROM usuarios WHERE MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) AND id_rol = 3`
+      );
+      const [lastMonth] = await pool.execute(
+        `SELECT COUNT(*) as total FROM usuarios WHERE MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH) AND id_rol = 3`
+      );
+      const [totalClients] = await pool.execute(
+        `SELECT COUNT(*) as total FROM usuarios WHERE id_rol = 3 AND estado = 1`
+      );
+
+      return {
+        newClientsCurrentMonth: currentMonth[0].total,
+        newClientsLastMonth: lastMonth[0].total,
+        totalActiveClients: totalClients[0].total
+      };
+    } catch (error) {
+      console.error('Error getting monthly stats:', error);
+      return { newClientsCurrentMonth: 0, newClientsLastMonth: 0, totalActiveClients: 0 };
     }
   }
 }

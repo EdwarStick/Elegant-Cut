@@ -1,5 +1,5 @@
 import React from 'react'
-import { useScroll } from '../hooks/useScroll'
+import { useScroll } from '../Hooks/useScroll'
 
 function Home() {
     // LLAMAR EL HOOK - Esto activa el efecto de scroll

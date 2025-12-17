@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import '../Estilos/Sidebar.css';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, closeSidebar }) => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
@@ -23,11 +23,16 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
-        <div className="logo-container">
-          <i className="bi bi-scissors text-primary fs-2"></i>
-          <h3 className="ms-2 mb-0">Elegant Cut</h3>
+        <div className="d-flex justify-content-between align-items-center w-100">
+          <div className="logo-container">
+            <i className="bi bi-scissors text-primary fs-2"></i>
+            <h3 className="ms-2 mb-0">Elegant Cut</h3>
+          </div>
+          <button className="btn-close-sidebar d-md-none" onClick={closeSidebar}>
+            <i className="bi bi-x-lg"></i>
+          </button>
         </div>
         <p className="text-muted small mt-2">Panel de Administración</p>
       </div>
@@ -50,6 +55,7 @@ const Sidebar = () => {
             key={item.id}
             to={item.path}
             className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+            onClick={() => window.innerWidth < 768 && closeSidebar()} // Close menu on selection on mobile
           >
             <i className={`bi ${item.icon} me-3`}></i>
             {item.label}
