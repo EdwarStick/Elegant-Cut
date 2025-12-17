@@ -31,7 +31,7 @@ body {
 }
 
 /* ============================================
-   HERO HEADER
+   HERO HEADER este es el header del formulario
    ============================================ */
 .hero-header {
   position: relative;
@@ -41,23 +41,27 @@ body {
   overflow: hidden;
 }
 
+/* ============================================
+   HERO OVERLAY este es como un filtro que se coloca encima del header
+   ============================================ */
 .hero-overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
-    repeating-linear-gradient(
-      45deg,
+  background:
+    repeating-linear-gradient(45deg,
       transparent,
       transparent 10px,
       rgba(255, 255, 255, 0.03) 10px,
-      rgba(255, 255, 255, 0.03) 20px
-    );
+      rgba(255, 255, 255, 0.03) 20px);
   pointer-events: none;
 }
 
+/* ============================================
+   HERO CONTENT este es el contenido del header
+   ============================================ */
 .hero-content {
   position: relative;
   z-index: 1;
@@ -65,6 +69,9 @@ body {
   margin: 0 auto;
 }
 
+/* ============================================
+   HERO ICON este es el icono del header
+   ============================================ */
 .hero-icon {
   display: inline-flex;
   align-items: center;
@@ -294,7 +301,7 @@ body {
    FORMULARIO PRINCIPAL
    ============================================ */
 .form-main {
-  background: white;
+  background: var(--Blanco);
   border-radius: 20px;
   padding: 40px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
@@ -336,11 +343,13 @@ body {
   border-bottom: 2px solid var(--RojoVino);
 }
 
+/*icono de el muñequito*/
 .section-icon {
   color: var(--RojoVino);
   flex-shrink: 0;
 }
 
+/*titulo "informacion personal"*/
 .section-header h3 {
   color: var(--Negro);
   font-size: 1.3rem;
@@ -378,29 +387,35 @@ body {
 /* INPUT WRAPPER CON ICONOS */
 .input-wrapper {
   position: relative;
-  display: flex;
-  align-items: center;
+  width: 100%;
 }
 
 .input-icon {
   position: absolute;
-  left: 15px;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--RojoVino);
+  width: 18px;
+  height: 18px;
   pointer-events: none;
   z-index: 1;
 }
 
-.input-wrapper input,
-.input-wrapper select {
+/* CSS FIX: Aumentar especificidad y usar !important para asegurar que se aplique */
+.form-agenda-container .input-wrapper input {
   width: 100%;
-  padding: 14px 15px 14px 45px;
-  border: 2px solid #e1e1e1;
-  border-radius: 12px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  font-family: "Comfortaa", sans-serif;
-  background: white;
-  color: var(--Negro);
+  height: 44px;
+  padding: 10px 12px 10px 48px !important;
+  /* 👈 Forzamos el padding */
+  box-sizing: border-box;
+}
+
+
+
+/* Regla específica para selects con icono */
+.form-agenda-container .form-group .input-wrapper select {
+  padding-left: 48px !important;
 }
 
 .form-group select {
@@ -585,6 +600,7 @@ body {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -595,6 +611,7 @@ body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -628,7 +645,7 @@ body {
     grid-template-columns: 300px 1fr;
     gap: 30px;
   }
-  
+
   .hero-title {
     font-size: 2.5rem;
   }
@@ -639,22 +656,22 @@ body {
     grid-template-columns: 1fr;
     gap: 30px;
   }
-  
+
   .info-sidebar {
     position: static;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
   }
-  
+
   .form-main {
     padding: 30px;
   }
-  
+
   .hero-title {
     font-size: 2.2rem;
   }
-  
+
   .hero-features {
     gap: 20px;
   }
@@ -664,43 +681,43 @@ body {
   .hero-header {
     padding: 60px 20px 40px;
   }
-  
+
   .hero-title {
     font-size: 2rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1rem;
   }
-  
+
   .hero-icon {
     width: 60px;
     height: 60px;
   }
-  
+
   .hero-icon svg {
     width: 32px;
     height: 32px;
   }
-  
+
   .form-main {
     padding: 25px;
     border-radius: 15px;
   }
-  
+
   .form-header h2 {
     font-size: 1.6rem;
   }
-  
+
   .form-grid {
     grid-template-columns: 1fr;
     gap: 15px;
   }
-  
+
   .payment-options {
     grid-template-columns: 1fr;
   }
-  
+
   .info-sidebar {
     grid-template-columns: 1fr;
   }
@@ -710,33 +727,33 @@ body {
   .main-content {
     padding: 20px 10px;
   }
-  
+
   .form-main {
     padding: 20px;
   }
-  
+
   .form-header {
     margin-bottom: 25px;
   }
-  
+
   .form-header h2 {
     font-size: 1.4rem;
   }
-  
+
   .section-header h3 {
     font-size: 1.1rem;
   }
-  
+
   .hero-features {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .hero-feature {
     width: 100%;
     justify-content: center;
   }
-  
+
   .submit-btn {
     font-size: 1.1rem;
     padding: 16px;

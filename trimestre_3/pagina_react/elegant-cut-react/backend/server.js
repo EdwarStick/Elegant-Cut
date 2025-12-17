@@ -1,10 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-<<<<<<< HEAD:trimestre_3/pagina_react/elegant-cut-react/backend/auth_fixed.js
-const pool = require('./config/database');
-=======
 const pool = require('./Configuracion/database'); // Importar MySQL
->>>>>>> 7037219b3134a283b98268ebcafa67af7e92038f:trimestre_3/pagina_react/elegant-cut-react/backend/server.js
 const EmailService = require('./emailService');
 const Dashboard = require('./Modelos/Dashboard');
 const Service = require('./Modelos/Service');
