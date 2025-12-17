@@ -1,10 +1,6 @@
-const jwt = require('jsonwebtoken');
+﻿const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-<<<<<<< HEAD:trimestre_3/pagina_react/elegant-cut-react/backend/auth_fixed.js
-const pool = require('./config/database');
-=======
 const pool = require('./Configuracion/database'); // Importar MySQL
->>>>>>> 7037219b3134a283b98268ebcafa67af7e92038f:trimestre_3/pagina_react/elegant-cut-react/backend/server.js
 const EmailService = require('./emailService');
 const Dashboard = require('./Modelos/Dashboard');
 const Service = require('./Modelos/Service');
@@ -65,10 +61,16 @@ const server = http.createServer(async (req, res) => {
                     return res.end(JSON.stringify({ success: false, error: 'Usuario no encontrado' }));
                 }
 
+                console.log('👤 User found:', user.prim_nombre, 'Role:', user.role);
+
+                // Verificar contraseña
                 const isValidPassword = await bcrypt.compare(password, user.password_hash);
                 if (!isValidPassword) {
                     res.writeHead(401, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ success: false, error: 'Contraseña incorrecta' }));
+                    return res.end(JSON.stringify({
+                        success: false,
+                        error: 'Contraseña incorrecta'
+                    }));
                 }
 
                 const token = jwt.sign(
@@ -95,7 +97,7 @@ const server = http.createServer(async (req, res) => {
                 }));
 
             } catch (error) {
-                console.log('💥 Error en login:', error);
+                console.log('Error en login:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: false, error: 'Error del servidor' }));
             }
@@ -112,7 +114,7 @@ const server = http.createServer(async (req, res) => {
             try {
                 const userData = JSON.parse(body);
                 const { username, email, prim_nombre, apellido1, role = 'cliente' } = userData;
-                console.log('📝 Registro para:', username);
+                console.log('Registro para:', username);
 
                 const exists = await User.exists(username, email);
 
@@ -156,7 +158,7 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // OLVIDAR CONTRASEÑA
+    // OLVIDAR CONTRASEÑA - MANTENER POR COMPATIBILIDAD
     if (req.url === '/auth/forgot-password' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => body += chunk.toString());
@@ -164,7 +166,7 @@ const server = http.createServer(async (req, res) => {
         req.on('end', async () => {
             try {
                 const { username, newPassword } = JSON.parse(body);
-                console.log('🔑 Recuperar contraseña para:', username);
+                console.log('Recuperar contraseÃ±a para:', username);
 
                 const user = await User.findByUsernameWithRole(username);
 
@@ -173,23 +175,34 @@ const server = http.createServer(async (req, res) => {
                     return res.end(JSON.stringify({ success: false, error: 'Usuario no encontrado' }));
                 }
 
+                // Validar nueva contraseña
                 if (!newPassword || newPassword.length < 6) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ success: false, error: 'La contraseña debe tener al menos 6 caracteres' }));
+                    return res.end(JSON.stringify({
+                        success: false,
+                        error: 'La contraseña debe tener al menos 6 caracteres'
+                    }));
                 }
 
+                // Actualizar contraseña usando el Modelo
                 const updated = await User.updatePassword(username, newPassword);
 
                 if (updated) {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: true, message: 'Contraseña actualizada exitosamente' }));
+                    res.end(JSON.stringify({
+                        success: true,
+                        message: 'Contraseña actualizada exitosamente'
+                    }));
                 } else {
                     res.writeHead(500, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: false, error: 'Error al actualizar la contraseña' }));
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: 'Error al actualizar la contraseña'
+                    }));
                 }
 
             } catch (error) {
-                console.log(' Error en recuperar contraseña:', error);
+                console.log(' Error en recuperar contraseÃ±a:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: false, error: 'Error del servidor' }));
             }
@@ -197,7 +210,7 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // 1. SOLICITAR CÓDIGO DE RECUPERACIÓN
+    // 1. SOLICITAR CÓDIGO DE RECUPERACIÓN (NUEVO)
     if (req.url === '/auth/solicitar-recuperacion' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => body += chunk.toString());
@@ -205,7 +218,7 @@ const server = http.createServer(async (req, res) => {
         req.on('end', async () => {
             try {
                 const { email } = JSON.parse(body);
-                console.log('🔑 Solicitando recuperación para:', email);
+                console.log('Solicitando recuperaciÃ³n para:', email);
 
                 const user = await User.findByEmail(email);
 
@@ -215,26 +228,38 @@ const server = http.createServer(async (req, res) => {
                 }
 
                 const username = user.username;
+
+                // Generar y enviar código
                 const codigo = EmailService.generarCodigo();
                 const guardado = await EmailService.guardarCodigo(email, codigo, 'recuperacion');
 
                 if (!guardado) {
                     res.writeHead(500, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ success: false, error: 'Error generando código' }));
+                    return res.end(JSON.stringify({
+                        success: false,
+                        error: 'Error generando código'
+                    }));
                 }
 
                 const emailEnviado = await EmailService.enviarCodigoRecuperacion(email, codigo);
 
                 if (emailEnviado) {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: true, mensaje: 'Código enviado a tu email', username: username }));
+                    res.end(JSON.stringify({
+                        success: true,
+                        mensaje: 'Código enviado a tu email',
+                        username: username
+                    }));
                 } else {
                     res.writeHead(500, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: false, error: 'Error enviando el código. Intenta nuevamente.' }));
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: 'Error enviando el código. Intenta nuevamente.'
+                    }));
                 }
 
             } catch (error) {
-                console.log(' Error solicitando recuperación:', error);
+                console.log(' Error solicitando recuperaciÃ³n:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: false, error: 'Error del servidor' }));
             }
@@ -250,8 +275,6 @@ const server = http.createServer(async (req, res) => {
         req.on('end', async () => {
             try {
                 const { email, codigo, nuevaContrasena } = JSON.parse(body);
-                console.log('✅ Verificando código de recuperación para:', email);
-
                 const verificacion = await EmailService.verificarCodigo(email, codigo, 'recuperacion');
 
                 if (!verificacion.valido) {
@@ -260,26 +283,47 @@ const server = http.createServer(async (req, res) => {
                 }
 
                 const updated = await User.updatePassword(email, nuevaContrasena, true);
-
                 if (updated) {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: true, message: '¡Contraseña actualizada exitosamente!' }));
+                    res.end(JSON.stringify({ success: true, message: '¡Contraseña actualizada!' }));
                 } else {
                     res.writeHead(500, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ success: false, error: 'Error actualizando contraseña' }));
                 }
-
             } catch (error) {
-                console.log(' Error verificando código:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: false, error: 'Error del servidor: ' + error.message }));
+                res.end(JSON.stringify({ success: false, error: 'Error del servidor' }));
+            }
+        });
+        return;
+    }
+
+    // 2.5 VERIFICAR CÓDIGO SOLAMENTE (PARA ADMIN)
+    if (req.url === '/auth/verify-code' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        req.on('end', async () => {
+            try {
+                const { email, codigo } = JSON.parse(body);
+                const verificacion = await EmailService.verificarCodigo(email, codigo, 'recuperacion');
+
+                if (verificacion.valido) {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: true, message: 'Código verificado' }));
+                } else {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: false, error: verificacion.mensaje || 'Código inválido' }));
+                }
+            } catch (error) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, error: 'Error interno' }));
             }
         });
         return;
     }
 
     // =============================================
-    // 📬 RUTAS PARA PQRS
+    // RUTAS PARA PQRS
     // =============================================
 
     if (req.url === '/api/pqrs' && req.method === 'POST') {
@@ -289,7 +333,7 @@ const server = http.createServer(async (req, res) => {
         req.on('end', async () => {
             try {
                 const data = JSON.parse(body);
-                console.log('📬 Recibida nueva PQRS:', data.subject);
+                console.log('Recibida nueva PQRS:', data.subject);
 
                 const [result] = await pool.execute(
                     `INSERT INTO pqrs 
@@ -341,7 +385,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // =============================================
-    // 🎯 NUEVAS RUTAS PARA EL FORMULARIO DE CITAS
+    // NUEVAS RUTAS PARA EL FORMULARIO DE CITAS
     // =============================================
 
     if (req.url === '/api/services' && req.method === 'GET') {
@@ -377,7 +421,7 @@ const server = http.createServer(async (req, res) => {
         req.on('end', async () => {
             try {
                 const appointmentData = JSON.parse(body);
-                console.log('📅 Intentando agendar cita para:', appointmentData.name);
+                console.log('Intentando agendar cita para:', appointmentData.name);
 
                 const appointmentId = await Appointment.create(appointmentData);
 
@@ -397,58 +441,63 @@ const server = http.createServer(async (req, res) => {
     // ENDPOINTS DEL PANEL DE ADMINISTRACIÓN
     // =============================================
 
+    // DASHBOARD STATS
     if (req.url === '/admin/dashboard/stats' && req.method === 'GET') {
         try {
             const stats = await Dashboard.getStats();
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ success: true, data: stats }));
         } catch (error) {
-            console.log('💥 Error obteniendo stats:', error);
+            console.log('Error obteniendo stats:', error);
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ success: false, error: 'Error obteniendo estadísticas' }));
         }
         return;
     }
 
+    // ACTIVIDAD RECIENTE
     if (req.url === '/admin/dashboard/activity' && req.method === 'GET') {
         try {
             const activity = await Dashboard.getRecentActivity();
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ success: true, data: activity }));
         } catch (error) {
-            console.log('💥 Error obteniendo actividad:', error);
+            console.log('Error obteniendo actividad:', error);
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ success: false, error: 'Error obteniendo actividad' }));
         }
         return;
     }
 
+    // PRÓXIMAS CITAS
     if (req.url === '/admin/dashboard/appointments' && req.method === 'GET') {
         try {
             const appointments = await Dashboard.getUpcomingAppointments();
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ success: true, data: appointments }));
         } catch (error) {
-            console.log('💥 Error obteniendo citas:', error);
+            console.log('Error obteniendo citas:', error);
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ success: false, error: 'Error obteniendo citas' }));
         }
         return;
     }
 
+    // SERVICIOS - GET ALL
     if (req.url === '/admin/services' && req.method === 'GET') {
         try {
             const services = await Service.getAll();
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ success: true, data: services }));
         } catch (error) {
-            console.log('💥 Error obteniendo servicios:', error);
+            console.log('Error obteniendo servicios:', error);
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ success: false, error: 'Error obteniendo servicios' }));
         }
         return;
     }
 
+    // SERVICIOS - CREATE
     if (req.url === '/admin/services' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => body += chunk.toString());
@@ -458,16 +507,24 @@ const server = http.createServer(async (req, res) => {
                 const serviceData = JSON.parse(body);
                 const id = await Service.create(serviceData);
                 res.writeHead(201, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: true, message: 'Servicio creado exitosamente', id: id }));
+                res.end(JSON.stringify({
+                    success: true,
+                    message: 'Servicio creado exitosamente',
+                    id: id
+                }));
             } catch (error) {
-                console.log('💥 Error creando servicio:', error);
+                console.log('Error creando servicio:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: false, error: 'Error creando servicio: ' + error.message }));
+                res.end(JSON.stringify({
+                    success: false,
+                    error: 'Error creando servicio: ' + error.message
+                }));
             }
         });
         return;
     }
 
+    // SERVICIOS - UPDATE
     if (req.url.startsWith('/admin/services/') && req.method === 'PUT') {
         let body = '';
         req.on('data', chunk => body += chunk.toString());
@@ -480,20 +537,30 @@ const server = http.createServer(async (req, res) => {
 
                 if (updated) {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: true, message: 'Servicio actualizado exitosamente' }));
+                    res.end(JSON.stringify({
+                        success: true,
+                        message: 'Servicio actualizado exitosamente'
+                    }));
                 } else {
                     res.writeHead(404, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: false, error: 'Servicio no encontrado' }));
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: 'Servicio no encontrado'
+                    }));
                 }
             } catch (error) {
                 console.log('💥 Error actualizando servicio:', error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: false, error: 'Error actualizando servicio' }));
+                res.end(JSON.stringify({
+                    success: false,
+                    error: 'Error actualizando servicio'
+                }));
             }
         });
         return;
     }
 
+    // SERVICIOS - DELETE
     if (req.url.startsWith('/admin/services/') && req.method === 'DELETE') {
         try {
             const id = req.url.split('/')[3];
@@ -501,26 +568,83 @@ const server = http.createServer(async (req, res) => {
 
             if (deleted) {
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: true, message: 'Servicio eliminado exitosamente' }));
+                res.end(JSON.stringify({
+                    success: true,
+                    message: 'Servicio eliminado exitosamente'
+                }));
             } else {
                 res.writeHead(404, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: false, error: 'Servicio no encontrado' }));
+                res.end(JSON.stringify({
+                    success: false,
+                    error: 'Servicio no encontrado'
+                }));
             }
         } catch (error) {
             console.log('💥 Error eliminando servicio:', error);
             res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ success: false, error: 'Error eliminando servicio' }));
+            res.end(JSON.stringify({
+                success: false,
+                error: 'Error eliminando servicio'
+            }));
         }
         return;
     }
 
-    // ADMIN ROUTES (Barbers, Clients) - Delegated to adminRoutes.js
-    if (req.url.startsWith('/admin/')) {
-        handleAdminRoutes(req, res);
+    // CITAS - GET ALL
+    if (req.url === '/admin/appointments' && req.method === 'GET') {
+        try {
+            const appointments = await Appointment.getAll();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true, data: appointments }));
+        } catch (error) {
+            console.log('💥 Error obteniendo citas:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: 'Error obteniendo citas' }));
+        }
         return;
     }
 
-    // 404
+    // CITAS - UPDATE STATUS
+    if (req.url.startsWith('/admin/appointments/') && req.method === 'PUT') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+
+        req.on('end', async () => {
+            try {
+                const id = req.url.split('/')[3];
+                const { nuevoEstado } = JSON.parse(body);
+                const updated = await Appointment.updateStatus(id, nuevoEstado);
+
+                if (updated) {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: true,
+                        message: 'Estado de cita actualizado'
+                    }));
+                } else {
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: 'Cita no encontrada'
+                    }));
+                }
+            } catch (error) {
+                console.log(' Error actualizando cita:', error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: false,
+                    error: 'Error actualizando cita'
+                }));
+            }
+        });
+        return;
+    } // =============================================\r\n    // INTENTAR MANEJAR RUTAS DE ADMIN\r\n    // =============================================\r\n    const adminHandled = await handleAdminRoutes(req, res);\r\n    if (adminHandled) return; // Si se manej� la ruta, salir\r\n\r\n    // =============================================
+    // INTENTAR MANEJAR RUTAS DE ADMIN
+    // =============================================
+    const adminHandled = await handleAdminRoutes(req, res);
+    if (adminHandled) return; // Si se manejó la ruta, salir
+
+    // Ruta no encontrada
     res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ success: false, error: 'Ruta no encontrada' }));
 

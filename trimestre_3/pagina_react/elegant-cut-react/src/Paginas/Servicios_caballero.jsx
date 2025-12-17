@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function Servicios_caballero() {
   const [activeCategory, setActiveCategory] = useState("todos"); //esto guarda qué categoría esta sellecionada
-  const [cart, setCart] = useState([]);// acá se guardan todos los servicios que se van agregando
+  const [cart, setCart] = useState([]);// acá se guardan todos los servicios que se van agregando al carrito; el "=useState ([]), significa que ese carrito está vacío"
   const [isCartOpen, setIsCartOpen] = useState(false);// acá se controla si el carrito está abierto o cerrado
 
   const servicesData = [
@@ -210,27 +210,27 @@ function Servicios_caballero() {
   const handleCategoryClick = (category) => {
     setActiveCategory(category);
   };
-
+  //Acá se define la funcionalidad del carrito donde se agregan los servicios al carrito
   const addToCart = (service) => {
     setCart([...cart, service]);
-    setIsCartOpen(true); // Open cart when adding item
+    setIsCartOpen(true); //Abre el carrito cuando se agrega un servicio
   };
 
   const removeFromCart = (indexToRemove) => {
-    setCart(cart.filter((_, index) => index !== indexToRemove));
+    setCart(cart.filter((_, index) => index !== indexToRemove)); //Elimina un servicio del carrito
   };
 
   const toggleCart = () => {
     setIsCartOpen(!isCartOpen);
-  };
+  }; //Abre o cierra el carrito
 
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.price, 0);
-  };
+  }; //Calcula el total del carrito
 
   const filteredServices = activeCategory === "todos"
     ? servicesData
-    : servicesData.filter(service => service.category === activeCategory);
+    : servicesData.filter(service => service.category === activeCategory); //Filtra los servicios por categoría
 
   return (
     <div>
@@ -388,7 +388,7 @@ function Servicios_caballero() {
                 </div>
                 <button
                   className="service-button"
-                  onClick={() => addToCart(service)}
+                  onClick={() => addToCart(service)} //Cuando haces clic en el botón de agregar al carrito, se agrega el servicio al carrito
                 >
                   Agregar al Carrito
                 </button>
@@ -397,36 +397,61 @@ function Servicios_caballero() {
           ))}
         </div>
 
-        {/* CARRITO */}
-        <div id="cart" className={isCartOpen ? 'active' : ''} style={{ right: isCartOpen ? '0' : '-400px' }}>
-          <div className="cart-header">
-            Carrito de Servicios
-            <i className="bi bi-x-lg close-cart" onClick={() => setIsCartOpen(false)}></i>
-          </div>
-          <div className="cart-items">
-            {cart.length === 0 ? (
-              <p style={{ padding: '20px', textAlign: 'center' }}>El carrito está vacío</p>
-            ) : (
-              cart.map((item, index) => (
-                <div key={index} className="cart-item" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #eee' }}>
-                  <div>
-                    <h4>{item.name}</h4>
-                    <p>${item.price.toLocaleString()}</p>
-                  </div>
-                  <button onClick={() => removeFromCart(index)} style={{ background: 'none', border: 'none', color: 'red', cursor: 'pointer' }}>
-                    <i className="bi bi-trash"></i>
-                  </button>
+        {/* CARRITO - VISTA APARTE / MODAL */}
+        <div id="cart" className={isCartOpen ? 'active' : ''}>
+          <div className="cart-content">
+            <div className="cart-header">
+              <span>Tu Carrito</span>
+              <i className="bi bi-x-lg close-cart" onClick={() => setIsCartOpen(false)}></i>
+            </div>
+
+            <div className="cart-items">
+              {cart.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
+                  <i className="bi bi-cart-x" style={{ fontSize: '3rem', marginBottom: '10px', display: 'block' }}></i>
+                  <p>No has añadido servicios aún.</p>
                 </div>
-              ))
-            )}
+              ) : (
+                cart.map((item, index) => (
+                  <div key={index} className="cart-item">
+                    <div className="cart-item-info">
+                      <img src={item.image} alt={item.name} className="cart-item-img" />
+                      <div>
+                        <h4 style={{ margin: '0 0 5px 0', fontSize: '1rem' }}>{item.name}</h4>
+                        <p style={{ margin: 0, color: '#bc2041', fontWeight: 'bold' }}>
+                          ${item.price.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => removeFromCart(index)}
+                      style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: '1.2rem' }}
+                      title="Eliminar servicio"
+                    >
+                      <i className="bi bi-trash-fill"></i>
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="cart-total">
+              <span>Total a Pagar:</span>
+              <span>${calculateTotal().toLocaleString()}</span>
+            </div>
+
+            <div style={{ padding: '0 30px 30px 30px' }}>
+              <Link to="/Form_agenda" onClick={() => setIsCartOpen(false)}>
+                <button id="agendarBtn">AGENDAR CITA AHORA</button>
+              </Link>
+              <button
+                onClick={() => setIsCartOpen(false)}
+                style={{ width: '100%', marginTop: '10px', padding: '10px', background: 'transparent', border: 'none', color: '#666', cursor: 'pointer', textDecoration: 'underline' }}
+              >
+                Seguir viendo servicios
+              </button>
+            </div>
           </div>
-          <div className="cart-total">
-            <span>Total:</span>
-            <span>${calculateTotal().toLocaleString()}</span>
-          </div>
-          <Link to="/Form_agenda">
-            <button id="agendarBtn" style={{ width: '100%' }}>AGENDAR CITA</button>
-          </Link>
         </div>
 
         {/* BOTÓN FLOTANTE DEL CARRITO */}

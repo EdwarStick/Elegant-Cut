@@ -33,7 +33,7 @@ class EmailService {
         expiraEn
       });
 
-      console.log('💾 Código guardado en memoria para:', email);
+      console.log('Código guardado en memoria para:', email);
       return true;
     } catch (error) {
       console.log('Error guardando código:', error);
@@ -80,7 +80,7 @@ class EmailService {
       const info = await transporter.sendMail({
         from: '"ElegantCut Barbería" <jn147860@gmail.com>', // Tu Gmail
         to: email,
-        subject: '🔑 Recupera tu contraseña - ElegantCut',
+        subject: 'Recupera tu contraseña - ElegantCut',
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #333; text-align: center;">Recuperación de Contraseña</h2>

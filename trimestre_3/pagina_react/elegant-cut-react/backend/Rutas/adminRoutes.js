@@ -37,6 +37,11 @@ async function handleAdminRoutes(req, res) {
             return sendResponse(res, 200, { success: true, data: appointments });
         }
 
+        if (path === '/admin/dashboard/reports' && method === 'GET') {
+            const stats = await Dashboard.getMonthlyStats();
+            return sendResponse(res, 200, { success: true, data: stats });
+        }
+
         // ==========================================
         // CLIENTES
         // ==========================================
@@ -138,8 +143,15 @@ async function handleAdminRoutes(req, res) {
 
             if (method === 'PUT') {
                 const body = await getBody(req);
-                const updated = await User.update(id, JSON.parse(body));
-                if (!updated) return sendResponse(res, 404, { success: false, error: 'Administrador no encontrado' });
+                const userData = JSON.parse(body);
+
+                const updated = await User.update(id, userData);
+
+                if (userData.password) {
+                    await User.updatePasswordById(id, userData.password);
+                }
+
+                if (!updated && !userData.password) return sendResponse(res, 404, { success: false, error: 'Administrador no encontrado' });
                 return sendResponse(res, 200, { success: true, message: 'Administrador actualizado' });
             }
 
@@ -148,6 +160,13 @@ async function handleAdminRoutes(req, res) {
                 if (!deactivated) return sendResponse(res, 404, { success: false, error: 'Administrador no encontrado' });
                 return sendResponse(res, 200, { success: true, message: 'Administrador eliminado' });
             }
+        }
+
+        if (path.match(/^\/admin\/administrators\/\d+\/toggle$/) && method === 'PUT') {
+            const id = path.split('/')[3];
+            const result = await User.toggleStatus(id);
+            if (!result) return sendResponse(res, 404, { success: false, error: 'Usuario no encontrado' });
+            return sendResponse(res, 200, { success: true, message: 'Estado actualizado', newStatus: result.newStatus });
         }
 
         // ==========================================

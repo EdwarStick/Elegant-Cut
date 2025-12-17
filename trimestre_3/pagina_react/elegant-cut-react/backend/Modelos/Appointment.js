@@ -11,12 +11,19 @@ class Appointment {
             r.observaciones,
             CONCAT(u.prim_nombre, ' ', u.apellido1) as cliente,
             u.telefono,
-            COALESCE(ec.nombre_estado, 'pendiente') as estado,
-            COALESCE(h.hora_inicio, 540) as hora_inicio
+            CASE 
+                WHEN r.id_estado_cita = 1 THEN 'Pendiente'
+                WHEN r.id_estado_cita = 2 THEN 'Completada'
+                WHEN r.id_estado_cita = 3 THEN 'Cancelada'
+                ELSE 'Pendiente'
+            END as estado,
+            COALESCE(h.hora_inicio, 540) as hora_inicio,
+            s.nombre as servicio
          FROM reservas r
          LEFT JOIN usuarios u ON r.id_usuario = u.id_usuario
-         LEFT JOIN estado_cita ec ON r.id_estado_cita = ec.id_estado_cita
          LEFT JOIN horarios h ON r.id_horarios = h.id_horarios
+         LEFT JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
+         LEFT JOIN servicios s ON dcs.id_servicio = s.id_servicio
          ORDER BY r.fecha DESC`
       );
 
