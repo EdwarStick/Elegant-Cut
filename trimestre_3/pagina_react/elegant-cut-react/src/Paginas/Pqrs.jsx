@@ -13,6 +13,7 @@ export default function Pqrs() {
     responseMedium: 'email'
   });
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("form-tab"); // pestaña por defecto
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -61,17 +62,39 @@ export default function Pqrs() {
   return (
     <div>
       <main>
+        {/* Botones de pestañas */}
         <div className="Botones-pqrs">
-          <button className="tab-btn active" data-tab="form-tab">Nueva PQRS</button>
-          <button className="tab-btn" data-tab="track-tab">Consultar Estado</button>
-          <button className="tab-btn" data-tab="history-tab">Historial</button>
-          <button className="tab-btn" data-tab="info-tab">Información</button>
+          <button
+            className={`tab-btn ${activeTab === "form-tab" ? "active" : ""}`}
+            onClick={() => setActiveTab("form-tab")}
+          >
+            Nueva PQRS
+          </button>
+          <button
+            className={`tab-btn ${activeTab === "track-tab" ? "active" : ""}`}
+            onClick={() => setActiveTab("track-tab")}
+          >
+            Consultar Estado
+          </button>
+          <button
+            className={`tab-btn ${activeTab === "history-tab" ? "active" : ""}`}
+            onClick={() => setActiveTab("history-tab")}
+          >
+            Historial
+          </button>
+          <button
+            className={`tab-btn ${activeTab === "info-tab" ? "active" : ""}`}
+            onClick={() => setActiveTab("info-tab")}
+          >
+            Información
+          </button>
         </div>
 
-        {/* Formulario de PQRS */}
-        <section id="form-tab" className="tab-content active">
+        {/* Contenido de las pestañas */}
+        <section className={`tab-content ${activeTab === "form-tab" ? "active" : ""}`} id="form-tab">
           <h2>Formulario de PQRS</h2>
           <form id="pqrs-form" onSubmit={handleSubmit}>
+            {/* Tipo de solicitud */}
             <div className="form-group">
               <label htmlFor="request-type">Tipo de solicitud <span className="required">*</span></label>
               <select
@@ -89,6 +112,7 @@ export default function Pqrs() {
               </select>
             </div>
 
+            {/* Datos del usuario */}
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="user-name">Nombre completo <span className="required">*</span></label>
@@ -101,7 +125,6 @@ export default function Pqrs() {
                   onChange={handleInputChange}
                 />
               </div>
-
               <div className="form-group">
                 <label htmlFor="user-id">Identificación <span className="required">*</span></label>
                 <input
@@ -127,7 +150,6 @@ export default function Pqrs() {
                   onChange={handleInputChange}
                 />
               </div>
-
               <div className="form-group">
                 <label htmlFor="user-phone">Teléfono <span className="required">*</span></label>
                 <input
@@ -141,6 +163,7 @@ export default function Pqrs() {
               </div>
             </div>
 
+            {/* Asunto y descripción */}
             <div className="form-group">
               <label htmlFor="subject">Asunto <span className="required">*</span></label>
               <input
@@ -154,7 +177,6 @@ export default function Pqrs() {
               />
               <div className="char-counter"><span>{formData.subject.length}</span>/100</div>
             </div>
-
             <div className="form-group">
               <label htmlFor="description">Descripción detallada <span className="required">*</span></label>
               <textarea
@@ -169,6 +191,7 @@ export default function Pqrs() {
               <div className="char-counter"><span>{formData.description.length}</span>/1000</div>
             </div>
 
+            {/* Medio de respuesta */}
             <div className="form-group">
               <label>Medio de respuesta preferido <span className="required">*</span></label>
               <div className="radio-group">
@@ -183,7 +206,6 @@ export default function Pqrs() {
                   <span className="radio-checkmark"></span>
                   Email
                 </label>
-
                 <label className="radio-option">
                   <input
                     type="radio"
@@ -198,6 +220,7 @@ export default function Pqrs() {
               </div>
             </div>
 
+            {/* Checkbox */}
             <div className="form-group checkbox-group">
               <label className="checkbox-option">
                 <input type="checkbox" id="terms" name="terms" required />
@@ -210,6 +233,7 @@ export default function Pqrs() {
               </label>
             </div>
 
+            {/* Botones */}
             <div className="form-actions">
               <button
                 type="button"
@@ -227,7 +251,65 @@ export default function Pqrs() {
           </form>
         </section>
 
-       
+        {/* Consulta de estado */}
+        <section className={`tab-content ${activeTab === "track-tab" ? "active" : ""}`} id="track-tab">
+          <h2>Consultar Estado de PQRS</h2>
+          <div className="track-form">
+            <div className="form-group">
+              <label htmlFor="tracking-number">Número de radicado</label>
+              <input type="text" id="tracking-number" name="tracking-number" placeholder="Ej: PQRS-2023-001234" />
+              <button id="track-btn" className="btn btn-primary">Consultar</button>
+            </div>
+          </div>
+          <div id="tracking-result" className="tracking-result"></div>
+        </section>
+
+        {/* Historial */}
+        <section className={`tab-content ${activeTab === "history-tab" ? "active" : ""}`} id="history-tab">
+          <h2>Historial de PQRS</h2>
+          <div className="history-container">
+            <p className="info-message">Para ver su historial de PQRS, por favor inicie sesión en el sistema.</p>
+            <button id="login-btn" className="btn btn-primary" >Iniciar Sesión</button>
+          </div>
+        </section>
+
+        {/* Información */}
+        <section className={`tab-content ${activeTab === "info-tab" ? "active" : ""}`} id="info-tab">
+          <h2>Información Adicional</h2>
+          <div className="info-content">
+            <div className="info-section">
+              <h3>Tiempos de Respuesta</h3>
+              <ul>
+                <li><strong>Peticiones:</strong> 15 días hábiles</li>
+                <li><strong>Quejas:</strong> 15 días hábiles</li>
+                <li><strong>Reclamos:</strong> 30 días hábiles</li>
+                <li><strong>Sugerencias:</strong> 10 días hábiles</li>
+              </ul>
+            </div>
+            <div className="info-section">
+              <h3>Canales Alternativos de Contacto</h3>
+              <ul>
+                <li><strong>Teléfono:</strong> (01) 800-123-4567</li>
+                <li><strong>Correo electrónico:</strong> pqrs@empresa.com</li>
+                <li><strong>Dirección:</strong> Calle 123 #45-67, Ciudad</li>
+                <li><strong>Horario de atención:</strong> Lunes a Viernes 8:00 AM - 6:00 PM</li>
+              </ul>
+            </div>
+            <div className="info-section">
+              <h3>Política de Tratamiento de Datos</h3>
+              <p>
+                Sus datos personales serán tratados de acuerdo con la Ley de Protección de Datos Personales.
+                Solo serán utilizados para el procesamiento de su PQRS y no serán compartidos con terceros sin su autorización.
+              </p>
+            </div>
+            <div className="info-section">
+              <h3>Términos y Condiciones</h3>
+              <p>
+                Al enviar una PQRS, usted acepta que la información proporcionada es veraz y autoriza su tratamiento para los fines relacionados con la gestión de su solicitud.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );
