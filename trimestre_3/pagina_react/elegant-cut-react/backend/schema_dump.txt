@@ -1,0 +1,16 @@
+--- DB SCHEMA DEBUG ---
+
+TABLE: reservas
+id_reservas, fecha, observaciones, id_usuario, id_estado_cita, id_horarios
+
+TABLE: estado_cita
+id_estado_cita, confirmada
+
+TABLE: usuarios
+id_usuario, username, prim_nombre, seg_nombre, apellido1, apellido2, email, password_hash, telefono, estado, id_rol, created_at, updated_at, foto_perfil
+
+TABLE: horarios
+id_horarios, hora_inicio, hora_fin
+
+--- DATA CHECK ---
+Total rows in 'reservas': 10
