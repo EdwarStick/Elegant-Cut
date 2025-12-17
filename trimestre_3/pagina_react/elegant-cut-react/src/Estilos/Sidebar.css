@@ -10,6 +10,7 @@
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
     z-index: 1000;
     padding: 1.5rem 0;
+    transition: transform 0.3s ease-in-out;
 }
 
 .sidebar-header {
@@ -45,6 +46,8 @@
     text-align: left;
     font-weight: 500;
     font-size: 0.95rem;
+    text-decoration: none;
+    /* Ensure no underline for NavLink */
 }
 
 .nav-item:hover {
@@ -64,4 +67,26 @@
 
 .sidebar-footer {
     border-top: 1px solid #f0f0f0;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        box-shadow: none;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-close-sidebar {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #6c757d;
+        padding: 0;
+        cursor: pointer;
+    }
 }
