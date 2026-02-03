@@ -1,14 +1,14 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import '../Estilos/Sidebar.css';
+import { AuthClient } from '../Utilidades/authClient';
 
 const Sidebar = ({ isOpen, closeSidebar }) => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = AuthClient.getUser() || {};
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    AuthClient.logout();
     navigate('/login');
   };
 

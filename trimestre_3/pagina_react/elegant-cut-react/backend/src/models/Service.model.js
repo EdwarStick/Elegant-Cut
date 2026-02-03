@@ -5,7 +5,7 @@ class Service {
     static async getAll() {
         try {
             const [rows] = await pool.execute(
-                'SELECT * FROM servicios ORDER BY nombre_servicio'
+                'SELECT * FROM servicios ORDER BY nombre'
             );
             return rows;
         } catch (error) {
@@ -29,10 +29,10 @@ class Service {
     // Crear servicio
     static async create(serviceData) {
         try {
-            const { nombre_servicio, precio, duracion_minutos, descripcion, imagen_pro } = serviceData;
+            const { nombre, precio, duracion } = serviceData;
             const [result] = await pool.execute(
-                'INSERT INTO servicios (nombre_servicio, precio, duracion_minutos, descripcion, imagen_pro) VALUES (?, ?, ?, ?, ?)',
-                [nombre_servicio, precio, duracion_minutos, descripcion, imagen_pro || null]
+                'INSERT INTO servicios (nombre, precio, duracion) VALUES (?, ?, ?)',
+                [nombre, precio, duracion]
             );
             return result.insertId;
         } catch (error) {
@@ -43,10 +43,10 @@ class Service {
     // Actualizar servicio
     static async update(id, serviceData) {
         try {
-            const { nombre_servicio, precio, duracion_minutos, descripcion, imagen_pro } = serviceData;
+            const { nombre, precio, duracion } = serviceData;
             const [result] = await pool.execute(
-                'UPDATE servicios SET nombre_servicio = ?, precio = ?, duracion_minutos = ?, descripcion = ?, imagen_pro = ? WHERE id_servicio = ?',
-                [nombre_servicio, precio, duracion_minutos, descripcion, imagen_pro || null, id]
+                'UPDATE servicios SET nombre = ?, precio = ?, duracion = ? WHERE id_servicio = ?',
+                [nombre, precio, duracion, id]
             );
             return result.affectedRows > 0;
         } catch (error) {

@@ -15,6 +15,19 @@ class AdminController {
         }
     }
 
+    // Obtener administrador por ID
+    static async getById(req, res, next) {
+        try {
+            const admin = await User.findById(req.params.id);
+            if (!admin) {
+                return res.status(404).json({ success: false, message: 'Administrador no encontrado' });
+            }
+            res.json({ success: true, data: admin });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     // Crear administrador
     static async create(req, res, next) {
         try {
@@ -34,13 +47,13 @@ class AdminController {
     // Actualizar administrador
     static async update(req, res, next) {
         try {
-            const updated = await User.update(req.params.id, req.body);
-            if (!updated) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Administrador no encontrado'
-                });
+            // Si viene password, actualizarla primero
+            if (req.body.password) {
+                await User.updatePasswordById(req.params.id, req.body.password);
             }
+
+            const updated = await User.update(req.params.id, req.body);
+
             res.json({
                 success: true,
                 message: 'Administrador actualizado exitosamente'

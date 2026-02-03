@@ -20,7 +20,7 @@ function Form_agenda() {
   const [timeSlots, setTimeSlots] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
 
-  // Cargar servicios y barberos desde la API
+  // Cargar servicios, barberos y horarios desde la API
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -30,9 +30,7 @@ function Form_agenda() {
           throw new Error('Error cargando servicios');
         }
         const servicesData = await servicesResponse.json();
-
-        // Asegurarnos de que servicesData sea un array
-        setServices(Array.isArray(servicesData) ? servicesData : []);
+        setServices(Array.isArray(servicesData.data) ? servicesData.data : Array.isArray(servicesData) ? servicesData : []);
 
         // Cargar barberos
         const barbersResponse = await fetch('http://localhost:3001/api/barbers');
@@ -40,24 +38,39 @@ function Form_agenda() {
           throw new Error('Error cargando barberos');
         }
         const barbersData = await barbersResponse.json();
+        setBarbers(Array.isArray(barbersData.data) ? barbersData.data : Array.isArray(barbersData) ? barbersData : []);
 
-        // Asegurarnos de que barbersData sea un array
-        setBarbers(Array.isArray(barbersData) ? barbersData : []);
-
-        // Generar horarios
-        const slots = [
-          '08:00', '09:00', '10:00', '11:00', '12:00',
-          '14:00', '15:00', '16:00', '17:00', '18:00'
-        ];
-        setTimeSlots(slots);
+        // Cargar horarios desde la DB
+        try {
+          const hoursResponse = await fetch('http://localhost:3001/api/horarios');
+          if (hoursResponse.ok) {
+            const hoursData = await hoursResponse.json();
+            if (Array.isArray(hoursData) && hoursData.length > 0) {
+              setTimeSlots(hoursData);
+            } else {
+              // Fallback si devuelve vacío
+              const slots = [
+                '08:00', '09:00', '10:00', '11:00', '12:00',
+                '14:00', '15:00', '16:00', '17:00', '18:00'
+              ];
+              setTimeSlots(slots);
+            }
+          } else {
+            throw new Error('Failed to fetch hours');
+          }
+        } catch (e) {
+          console.warn('No se pudieron cargar horarios de DB, usando default', e);
+          const slots = [
+            '08:00', '09:00', '10:00', '11:00', '12:00',
+            '14:00', '15:00', '16:00', '17:00', '18:00'
+          ];
+          setTimeSlots(slots);
+        }
 
         setDataLoaded(true);
 
       } catch (error) {
         console.error('Error cargando datos:', error);
-        console.log('Respuesta de servicios:', services);
-        console.log('Respuesta de barberos:', barbers);
-        alert('Error cargando servicios y barberos. Verifica que el backend esté corriendo en puerto 3001.');
 
         // Datos de prueba como fallback
         setServices([
@@ -68,12 +81,46 @@ function Form_agenda() {
           { id_usuario: 1, prim_nombre: 'Carlos', apellido1: 'Rodríguez' },
           { id_usuario: 2, prim_nombre: 'Luis', apellido1: 'García' }
         ]);
+
+        setTimeSlots([
+          '08:00', '09:00', '10:00', '11:00', '12:00',
+          '14:00', '15:00', '16:00', '17:00', '18:00'
+        ]);
+
         setDataLoaded(true);
       }
     };
 
     fetchData();
   }, []);
+
+  // NUEVO: Actualizar horarios disponibles cuando cambia fecha o barbero
+  useEffect(() => {
+    const fetchAvailability = async () => {
+      // Solo filtrar si hay fecha Y barbero seleccionados
+      if (!formData.date || !formData.barber) {
+        return; // No hacer nada, mantener los horarios base
+      }
+
+      setLoading(true);
+      try {
+        const response = await fetch(`http://localhost:3001/api/appointments/availability?date=${formData.date}&barberId=${formData.barber}`);
+        if (response.ok) {
+          const slots = await response.json();
+          setTimeSlots(Array.isArray(slots) ? slots : []);
+        } else {
+          console.warn('Endpoint availability falló, manteniendo horarios base');
+        }
+      } catch (error) {
+        console.error('Error fetching availability:', error);
+        // Mantener los horarios base cargados inicialmente
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAvailability();
+  }, [formData.date, formData.barber]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

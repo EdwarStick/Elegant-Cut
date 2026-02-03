@@ -1,6 +1,23 @@
 const Appointment = require('../models/Appointment.model');
 
 class AppointmentController {
+    // Obtener horarios disponibles
+    static async getAvailableSlots(req, res, next) {
+        try {
+            const { date, barberId } = req.query;
+            if (!date || !barberId) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Fecha y ID de barbero son requeridos'
+                });
+            }
+            const slots = await Appointment.getAvailableSlots(date, barberId);
+            res.json(slots);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     // Obtener todas las citas (admin)
     static async getAll(req, res, next) {
         try {

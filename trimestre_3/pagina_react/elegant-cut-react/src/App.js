@@ -15,6 +15,7 @@ import Pqrs from './Paginas/Pqrs'
 import Perfil from './Paginas/Perfil'
 import ProtectedRoute from './Componentes/ProtectedRoute'
 import EjemploDB from './Paginas/EjemploDB'
+import Unauthorized from './Paginas/Unauthorized'
 
 // Importar componentes de Admin
 import DashboardTab from './Componentes/DashboardTab'
@@ -24,6 +25,10 @@ import AdminsTab from './Componentes/AdminsTab'
 import AppointmentsTab from './Componentes/AppointmentsTab'
 import ClientsTab from './Componentes/ClientsTab'
 import SettingsTab from './Componentes/SettingsTab'
+
+// Importar componentes de Barber
+import BarberPanel from './Paginas/BarberPanel'
+import BarberAppointments from './Paginas/BarberAppointments'
 
 function App() {
   return (
@@ -49,6 +54,18 @@ function App() {
           <Route path="configuracion" element={<SettingsTab />} />
         </Route>
 
+        <Route
+          path="/barber"
+          element={
+            <ProtectedRoute requiredRole="barber">
+              <BarberPanel />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Navigate to="/barber/appointments" replace />} />
+          <Route path="appointments" element={<BarberAppointments />} />
+        </Route>
+
         <Route path="/*" element={
           <>
             <Header />
@@ -60,10 +77,10 @@ function App() {
               <Route path="/Servicios_dama" element={<Servicios_dama />} />
               <Route path="/Servicios_caballero" element={<Servicios_caballero />} />
               <Route path="/Form_agenda" element={<Form_agenda />} />
-              <Route path="/Form_agenda" element={<Form_agenda />} />
               <Route path="/Pqrs" element={<Pqrs />} />
               <Route path="/ejemplo-db" element={<EjemploDB />} />
               <Route path="/perfil" element={<Perfil />} />
+              <Route path="/unauthorized" element={<Unauthorized />} />
             </Routes>
             <Footer />
           </>

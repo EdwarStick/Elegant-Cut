@@ -160,12 +160,12 @@ class Appointment {
             }
             const idHorarios = horarioResult[0].id_horarios;
 
-            // 3. Insertar en reservas
+            // 3. Insertar en reservas (AHORA CON BARBERO)
             const [reservaResult] = await connection.execute(
                 `INSERT INTO reservas 
-                 (fecha, observaciones, id_usuario, id_estado_cita, id_horarios) 
-                 VALUES (?, ?, ?, 1, ?)`,
-                [date, notes || '', userId, idHorarios]
+                 (fecha, observaciones, id_usuario, id_estado_cita, id_horarios, id_empleado) 
+                 VALUES (?, ?, ?, 1, ?, ?)`,
+                [date, notes || '', userId, idHorarios, barber]
             );
 
             const reservaId = reservaResult.insertId;
@@ -197,6 +197,55 @@ class Appointment {
             );
             return result.affectedRows > 0;
         } catch (error) {
+            throw error;
+        }
+    }
+
+    // Obtener horarios disponibles para una fecha y barbero específicos
+    static async getAvailableSlots(date, barberId) {
+        try {
+            // 1. Obtener todos los horarios base
+            const [allSlots] = await pool.execute(
+                'SELECT id_horarios, hora_inicio, hora_fin FROM horarios ORDER BY hora_inicio ASC'
+            );
+
+            // 2. Obtener horarios OCUPADOS para ese barbero en esa fecha
+            // id_estado_cita: 1=Pendiente, 2=Confirmada (Ignoramos 3=Cancelada, 4=Completada si aplica)
+            const [occupied] = await pool.execute(
+                `SELECT h.hora_inicio 
+                 FROM reservas r
+                 JOIN horarios h ON r.id_horarios = h.id_horarios
+                 WHERE r.fecha = ? 
+                 AND r.id_empleado = ? 
+                 AND r.id_estado_cita IN (1, 2)`,
+                [date, barberId]
+            );
+
+            // Crear Set de horas ocupadas para búsqueda rápida
+            // Convertimos la hora numérica (ej: 900) a formato string "09:00" para comparar
+            const occupiedTimes = new Set(occupied.map(o => {
+                let start = o.hora_inicio.toString().padStart(4, '0');
+                return `${start.substring(0, 2)}:${start.substring(2)}`;
+            }));
+
+            // 3. Filtrar y formatear
+            const available = allSlots.map(slot => {
+                let start = slot.hora_inicio.toString().padStart(4, '0');
+                const timeString = `${start.substring(0, 2)}:${start.substring(2)}`;
+
+                return {
+                    id: slot.id_horarios,
+                    time: timeString,
+                    isAvailable: !occupiedTimes.has(timeString)
+                };
+            });
+
+            // Retornar solo los disponibles (o todos con flag, según prefiera el front)
+            // Por ahora retornamos solo las horas disponibles como array de strings para compatibilidad
+            return available.filter(a => a.isAvailable).map(a => a.time);
+
+        } catch (error) {
+            console.error('Error fetching available slots:', error);
             throw error;
         }
     }

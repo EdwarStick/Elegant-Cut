@@ -6,6 +6,7 @@ const { requireAdmin } = require('../middleware/admin.middleware');
 
 // Public route for creating appointments
 router.post('/', AppointmentController.create);
+router.get('/availability', AppointmentController.getAvailableSlots);
 
 // Admin routes
 router.get('/', authenticate, requireAdmin, AppointmentController.getAll);

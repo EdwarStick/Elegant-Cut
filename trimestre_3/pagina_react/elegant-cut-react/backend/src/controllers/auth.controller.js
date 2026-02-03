@@ -3,6 +3,7 @@ const EmailService = require('../../emailService');
 
 const User = require('../models/User.model');
 const jwtConfig = require('../config/jwt');
+const emailService = require('../services/email.service');
 
 class AuthController {
     // Login con username (compatible con frontend actual)
@@ -37,13 +38,24 @@ class AuthController {
                 });
             }
 
+            // Normalizar rol para frontend
+            let role = user.role ? user.role.toLowerCase() : 'cliente';
+            if (role === 'administrador') role = 'admin';
+            if (role === 'barbero') role = 'barber';
+
+            // También normalizar por id_rol
+            if (user.id_rol === 1) role = 'admin';
+            if (user.id_rol === 2) role = 'barber';
+            if (user.id_rol === 3) role = 'cliente';
+
             // Generar JWT token
             const token = jwt.sign(
                 {
                     id: user.id_usuario,
                     username: user.username,
                     name: `${user.prim_nombre} ${user.apellido1}`,
-                    role: user.role,
+                    role: role,
+                    id_rol: user.id_rol,
                     userId: user.id_usuario
                 },
                 jwtConfig.secret,
@@ -57,7 +69,7 @@ class AuthController {
                 user: {
                     username: user.username,
                     name: `${user.prim_nombre} ${user.apellido1}`,
-                    role: user.role,
+                    role: role,
                     userId: user.id_usuario
                 }
             });
@@ -153,6 +165,14 @@ class AuthController {
                 });
             }
 
+            // SEGURIDAD: Impedir que administradores (rol 1) cambien contraseña por formulario público
+            if (user.id_rol === 1 || user.role === 'admin') {
+                return res.status(403).json({
+                    success: false,
+                    error: 'Por seguridad, las cuentas administrativas deben gestionar su contraseña desde el Panel de Administración.'
+                });
+            }
+
             // Actualizar contraseña
             const updated = await User.updatePassword(username, newPassword, false);
 
@@ -223,97 +243,6 @@ class AuthController {
                 message: 'Contraseña actualizada exitosamente'
             });
         } catch (error) {
-            next(error);
-        }
-    }
-    // Solicitar código de recuperación (NUEVO)
-    static async solicitarRecuperacion(req, res, next) {
-        try {
-            const { email } = req.body;
-
-            if (!email) {
-                return res.status(400).json({
-                    success: false,
-                    error: 'El email es requerido'
-                });
-            }
-
-            const user = await User.findByEmail(email);
-
-            if (!user) {
-                return res.status(404).json({
-                    success: false,
-                    error: 'No existe una cuenta con este email'
-                });
-            }
-
-            // Generar y enviar código
-            const codigo = EmailService.generarCodigo();
-            const guardado = await EmailService.guardarCodigo(email, codigo, 'recuperacion');
-
-            if (!guardado) {
-                return res.status(500).json({
-                    success: false,
-                    error: 'Error generando código'
-                });
-            }
-
-            const emailEnviado = await EmailService.enviarCodigoRecuperacion(email, codigo);
-
-            if (emailEnviado) {
-                res.json({
-                    success: true,
-                    mensaje: 'Código enviado a tu email',
-                    username: user.username
-                });
-            } else {
-                res.status(500).json({
-                    success: false,
-                    error: 'Error enviando el código. Verifica tu conexión o intenta nuevamente.'
-                });
-            }
-        } catch (error) {
-            console.error('Error en solicitar recuperación:', error);
-            next(error);
-        }
-    }
-
-    // Verificar código y actualizar contraseña (NUEVO)
-    static async verificarCodigo(req, res, next) {
-        try {
-            const { email, codigo, nuevaContrasena } = req.body;
-
-            if (!email || !codigo || !nuevaContrasena) {
-                return res.status(400).json({
-                    success: false,
-                    error: 'Faltan datos requeridos (email, código, contraseña)'
-                });
-            }
-
-            const verificacion = await EmailService.verificarCodigo(email, codigo, 'recuperacion');
-
-            if (!verificacion.valido) {
-                return res.status(400).json({
-                    success: false,
-                    error: verificacion.mensaje || 'Código inválido'
-                });
-            }
-
-            const updated = await User.updatePassword(email, nuevaContrasena, true);
-
-            if (updated) {
-                res.json({
-                    success: true,
-                    message: '¡Contraseña actualizada exitosamente!'
-                });
-            } else {
-                res.status(500).json({
-                    success: false,
-                    error: 'Error al actualizar la contraseña en la base de datos'
-                });
-            }
-        } catch (error) {
-            console.error('Error en verificar código:', error);
             next(error);
         }
     }
