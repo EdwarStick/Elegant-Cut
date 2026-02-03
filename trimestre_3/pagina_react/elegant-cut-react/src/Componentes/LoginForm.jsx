@@ -149,7 +149,7 @@ function LoginForm() {
         setUsernameRecuperacion(result.username);
         setActiveView('verification');
       } else {
-        mostrarMensaje('Error: ' + result.error, 'error');
+        mostrarMensaje('Error: ' + (result.error || 'Ocurrió un error inesperado'), 'error');
       }
     } catch (error) {
       mostrarMensaje('Error de conexión: ' + error.message, 'error');
@@ -205,7 +205,7 @@ function LoginForm() {
           switchToLogin();
         }, 2000);
       } else {
-        mostrarMensaje('Error: ' + result.error, 'error');
+        mostrarMensaje('Error: ' + (result.error || 'Ocurrió un error inesperado'), 'error');
       }
     } catch (error) {
       mostrarMensaje('Error de conexión: ' + error.message, 'error');

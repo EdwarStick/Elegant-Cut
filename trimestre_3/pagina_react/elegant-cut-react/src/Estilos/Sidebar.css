@@ -1,23 +1,27 @@
+:root {
+    --Negro: #111205;
+    --NegroMedio: #1f1f1e;
+    --Blanco: #f4f4f4;
+    --Rojo: #bc2041;
+}
+
+/*Barra lateral*/
 .sidebar {
     width: 260px;
     height: 100vh;
-    background: white;
+    background: var(--Blanco);
     position: fixed;
     left: 0;
     top: 0;
     display: flex;
     flex-direction: column;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 2px 0 10px var(--Negro);
     z-index: 1000;
     padding: 1.5rem 0;
     transition: transform 0.3s ease-in-out;
 }
 
-.sidebar-header {
-    padding: 0 1.5rem 1.5rem;
-    border-bottom: 1px solid #f0f0f0;
-    margin-bottom: 1.5rem;
-}
+
 
 .logo-container {
     display: flex;
@@ -33,13 +37,15 @@
     overflow-y: auto;
 }
 
+/*items de la barra lateral*/
 .nav-item {
     display: flex;
     align-items: center;
     padding: 0.8rem 1rem;
     border: none;
     background: transparent;
-    color: #6c757d;
+    color: var(--Negro);
+    /*Color negro de las letras*/
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -52,12 +58,13 @@
 
 .nav-item:hover {
     background-color: #f8f9fa;
-    color: #2c3e50;
+    color: var(--Rojo);
 }
 
+/*items*/
 .nav-item.active {
-    background-color: #e8f0fe;
-    color: #0d6efd;
+    background-color: var(--Blanco);
+    color: var(--Rojo);
     font-weight: 600;
 }
 
@@ -65,9 +72,7 @@
     font-size: 1.1rem;
 }
 
-.sidebar-footer {
-    border-top: 1px solid #f0f0f0;
-}
+
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
@@ -78,15 +83,24 @@
 
     .sidebar.open {
         transform: translateX(0);
-        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 4px 0 15px var(--Negro);
     }
 
     .btn-close-sidebar {
         background: none;
         border: none;
         font-size: 1.5rem;
-        color: #6c757d;
+        color: var(--Negro);
         padding: 0;
         cursor: pointer;
+        transform: scale(1.2);
+        transition: transform 0.2s ease-in-out;
+
     }
+
+    .btn-close-sidebar:hover {
+        transform: scale(1.3);
+        color: var(--Rojo);
+    }
+
 }
