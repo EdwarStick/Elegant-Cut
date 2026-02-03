@@ -27,73 +27,72 @@ const ClientsTab = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <div className="spinner-border text-primary"></div>
-      </div>
-    );
-  }
+  const handleDeactivate = async (id) => {
+    if (!window.confirm('¿Desactivar este cliente?')) return;
+    try {
+      const response = await fetch(`http://localhost:3001/admin/clients/${id}`, { method: 'DELETE' });
+      const data = await response.json();
+      if (data.success) {
+        loadClients();
+      } else {
+        alert('No se pudo desactivar el cliente');
+      }
+    } catch (error) { console.error(error); }
+  };
 
-  if (error) {
-    return (
-      <div style={{ padding: '20px' }}>
-        <div className="alert alert-warning">{error}</div>
-      </div>
-    );
-  }
+  if (loading) return <div className="text-center py-5"><div className="spinner-border text-primary"></div></div>;
+  if (error) return <div className="alert alert-warning m-3">{error}</div>;
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="p-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Directorio de Clientes</h2>
       </div>
 
-      {clients.length === 0 ? (
-        <div className="alert alert-info">
-          <i className="bi bi-info-circle me-2"></i>
-          No hay clientes registrados
-        </div>
-      ) : (
-        <div className="card border-0 shadow-sm">
-          <div className="table-responsive">
-            <table className="table table-hover mb-0">
-              <thead className="table-light">
+      <div className="card border-0 shadow-sm">
+        <div className="table-responsive">
+          <table className="table table-hover mb-0">
+            <thead className="table-light">
+              <tr>
+                <th>Cliente</th>
+                <th>Contacto</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {clients.length === 0 ? (
                 <tr>
-                  <th>Cliente</th>
-                  <th>Contacto</th>
-                  <th>Citas</th>
-                  <th>Estado</th>
+                  <td colSpan="4" className="text-center py-4">No hay clientes registrados</td>
                 </tr>
-              </thead>
-              <tbody>
-                {clients.map(client => (
+              ) : (
+                clients.map(client => (
                   <tr key={client.id_usuario}>
                     <td>
                       <div className="fw-bold">{client.prim_nombre} {client.apellido1}</div>
-                      <div className="small text-muted">ID: #{client.id_usuario}</div>
+                      <div className="small text-muted">ID: {client.id_usuario}</div>
                     </td>
                     <td>
-                      <div><i className="bi bi-envelope me-1"></i> {client.email || 'N/A'}</div>
+                      <div><i className="bi bi-envelope me-1"></i> {client.email}</div>
                       <div><i className="bi bi-telephone me-1"></i> {client.telefono || 'N/A'}</div>
-                    </td>
-                    <td>
-                      <span className="badge bg-light text-dark border">
-                        {client.total_citas || 0} Citas
-                      </span>
                     </td>
                     <td>
                       <span className={`badge ${client.estado === 1 ? 'bg-success' : 'bg-secondary'}`}>
                         {client.estado === 1 ? 'Activo' : 'Inactivo'}
                       </span>
                     </td>
+                    <td>
+                      <button className="btn btn-sm btn-outline-danger" onClick={() => handleDeactivate(client.id_usuario)}>
+                        <i className="bi bi-trash"></i>
+                      </button>
+                    </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-      )}
+      </div>
     </div>
   );
 };

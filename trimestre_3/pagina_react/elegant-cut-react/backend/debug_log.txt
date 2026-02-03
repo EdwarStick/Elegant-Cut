@@ -1,0 +1,18 @@
+--- TESTING APPOINTMENT QUERY ---
+Executing query...
+Success! Retrieved 11 rows.
+{
+  "firstRow": {
+    "id_reservas": 8,
+    "fecha": "2026-01-30T05:00:00.000Z",
+    "observaciones": "rretrtgefdwsertgyhuj",
+    "cliente": "luis Leal",
+    "telefono": "3143161501",
+    "estado": "1",
+    "hora_inicio": 1400
+  }
+}
+
+--- CHECKING TABLES FOR SERVICE JOIN ---
+Table detalle_cita_servicio: id_detalle_cita_servicio, id_reservas, id_servicio
+Table servicios: id_servicio, nombre, precio, duracion

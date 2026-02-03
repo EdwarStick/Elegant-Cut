@@ -23,7 +23,7 @@ const AdminsTab = () => {
 
     const loadAdmins = async () => {
         try {
-            const response = await fetch('http://localhost:3001/admin/administrators');
+            const response = await fetch('http://127.0.0.1:3001/admin/administrators');
             const data = await response.json();
 
             if (data.success && data.data) {
@@ -43,8 +43,8 @@ const AdminsTab = () => {
         e.preventDefault();
         try {
             const url = editingId
-                ? `http://localhost:3001/admin/administrators/${editingId}`
-                : 'http://localhost:3001/admin/administrators';
+                ? `http://127.0.0.1:3001/admin/administrators/${editingId}`
+                : 'http://127.0.0.1:3001/admin/administrators';
 
             const method = editingId ? 'PUT' : 'POST';
 
@@ -69,22 +69,25 @@ const AdminsTab = () => {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm('¿Estás seguro de eliminar este administrador?')) return;
+    const handleToggleStatus = async (id, currentStatus) => {
+        const action = currentStatus === 1 ? 'desactivar' : 'activar';
+        if (!window.confirm(`¿${action.charAt(0).toUpperCase() + action.slice(1)} este administrador?`)) return;
 
         try {
-            const response = await fetch(`http://localhost:3001/admin/administrators/${id}`, {
-                method: 'DELETE'
+            const response = await fetch(`http://127.0.0.1:3001/admin/administrators/${id}/toggle`, {
+                method: 'PUT'
             });
             const data = await response.json();
 
             if (data.success) {
-                loadAdmins();
+                setAdmins(admins.map(a =>
+                    a.id_usuario === id ? { ...a, estado: data.newStatus } : a
+                ));
             } else {
-                alert(data.error || 'Error al eliminar');
+                alert(data.error || 'Error al cambiar estado');
             }
         } catch (error) {
-            console.error('Error deleting admin:', error);
+            console.error('Error toggling admin:', error);
             alert('Error de conexión');
         }
     };
@@ -146,7 +149,7 @@ const AdminsTab = () => {
                                             <input type="text" className="form-control" required
                                                 value={formData.username}
                                                 onChange={e => setFormData({ ...formData, username: e.target.value })}
-                                                disabled={!!editingId} // Username cannot be changed
+                                            // Removed disabled attribute to allow editing
                                             />
                                         </div>
                                         <div className="col-md-6">
@@ -243,8 +246,12 @@ const AdminsTab = () => {
                                             <button className="btn btn-outline-primary" onClick={() => handleEdit(admin)}>
                                                 <i className="bi bi-pencil"></i>
                                             </button>
-                                            <button className="btn btn-outline-danger" onClick={() => handleDelete(admin.id_usuario)}>
-                                                <i className="bi bi-trash"></i>
+                                            <button
+                                                className={`btn ${admin.estado === 1 ? 'btn-outline-danger' : 'btn-outline-success'}`}
+                                                onClick={() => handleToggleStatus(admin.id_usuario, admin.estado)}
+                                                title={admin.estado === 1 ? "Desactivar" : "Activar"}
+                                            >
+                                                <i className={`bi ${admin.estado === 1 ? 'bi-person-slash' : 'bi-person-check'}`}></i>
                                             </button>
                                         </div>
                                     </td>
@@ -257,5 +264,5 @@ const AdminsTab = () => {
         </div>
     );
 };
-
 export default AdminsTab;
+

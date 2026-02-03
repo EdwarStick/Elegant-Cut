@@ -6,17 +6,29 @@ import '../Estilos/AdminPanel.css';
 
 const AdminPanel = () => {
   const location = useLocation();
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
-  console.log('🎯 AdminPanel rendering, location:', location.pathname);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
 
   return (
     <div className="admin-panel">
-      <Sidebar />
+      {/* Overlay for mobile when sidebar is open */}
+      {isSidebarOpen && <div className="admin-overlay" onClick={closeSidebar}></div>}
+
+      <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
+
       <div className="admin-content">
-        <AdminHeader />
-        <div className="admin-main">
+        <AdminHeader toggleSidebar={toggleSidebar} />
+        <main className="admin-main">
           <Outlet />
-        </div>
+        </main>
       </div>
     </div>
   );
