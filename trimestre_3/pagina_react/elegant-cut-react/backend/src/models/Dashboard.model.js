@@ -6,20 +6,27 @@ class Dashboard {
         try {
             const [stats] = await pool.execute(`
                 SELECT 
-                    (SELECT COUNT(*) FROM reservas WHERE id_estado_cita = 1) as citas_pendientes,
-                    (SELECT COUNT(*) FROM reservas WHERE id_estado_cita = 2) as citas_completadas,
-                    (SELECT COUNT(*) FROM usuarios WHERE id_rol = 3 AND estado = 1) as total_clientes,
-                    (SELECT COUNT(*) FROM usuarios WHERE id_rol = 2 AND estado = 1) as barberos_activos,
+                    (SELECT COUNT(*) FROM reservas WHERE DATE(fecha) = CURRENT_DATE()) as citasHoy,
                     (SELECT COALESCE(SUM(s.precio), 0) 
                      FROM reservas r 
                      JOIN detalle_cita_servicio dcs ON r.id_reservas = dcs.id_reservas
                      JOIN servicios s ON dcs.id_servicio = s.id_servicio
                      WHERE r.id_estado_cita = 2 
-                     AND MONTH(r.fecha) = MONTH(CURRENT_DATE())
-                    ) as ingresos_mes
+                     AND DATE(r.fecha) = CURRENT_DATE()
+                    ) as ingresosHoy,
+                    (SELECT COUNT(*) FROM usuarios WHERE id_rol = 3 AND DATE(created_at) = CURRENT_DATE()) as clientesNuevos,
+                    (SELECT COUNT(*) FROM reservas WHERE id_estado_cita = 1) as citasPendientes,
+                    (SELECT COUNT(*) FROM reservas WHERE id_estado_cita = 2) as citasCompletadas,
+                    (SELECT COUNT(*) FROM reservas WHERE id_estado_cita = 3) as citasCanceladas
             `);
 
-            return stats[0];
+            // Asegurar que ingresosHoy sea un número para evitar error toLocaleString
+            const result = stats[0];
+            if (result) {
+                result.ingresosHoy = Number(result.ingresosHoy) || 0;
+            }
+
+            return result;
         } catch (error) {
             throw error;
         }

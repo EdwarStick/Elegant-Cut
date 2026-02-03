@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const routes = require('./routes');
 const authRoutes = require('./routes/auth.routes');
+const adminShimRoutes = require('./routes/adminShim.routes'); // Compatibility layer
 const errorHandler = require('./middleware/error.middleware');
 
 const app = express();
@@ -25,6 +26,9 @@ app.use((req, res, next) => {
 
 // Auth routes at root level for frontend compatibility
 app.use('/auth', authRoutes);
+
+// Admin Compatibility Routes (FIX para frontend que no envía token)
+app.use('/admin', adminShimRoutes);
 
 // API Routes
 app.use('/api', routes);
