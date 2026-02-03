@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User.model');
 const jwtConfig = require('../config/jwt');
+const emailService = require('../services/email.service');
 
 class AuthController {
     // Login con username (compatible con frontend actual)
@@ -35,13 +36,17 @@ class AuthController {
                 });
             }
 
+            // Normalizar rol para frontend
+            let role = user.role ? user.role.toLowerCase() : 'cliente';
+            if (role === 'administrador') role = 'admin';
+
             // Generar JWT token
             const token = jwt.sign(
                 {
                     id: user.id_usuario,
                     username: user.username,
                     name: `${user.prim_nombre} ${user.apellido1}`,
-                    role: user.role,
+                    role: role,
                     userId: user.id_usuario
                 },
                 jwtConfig.secret,
@@ -55,7 +60,7 @@ class AuthController {
                 user: {
                     username: user.username,
                     name: `${user.prim_nombre} ${user.apellido1}`,
-                    role: user.role,
+                    role: role,
                     userId: user.id_usuario
                 }
             });
@@ -151,6 +156,14 @@ class AuthController {
                 });
             }
 
+            // SEGURIDAD: Impedir que administradores (rol 1) cambien contraseña por formulario público
+            if (user.id_rol === 1 || user.role === 'admin') {
+                return res.status(403).json({
+                    success: false,
+                    error: 'Por seguridad, las cuentas administrativas deben gestionar su contraseña desde el Panel de Administración.'
+                });
+            }
+
             // Actualizar contraseña
             const updated = await User.updatePassword(username, newPassword, false);
 
@@ -220,6 +233,142 @@ class AuthController {
                 success: true,
                 message: 'Contraseña actualizada exitosamente'
             });
+        } catch (error) {
+            next(error);
+        }
+    }
+    // Solicitar código de recuperación/verificación
+    static async requestPasswordReset(req, res, next) {
+        try {
+            const { email } = req.body;
+            if (!email) {
+                return res.status(400).json({ success: false, error: 'Email requerido' });
+            }
+
+            // Verificar usuario
+            const user = await User.findByEmail(email);
+            if (!user) {
+                return res.status(404).json({ success: false, error: 'Usuario no encontrado' });
+            }
+
+            // SEGURIDAD: Verificar si es admin
+            if (user.id_rol === 1 || user.role === 'admin') {
+                // Verificar si viene autenticado con token (es decir, desde el panel)
+                const authHeader = req.headers.authorization;
+                let isAuthenticatedAdmin = false;
+
+                if (authHeader) {
+                    try {
+                        const token = authHeader.split(' ')[1];
+                        const decoded = jwt.verify(token, jwtConfig.secret);
+                        if (decoded.role === 'admin' || decoded.id_rol === 1) {
+                            isAuthenticatedAdmin = true;
+                        }
+                    } catch (e) {
+                        // Token inválido o expirado
+                    }
+                }
+
+                // SI NO es autenticado (formulario público), bloquear
+                if (!isAuthenticatedAdmin) {
+                    return res.status(403).json({
+                        success: false,
+                        error: 'Por seguridad, las cuentas administrativas deben gestionar su contraseña desde el Panel de Administración (Perfil -> Seguridad).'
+                    });
+                }
+            }
+
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+            // Guardar código en memoria temporalmente (simple store)
+            // En producción usar Redis o DB
+            if (!global.verificationCodes) global.verificationCodes = {};
+            global.verificationCodes[email] = {
+                code,
+                expires: Date.now() + 15 * 60 * 1000 // 15 mins
+            };
+
+            const sent = await emailService.sendVerificationCode(email, code);
+
+            if (sent) {
+                res.json({ success: true, message: 'Código enviado' });
+            } else {
+                res.status(500).json({ success: false, error: 'Error enviando email' });
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    // Verificar código
+    static async verifyCode(req, res, next) {
+        try {
+            const { email, codigo } = req.body;
+
+            if (!global.verificationCodes || !global.verificationCodes[email]) {
+                return res.status(400).json({ success: false, error: 'Código no solicitado o expirado' });
+            }
+
+            const data = global.verificationCodes[email];
+            if (Date.now() > data.expires) {
+                delete global.verificationCodes[email];
+                return res.status(400).json({ success: false, error: 'Código expirado' });
+            }
+
+            if (data.code !== codigo) {
+                return res.status(400).json({ success: false, error: 'Código incorrecto' });
+            }
+
+            // Código válido
+            delete global.verificationCodes[email];
+            res.json({ success: true, message: 'Código verificado' });
+        } catch (error) {
+            next(error);
+        }
+    }
+    // Verificar código y cambiar contraseña (flujo público)
+    static async verifyCodeAndResetPassword(req, res, next) {
+        try {
+            const { email, codigo, nuevaContrasena } = req.body;
+
+            // 1. Validar Código
+            if (!global.verificationCodes || !global.verificationCodes[email]) {
+                return res.status(400).json({ success: false, error: 'Código no solicitado o expirado' });
+            }
+
+            const data = global.verificationCodes[email];
+            if (Date.now() > data.expires) {
+                delete global.verificationCodes[email];
+                return res.status(400).json({ success: false, error: 'Código expirado' });
+            }
+
+            if (data.code !== codigo) {
+                return res.status(400).json({ success: false, error: 'Código incorrecto' });
+            }
+
+            // 2. Verificar usuario (doble check de seguridad para admin)
+            const user = await User.findByEmail(email);
+            if (!user) {
+                return res.status(404).json({ success: false, error: 'Usuario no encontrado' });
+            }
+
+            if (user.id_rol === 1 || user.role === 'admin') {
+                return res.status(403).json({
+                    success: false,
+                    error: 'Por seguridad, las cuentas de administrador no pueden usar este formulario.'
+                });
+            }
+
+            // 3. Cambiar Contraseña
+            const updated = await User.updatePassword(user.username, nuevaContrasena, false);
+
+            if (updated) {
+                delete global.verificationCodes[email]; // Limpiar código usado
+                res.json({ success: true, message: 'Contraseña actualizada exitosamente' });
+            } else {
+                res.status(500).json({ success: false, error: 'Error al actualizar la contraseña' });
+            }
+
         } catch (error) {
             next(error);
         }

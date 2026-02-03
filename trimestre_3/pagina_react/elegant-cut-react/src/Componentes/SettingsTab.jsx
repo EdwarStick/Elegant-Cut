@@ -56,9 +56,45 @@ const SettingsTab = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // --- Nueva Lógica Separada ---
+
+  // 1. Validar Credenciales para Cambio de Contraseña
+  const requestPasswordChange = async () => {
+    if (!formData.confirmUsername || !formData.confirmEmail) {
+      setMessage({ text: 'Debe confirmar su usuario y email para proceder.', type: 'error' });
+      return;
+    }
+
+    if (formData.confirmUsername !== initialData.username || formData.confirmEmail !== initialData.email) {
+      setMessage({ text: 'El usuario o email no coinciden con su perfil actual.', type: 'error' });
+      return;
+    }
+
+    // Solicitar Código
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch('http://localhost:3001/auth/solicitar-recuperacion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ email: formData.confirmEmail }) // Usar el email confirmado
+      });
+      const data = await response.json();
+      if (data.success) {
+        setStep('verify');
+        setMessage({ text: 'Código enviado a: ' + formData.confirmEmail, type: 'info' });
+      } else {
+        setMessage({ text: 'Error: ' + data.error, type: 'error' });
+      }
+    } catch (err) { setMessage({ text: 'Error de conexión', type: 'error' }); }
+    finally { setLoading(false); }
+  };
+
   const isSensitiveChange = () => {
-    return (formData.password && formData.password.length > 0) ||
-      (formData.username !== initialData.username);
+    return (formData.username !== initialData.username);
   };
 
   const initiateUpdate = async (e) => {
@@ -76,8 +112,13 @@ const SettingsTab = () => {
       }
       setLoading(true);
       try {
+        const token = localStorage.getItem('jwt_token');
         const response = await fetch('http://localhost:3001/auth/solicitar-recuperacion', {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
           body: JSON.stringify({ email: formData.email })
         });
         const data = await response.json();
@@ -97,20 +138,28 @@ const SettingsTab = () => {
 
   const verifyAndSave = async (e) => {
     e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      setMessage({ text: 'Las contraseñas no coinciden', type: 'error' });
+      return;
+    }
+
     setLoading(true);
     try {
       // 1. Verificar Código
       const verifyResponse = await fetch('http://localhost:3001/auth/verify-code', {
         method: 'POST',
-        body: JSON.stringify({ email: formData.email, codigo: verificationCode })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.confirmEmail, codigo: verificationCode })
       });
       const verifyData = await verifyResponse.json();
 
       if (verifyData.success) {
-        // 2. Guardar Cambios
-        await completeUpdate();
+        // 2. Cambiar SOLO Contraseña
+        await completeUpdate({ password: formData.password });
         setStep('edit');
         setVerificationCode('');
+        setFormData(prev => ({ ...prev, password: '', confirmPassword: '', confirmUsername: '', confirmEmail: '' }));
       } else {
         setMessage({ text: verifyData.error || 'Código incorrecto', type: 'error' });
       }
@@ -118,20 +167,21 @@ const SettingsTab = () => {
     finally { setLoading(false); }
   };
 
-  const completeUpdate = async () => {
+  const completeUpdate = async (overrideData = null) => {
     setLoading(true);
     try {
+      const payload = overrideData || {
+        username: formData.username,
+        email: formData.email,
+        prim_nombre: formData.prim_nombre,
+        apellido1: formData.apellido1,
+        telefono: formData.telefono
+      };
+
       const response = await fetch(`http://127.0.0.1:3001/admin/administrators/${user.id_usuario}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-          prim_nombre: formData.prim_nombre,
-          apellido1: formData.apellido1,
-          telefono: formData.telefono,
-          ...(formData.password ? { password: formData.password } : {})
-        })
+        body: JSON.stringify(payload)
       });
 
       const data = await response.json();
@@ -180,29 +230,77 @@ const SettingsTab = () => {
             {message.text && (<div className={`alert alert-${message.type.includes('error') ? 'danger' : message.type === 'success' ? 'success' : 'info'} mb-4`}>{message.text}</div>)}
 
             {step === 'edit' ? (
-              <form onSubmit={initiateUpdate}>
+              <>
+                {/* --- SECCIÓN 1: INFORMACIÓN PERSONAL --- */}
+                <form onSubmit={initiateUpdate}>
+                  <div className="row g-3 mb-5">
+                    <div className="col-12 border-bottom pb-2">
+                      <h5 className="text-primary"><i className="bi bi-person-badge me-2"></i>Información Personal</h5>
+                    </div>
+
+                    <div className="col-md-6"><label className="form-label">Usuario</label><input type="text" className="form-control" name="username" value={formData.username} onChange={handleChange} required /></div>
+                    <div className="col-md-6"><label className="form-label">Email</label><input type="email" className="form-control" name="email" value={formData.email} onChange={handleChange} required /></div>
+                    <div className="col-md-6"><label className="form-label">Nombre</label><input type="text" className="form-control" name="prim_nombre" value={formData.prim_nombre} onChange={handleChange} required /></div>
+                    <div className="col-md-6"><label className="form-label">Apellido</label><input type="text" className="form-control" name="apellido1" value={formData.apellido1} onChange={handleChange} required /></div>
+                    <div className="col-md-6"><label className="form-label">Teléfono</label><input type="tel" className="form-control" name="telefono" value={formData.telefono} onChange={handleChange} /></div>
+
+                    <div className="col-12 text-end">
+                      <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Guardando...' : 'Actualizar Información'}</button>
+                    </div>
+                  </div>
+                </form>
+
+                {/* --- SECCIÓN 2: SEGURIDAD (CAMBIO DE CONTRASEÑA) --- */}
                 <div className="row g-3">
-                  <div className="col-12"><h5 className="text-muted">Información Personal</h5></div>
-                  <div className="col-md-6"><label className="form-label">Usuario</label><input type="text" className="form-control" name="username" value={formData.username} onChange={handleChange} required /></div>
-                  <div className="col-md-6"><label className="form-label">Email</label><input type="email" className="form-control" name="email" value={formData.email} onChange={handleChange} required /></div>
-                  <div className="col-md-6"><label className="form-label">Nombre</label><input type="text" className="form-control" name="prim_nombre" value={formData.prim_nombre} onChange={handleChange} required /></div>
-                  <div className="col-md-6"><label className="form-label">Apellido</label><input type="text" className="form-control" name="apellido1" value={formData.apellido1} onChange={handleChange} required /></div>
-                  <div className="col-md-6"><label className="form-label">Teléfono</label><input type="tel" className="form-control" name="telefono" value={formData.telefono} onChange={handleChange} /></div>
+                  <div className="col-12 border-bottom pb-2">
+                    <h5 className="text-danger"><i className="bi bi-shield-lock me-2"></i>Seguridad</h5>
+                  </div>
 
-                  <div className="col-12 mt-4"><h5 className="text-muted">Seguridad</h5></div>
-                  <div className="alert alert-warning small"><i className="bi bi-shield-lock me-1"></i> Cambiar usuario o contraseña requiere verificación por email.</div>
-                  <div className="col-md-6"><label className="form-label">Nueva Contraseña</label><input type="password" className="form-control" name="password" value={formData.password} onChange={handleChange} placeholder="******" /></div>
-                  <div className="col-md-6"><label className="form-label">Confirmar Contraseña</label><input type="password" className="form-control" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="******" /></div>
+                  <div className="alert alert-light border-start border-danger border-4">
+                    <i className="bi bi-info-circle-fill text-danger me-2"></i>
+                    Para cambiar su contraseña, confirme su usuario y correo electrónico. Le enviaremos un código de verificación.
+                  </div>
 
-                  <div className="col-12 mt-4 text-end"><button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Procesando...' : 'Guardar Cambios'}</button></div>
+                  <div className="col-md-6">
+                    <label className="form-label">Confirmar Usuario</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Ingrese su usuario actual"
+                      value={formData.confirmUsername || ''}
+                      onChange={(e) => setFormData({ ...formData, confirmUsername: e.target.value })}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label">Confirmar Email</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      placeholder="Ingrese su email actual"
+                      value={formData.confirmEmail || ''}
+                      onChange={(e) => setFormData({ ...formData, confirmEmail: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="col-12 mt-3">
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      disabled={loading}
+                      onClick={requestPasswordChange}
+                    >
+                      {loading ? 'Verificando...' : 'Solicitar Cambio de Contraseña'}
+                    </button>
+                  </div>
                 </div>
-              </form>
+              </>
             ) : (
               <form onSubmit={verifyAndSave}>
                 <div className="text-center py-4">
                   <i className="bi bi-envelope-check display-1 text-primary mb-3"></i>
                   <h4>Verificación Requerida</h4>
-                  <p className="text-muted">Hemos enviado un código a <strong>{formData.email}</strong></p>
+                  <p className="text-muted">Hemos enviado un código a <strong>{formData.confirmEmail}</strong></p>
+
                   <div className="d-flex justify-content-center my-4">
                     <input
                       type="text"
@@ -215,7 +313,20 @@ const SettingsTab = () => {
                       required
                     />
                   </div>
-                  <button type="submit" className="btn btn-success px-5" disabled={loading}>{loading ? 'Verificando...' : 'Confirmar y Guardar'}</button>
+
+                  <h5 className="mt-4 mb-3">Establecer Nueva Contraseña</h5>
+                  <div className="row justify-content-center">
+                    <div className="col-md-6 mb-3">
+                      <input type="password" className="form-control" placeholder="Nueva Contraseña" name="password" value={formData.password} onChange={handleChange} required />
+                    </div>
+                  </div>
+                  <div className="row justify-content-center">
+                    <div className="col-md-6 mb-4">
+                      <input type="password" className="form-control" placeholder="Confirmar Contraseña" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+                    </div>
+                  </div>
+
+                  <button type="submit" className="btn btn-success px-5" disabled={loading}>{loading ? 'Verificando...' : 'Confirmar y Cambiar Contraseña'}</button>
                   <button type="button" className="btn btn-link mt-3 d-block mx-auto" onClick={() => setStep('edit')}>Cancelar</button>
                 </div>
               </form>
