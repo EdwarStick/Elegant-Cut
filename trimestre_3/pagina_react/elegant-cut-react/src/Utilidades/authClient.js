@@ -1,12 +1,12 @@
 // src/utils/authClient.js
 
 export class AuthClient {
-  
+
   // FUNCIÓN: Registro - ACTUALIZADO
   static async register(registerData) {
     try {
       console.log('Enviando registro al servidor...');
-      
+
       const response = await fetch('http://localhost:3001/auth/register', {
         method: 'POST',
         headers: {
@@ -16,14 +16,14 @@ export class AuthClient {
       });
 
       const data = await response.json();
-      
+
       console.log(' Respuesta del servidor (registro):', data);
-      
+
       if (data.success && data.token) {
         // Guardar token y datos del usuario automáticamente
         localStorage.setItem('jwt_token', data.token);
         localStorage.setItem('user_data', JSON.stringify(data.user));
-        
+
         console.log(' Registro exitoso!');
         return { success: true, user: data.user };
       } else {
@@ -40,7 +40,7 @@ export class AuthClient {
   static async login(username, password) {
     try {
       console.log('📞 Enviando login al servidor...');
-      
+
       const response = await fetch('http://localhost:3001/auth/login', {
         method: 'POST',
         headers: {
@@ -50,14 +50,14 @@ export class AuthClient {
       });
 
       const data = await response.json();
-      
+
       console.log('📨 Respuesta del servidor:', data);
-      
+
       if (data.success && data.token) {
         // Guardar token y datos del usuario
         localStorage.setItem('jwt_token', data.token);
         localStorage.setItem('user_data', JSON.stringify(data.user));
-        
+
         console.log('✅ Login exitoso!');
         return { success: true, user: data.user };
       } else {
@@ -74,7 +74,7 @@ export class AuthClient {
   static async solicitarRecuperacion(email) {
     try {
       console.log('📧 Solicitando código de recuperación para:', email);
-      
+
       const response = await fetch('http://localhost:3001/auth/solicitar-recuperacion', {
         method: 'POST',
         headers: {
@@ -84,15 +84,15 @@ export class AuthClient {
       });
 
       const data = await response.json();
-      
+
       console.log('📨 Respuesta del servidor (solicitar-recuperacion):', data);
-      
+
       if (data.success) {
         console.log('✅ Código solicitado!');
-        return { 
-          success: true, 
+        return {
+          success: true,
           message: data.mensaje,
-          username: data.username 
+          username: data.username
         };
       } else {
         console.log('❌ Error solicitando código:', data.error);
@@ -108,7 +108,7 @@ export class AuthClient {
   static async verificarCodigoRecuperacion(email, codigo, nuevaContrasena) {
     try {
       console.log('🔐 Verificando código para:', email);
-      
+
       const response = await fetch('http://localhost:3001/auth/verificar-codigo-recuperacion', {
         method: 'POST',
         headers: {
@@ -118,9 +118,9 @@ export class AuthClient {
       });
 
       const data = await response.json();
-      
+
       console.log('📨 Respuesta del servidor (verificar-codigo-recuperacion):', data);
-      
+
       if (data.success) {
         console.log('✅ Contraseña cambiada exitosamente!');
         return { success: true, message: data.message };
@@ -138,7 +138,7 @@ export class AuthClient {
   static async forgotPassword(username, newPassword) {
     try {
       console.log('📞 Recuperando contraseña para:', username);
-      
+
       const response = await fetch('http://localhost:3001/auth/forgot-password', {
         method: 'POST',
         headers: {
@@ -148,9 +148,9 @@ export class AuthClient {
       });
 
       const data = await response.json();
-      
+
       console.log('📨 Respuesta del servidor (forgot-password):', data);
-      
+
       if (data.success) {
         console.log('✅ Contraseña recuperada!');
         return { success: true, message: data.message };
@@ -168,7 +168,7 @@ export class AuthClient {
   static async updatePassword(username, newPassword) {
     try {
       console.log('📞 Actualizando contraseña para:', username);
-      
+
       const response = await fetch('http://localhost:3001/auth/forgot-password', {
         method: 'POST',
         headers: {
@@ -178,9 +178,9 @@ export class AuthClient {
       });
 
       const data = await response.json();
-      
+
       console.log('📨 Respuesta del servidor (update-password):', data);
-      
+
       if (data.success) {
         console.log('✅ Contraseña actualizada!');
         return { success: true, message: data.message };
@@ -226,7 +226,7 @@ export class AuthClient {
   // Verificar si es barbero
   static isBarber() {
     const user = this.getUser();
-    return user && user.role === 'barbero';
+    return user && (user.role === 'barbero' || user.role === 'barber');
   }
 
   // Verificar si es cliente
@@ -239,7 +239,7 @@ export class AuthClient {
   static isTokenValid() {
     const token = this.getToken();
     if (!token) return false;
-    
+
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       return payload.exp * 1000 > Date.now();

@@ -9,6 +9,8 @@ const serviceRoutes = require('./service.routes');
 const appointmentRoutes = require('./appointment.routes');
 const dashboardRoutes = require('./dashboard.routes');
 const adminRoutes = require('./admin.routes');
+const horarioRoutes = require('./horario.routes');
+const barberPanelRoutes = require('./barberPanel.routes');
 
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
@@ -18,6 +20,8 @@ router.use('/services', serviceRoutes);
 router.use('/appointments', appointmentRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/admin', adminRoutes);
+router.use('/horarios', horarioRoutes);
+router.use('/barber-panel', barberPanelRoutes);
 
 // Health check
 router.get('/health', (req, res) => {

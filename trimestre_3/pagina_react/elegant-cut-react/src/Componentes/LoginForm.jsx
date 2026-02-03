@@ -72,6 +72,8 @@ function LoginForm() {
         setTimeout(() => {
           if (result.user.role === 'admin') {
             navigate('/admin');
+          } else if (result.user.role === 'barber') {
+            navigate('/barber');
           } else {
             navigate('/');
           }

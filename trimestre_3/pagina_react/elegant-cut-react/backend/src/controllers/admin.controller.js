@@ -15,6 +15,19 @@ class AdminController {
         }
     }
 
+    // Obtener administrador por ID
+    static async getById(req, res, next) {
+        try {
+            const admin = await User.findById(req.params.id);
+            if (!admin) {
+                return res.status(404).json({ success: false, message: 'Administrador no encontrado' });
+            }
+            res.json({ success: true, data: admin });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     // Crear administrador
     static async create(req, res, next) {
         try {

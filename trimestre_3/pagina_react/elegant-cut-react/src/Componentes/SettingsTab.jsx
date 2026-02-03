@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AuthClient } from '../Utilidades/authClient';
 
 const SettingsTab = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -26,7 +27,7 @@ const SettingsTab = () => {
   const [loadingStats, setLoadingStats] = useState(false);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const storedUser = AuthClient.getUser() || {};
     setUser(storedUser);
     if (storedUser.id_usuario) {
       const initial = {

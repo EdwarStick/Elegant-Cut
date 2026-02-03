@@ -43,6 +43,7 @@ router.delete('/appointments/:id', AppointmentController.delete);
 
 // Administradores
 router.get('/administrators', AdminController.getAll);
+router.get('/administrators/:id', AdminController.getById);
 router.post('/administrators', AdminController.create);
 router.put('/administrators/:id', AdminController.update);
 router.delete('/administrators/:id', AdminController.delete);

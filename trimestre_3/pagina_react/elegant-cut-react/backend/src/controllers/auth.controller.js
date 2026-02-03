@@ -39,6 +39,12 @@ class AuthController {
             // Normalizar rol para frontend
             let role = user.role ? user.role.toLowerCase() : 'cliente';
             if (role === 'administrador') role = 'admin';
+            if (role === 'barbero') role = 'barber';
+
+            // También normalizar por id_rol
+            if (user.id_rol === 1) role = 'admin';
+            if (user.id_rol === 2) role = 'barber';
+            if (user.id_rol === 3) role = 'cliente';
 
             // Generar JWT token
             const token = jwt.sign(
@@ -47,6 +53,7 @@ class AuthController {
                     username: user.username,
                     name: `${user.prim_nombre} ${user.apellido1}`,
                     role: role,
+                    id_rol: user.id_rol,
                     userId: user.id_usuario
                 },
                 jwtConfig.secret,
