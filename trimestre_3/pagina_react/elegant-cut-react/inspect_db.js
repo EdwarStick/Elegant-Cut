@@ -1,4 +1,4 @@
-const pool = require('./backend/Configuracion/database');
+const pool = require('./backend/src/config/database');
 
 async function inspect() {
     try {
