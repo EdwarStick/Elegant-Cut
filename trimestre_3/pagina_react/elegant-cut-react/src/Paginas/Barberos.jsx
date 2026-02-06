@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import '../Estilos/Barberos.css';
+
 
 function Barberos() {
   const [activeFilter, setActiveFilter] = useState('all');
@@ -96,7 +98,7 @@ function Barberos() {
   ];
 
   // Filtrar barberos
-  const filteredBarbers = barbers.filter(barber => 
+  const filteredBarbers = barbers.filter(barber =>
     activeFilter === 'all' || barber.categories.includes(activeFilter)
   );
 
@@ -107,9 +109,9 @@ function Barberos() {
 
   // Renderizar barberos
   const renderBarberCard = (barber) => (
-    <div 
-      key={barber.id} 
-      className="barber-card" 
+    <div
+      key={barber.id}
+      className="barber-card"
       data-category={barber.categories.join(' ')}
     >
       <div className="barber-header">
@@ -123,8 +125,8 @@ function Barberos() {
         <div className="barber-experience">{barber.experience}</div>
       </div>
       <div className="barber-image">
-        <img 
-          src={`${process.env.PUBLIC_URL}/assets/images/barberos/${barber.image}`} 
+        <img
+          src={`${process.env.PUBLIC_URL}/assets/images/barberos/${barber.image}`}
           alt={`${barber.name} - ${barber.title}`}
         />
         <div className="barber-overlay">

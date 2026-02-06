@@ -121,7 +121,7 @@
     background: var(--input-bg);
     font-size: 1rem;
     color: var(--Negro);
-    /* Texto blanco en inputs */
+    /* Texto negro en inputs */
     transition: var(--transition);
     outline: none;
 }

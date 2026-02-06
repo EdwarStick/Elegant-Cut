@@ -1,11 +1,9 @@
 /* VARIABLES CSS - AÑADIR AL INICIO */
 :root {
     --Negro: #111205;
-    --NegroMedio: #1F1F1E;
+    --NegroMedio: #1f1f1e;
     --Blanco: #f4f4f4;
-    --RojoVino: #BC2041;
-    --Dorado: #D4AF37;
-    --GrisOscuro: #2A2A2A;
+    --Rojo: #bc2041;
 }
 
 /* ESTILOS EXCLUSIVOS PARA EL MENÚ HAMBURGUESA - CORREGIDO */
@@ -15,9 +13,11 @@
     .desktop-icons {
         display: flex;
     }
+
     .abrir-menu {
         display: none;
     }
+
     .nav {
         display: none;
     }
@@ -64,7 +64,8 @@
     .nav {
         position: fixed;
         top: 0;
-        left: -100%; /* Comienza fuera de la pantalla */
+        left: -100%;
+        /* Comienza fuera de la pantalla */
         width: 100%;
         height: 100vh;
         background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
@@ -80,7 +81,8 @@
 
     /* Menú visible - CORREGIDO */
     .nav.visible {
-        left: 0; /* Se despliega desde la izquierda */
+        left: 0;
+        /* Se despliega desde la izquierda */
     }
 
     /* Quitar scroll del body cuando el menú está abierto */
@@ -95,7 +97,7 @@
         right: 1.5rem;
         background: none;
         border: none;
-        color: var(--Blanco);
+        color: var(--Negro);
         font-size: 2rem;
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -107,7 +109,8 @@
     /* Sin fondo gris al hover y con leve animación */
     .cerrar-menu:hover {
         background-color: transparent !important;
-        color: var(--RojoVino);
+        /*para que se vea el color negro, pero no completamente*/
+        color: var(--Rojo);
         transform: scale(1.2);
     }
 
@@ -119,11 +122,12 @@
         gap: 0.8rem;
         padding: 3.5rem 1rem 1.5rem;
         width: 100%;
-        background: rgba(0, 0, 0, 0.4);
-        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        background: var(--Blanco);
+        border-bottom: 2px solid var(--Blanco);
         backdrop-filter: blur(10px);
     }
 
+    /*Logo del menú jhamburguesa*/
     .mobile-logo-small {
         width: 80px;
         height: 80px;
@@ -142,16 +146,17 @@
     .mobile-brand-text {
         font-size: 1.5rem;
         font-weight: 800;
-        color: var(--Blanco);
+        color: var(--Negro);
         letter-spacing: 2px;
         text-align: center;
         text-transform: uppercase;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        text-shadow: 0 5px 5px rgb(117, 117, 117);
     }
 
     .mobile-slogan {
         font-size: 0.9rem;
-        color: var(--Dorado);
+        color: var(--RojoVino);
+        text-shadow: 0 5px 5px var(--RojoVino);
         font-weight: 500;
         text-align: center;
         font-style: italic;
@@ -183,7 +188,7 @@
     }
 
     .menu-icons-container::-webkit-scrollbar-thumb {
-        background: var(--RojoVino);
+        background: var(--Negro);
         border-radius: 10px;
     }
 
@@ -306,6 +311,7 @@
 
 /* === DIAGNÓSTICO Y FORZADO - AÑADIR AL FINAL === */
 @media screen and (max-width: 768px) {
+
     /* FORZAR que el menú se muestre */
     .nav.visible {
         left: 0 !important;
@@ -314,7 +320,7 @@
         visibility: visible !important;
         display: flex !important;
     }
-    
+
     /* Reset completo para eliminar cualquier conflicto */
     .nav {
         position: fixed !important;
@@ -332,7 +338,7 @@
         opacity: 1 !important;
         visibility: visible !important;
     }
-    
+
     /* Asegurar que el botón cerrar sea visible */
     .cerrar-menu {
         display: block !important;
