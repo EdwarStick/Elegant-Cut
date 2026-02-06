@@ -49,11 +49,23 @@ class BarberController {
     // Crear barbero (admin)
     static async create(req, res, next) {
         try {
-            const id = await Barber.create(req.body);
+            console.log('📦 Create Barber Body:', req.body);
+            console.log('📂 Create Barber File:', req.file);
+
+            const barberData = req.body;
+
+            // Si hay imagen subida, añadirla a los datos
+            if (req.file) {
+                barberData.foto_perfil = req.file.filename;
+            }
+
+            const id = await Barber.create(barberData);
+
             res.status(201).json({
                 success: true,
                 message: 'Barbero creado exitosamente',
-                id
+                id: id,
+                image: req.file ? req.file.filename : null
             });
         } catch (error) {
             next(error);

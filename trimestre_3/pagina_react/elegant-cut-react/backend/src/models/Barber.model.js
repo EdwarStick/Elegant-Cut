@@ -44,6 +44,7 @@ class Barber {
                     seg_nombre,
                     apellido1,
                     apellido2,
+                    foto_perfil,
                     'Barbero Profesional' as especialidad
                 FROM usuarios 
                 WHERE id_rol = 2 AND estado = 1
@@ -79,7 +80,17 @@ class Barber {
     try {
       await connection.beginTransaction();
 
-      const { username, password, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono } = barberData;
+      const {
+        username,
+        password,
+        email,
+        prim_nombre,
+        seg_nombre = null,
+        apellido1,
+        apellido2 = null,
+        telefono = null,
+        foto_perfil = null
+      } = barberData;
 
       // Verificar si el username ya existe
       const [existing] = await connection.execute(
@@ -97,9 +108,19 @@ class Barber {
       // Crear usuario barbero (id_rol = 2)
       const [result] = await connection.execute(
         `INSERT INTO usuarios 
-                 (username, password_hash, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, id_rol, estado, created_at)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, 2, 1, NOW())`,
-        [username, hashedPassword, email, prim_nombre, seg_nombre || null, apellido1, apellido2 || null, telefono]
+                 (username, password_hash, email, prim_nombre, seg_nombre, apellido1, apellido2, telefono, foto_perfil, id_rol, estado, created_at)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 2, 1, NOW())`,
+        [
+          username,
+          hashedPassword,
+          email,
+          prim_nombre,
+          seg_nombre,
+          apellido1,
+          apellido2,
+          telefono,
+          foto_perfil
+        ]
       );
 
       await connection.commit();

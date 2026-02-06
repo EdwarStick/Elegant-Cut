@@ -13,7 +13,8 @@ const BarbersTab = () => {
     seg_nombre: '',
     apellido1: '',
     apellido2: '',
-    telefono: ''
+    telefono: '',
+    image: null
   });
 
   useEffect(() => {
@@ -46,16 +47,29 @@ const BarbersTab = () => {
     setNewBarber(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = (e) => {
+    setNewBarber(prev => ({ ...prev, image: e.target.files[0] }));
+  };
+
   const handleAddBarber = async (e) => {
     e.preventDefault();
     try {
+      const formData = new FormData();
+      Object.keys(newBarber).forEach(key => {
+        if (key === 'image' && newBarber[key]) {
+          formData.append('image', newBarber[key]);
+        } else if (key !== 'image') {
+          formData.append(key, newBarber[key]);
+        }
+      });
+
       const response = await fetch('http://localhost:3001/api/barbers', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          // 'Content-Type': 'multipart/form-data', // NO AGREGAR ESTO MANUALMENTE CON FORMDATA, EL BROWSER LO HACE
           'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`
         },
-        body: JSON.stringify(newBarber)
+        body: formData
       });
       const data = await response.json();
       if (data.success) {
@@ -64,7 +78,7 @@ const BarbersTab = () => {
         setNewBarber({
           username: '', password: '', email: '',
           prim_nombre: '', seg_nombre: '', apellido1: '', apellido2: '',
-          telefono: ''
+          telefono: '', image: null
         });
         loadBarbers();
       } else {
@@ -192,6 +206,11 @@ const BarbersTab = () => {
                     <div className="col-md-6">
                       <label className="form-label">Segundo Apellido</label>
                       <input type="text" className="form-control" name="apellido2" value={newBarber.apellido2} onChange={handleInputChange} />
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label">Foto de Perfil</label>
+                      <input type="file" className="form-control" accept="image/*" onChange={handleFileChange} />
+                      <div className="form-text">Formatos: JPG, PNG. Máx 5MB.</div>
                     </div>
                   </div>
                 </div>

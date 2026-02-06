@@ -1,89 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function Barberos() {
   const [activeFilter, setActiveFilter] = useState('all');
+  const [barbers, setBarbers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Datos de los barberos
-  const barbers = [
-    {
-      id: 1,
-      name: "Carlos Mendoza",
-      title: "Barbero Master & Fundador",
-      experience: "18 años",
-      rating: "5.0 (328)",
-      bio: "Especialista en cortes clásicos y afeitado tradicional. Más de 18 años transformando estilos con precisión y elegancia.",
-      stats: { clients: "2,500+", recommend: "98%" },
-      categories: ["senior", "classic"],
-      specialties: ["Clásico", "Afeitado", "Barbas"],
-      badge: "senior",
-      image: "barbero-senior1.jpg"
-    },
-    {
-      id: 2,
-      name: "Miguel Torres",
-      title: "Especialista en Barbas",
-      experience: "8 años",
-      rating: "5.0 (415)",
-      bio: "Maestro en afeitado tradicional y diseño de barbas. Transforma tu estilo facial con técnicas ancestrales y productos premium.",
-      stats: { clients: "1,800+", recommend: "99%" },
-      categories: ["modern", "fade", "beard"],
-      specialties: ["Barbas", "Afeitado", "Clásico"],
-      badge: "trending",
-      image: "barbero2.jpg"
-    },
-    {
-      id: 3,
-      name: "Alejandro Rojas",
-      title: "Artista del Degradado",
-      experience: "6 años",
-      rating: "4.9 (287)",
-      bio: "Joven talento especializado en degradados modernos y cortes urbanos. Siempre a la vanguardia de las últimas tendencias.",
-      stats: { clients: "1,200+", recommend: "97%" },
-      categories: ["modern", "fade"],
-      specialties: ["Degradados", "Moderno", "Color"],
-      badge: "popular",
-      image: "barbero3.jpg"
-    },
-    {
-      id: 4,
-      name: "Roberto Silva",
-      title: "Maestro Clásico",
-      experience: "12 años",
-      rating: "4.9 (356)",
-      bio: "Guardian de las técnicas tradicionales de barbería. Especializado en cortes atemporales que nunca pasan de moda.",
-      stats: { clients: "2,100+", recommend: "98%" },
-      categories: ["senior", "classic"],
-      specialties: ["Clásico", "Tradicional", "Afeitado"],
-      badge: "senior",
-      image: "barbero4.jpg"
-    },
-    {
-      id: 5,
-      name: "David Chen",
-      title: "Especialista en Estilos Modernos",
-      experience: "5 años",
-      rating: "4.8 (194)",
-      bio: "Innovador en cortes contemporáneos y técnicas avanzadas. Crea looks únicos que reflejan tu personalidad.",
-      stats: { clients: "900+", recommend: "96%" },
-      categories: ["modern", "fade"],
-      specialties: ["Moderno", "Texturizado", "Diseño"],
-      badge: "new",
-      image: "barbero5.jpg"
-    },
-    {
-      id: 6,
-      name: "Javier Morales",
-      title: "Artista de Barbas",
-      experience: "7 años",
-      rating: "4.9 (273)",
-      bio: "Especialista en diseño y mantenimiento de barbas. Domina desde el estilo corporate hasta looks más audaces.",
-      stats: { clients: "1,500+", recommend: "98%" },
-      categories: ["beard", "classic"],
-      specialties: ["Barbas", "Diseño", "Mantenimiento"],
-      badge: "expert",
-      image: "barbero6.jpg"
-    }
-  ];
+  // Plantillas de datos enriquecidos (para UI)
+  // Fetch de barberos desde el backend
+  useEffect(() => {
+    const fetchBarbers = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/barbers');
+        const result = await response.json();
+
+        if (result.success) {
+          // Transformar datos reales a estructura de UI
+          const transformedBarbers = result.data.map((realBarber) => ({
+            id: realBarber.id_usuario,
+            name: `${realBarber.prim_nombre} ${realBarber.apellido1}`, // Nombre real de la BD
+            title: "Barbero Profesional", // Default
+            experience: "Experto", // Default
+            rating: "5.0", // Default
+            bio: "Barbero profesional del equipo Elegant Cut, dedicado a ofrecer la mejor experiencia y estilo a nuestros clientes.", // Default
+            stats: { clients: "+1000", recommend: "100%" }, // Default
+            categories: ["classic", "modern"], // Default categories for filtering
+            specialties: ["Corte Clásico", "Barba"], // Default
+            badge: "expert", // Default tag
+            image: realBarber.foto_perfil || null // Use DB photo or null (render logic handles fallback) 
+          }));
+          setBarbers(transformedBarbers);
+        } else {
+          setError('Error al cargar los barberos');
+        }
+      } catch (err) {
+        console.error("Error fetching barbers:", err);
+        setError('Error de conexión con el servidor');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBarbers();
+  }, []);
 
   // Filtros disponibles
   const filters = [
@@ -96,7 +55,7 @@ function Barberos() {
   ];
 
   // Filtrar barberos
-  const filteredBarbers = barbers.filter(barber => 
+  const filteredBarbers = barbers.filter(barber =>
     activeFilter === 'all' || barber.categories.includes(activeFilter)
   );
 
@@ -105,27 +64,37 @@ function Barberos() {
     setActiveFilter(filterKey);
   };
 
+  if (loading) return <div className="text-center p-5">Cargando profesionales...</div>;
+  if (error) return <div className="text-center p-5 text-danger">{error}</div>;
+
   // Renderizar barberos
   const renderBarberCard = (barber) => (
-    <div 
-      key={barber.id} 
-      className="barber-card" 
+    <div
+      key={barber.id}
+      className="barber-card"
       data-category={barber.categories.join(' ')}
     >
-      <div className="barber-header">
-        <div className={`barber-badge ${barber.badge}`}>
-          {barber.badge === 'senior' && 'Senior'}
-          {barber.badge === 'trending' && 'Trending'}
-          {barber.badge === 'popular' && 'Popular'}
-          {barber.badge === 'new' && 'Nuevo'}
-          {barber.badge === 'expert' && 'Experto'}
-        </div>
-        <div className="barber-experience">{barber.experience}</div>
-      </div>
       <div className="barber-image">
-        <img 
-          src={`${process.env.PUBLIC_URL}/assets/images/barberos/${barber.image}`} 
-          alt={`${barber.name} - ${barber.title}`}
+        <div className="barber-header">
+          <div className={`barber-badge ${barber.badge}`}>
+            {barber.badge === 'senior' && 'Senior'}
+            {barber.badge === 'trending' && 'Trending'}
+            {barber.badge === 'popular' && 'Popular'}
+            {barber.badge === 'new' && 'Nuevo'}
+            {barber.badge === 'expert' && 'Experto'}
+          </div>
+          <div className="barber-experience">{barber.experience}</div>
+        </div>
+        <img
+          src={
+            barber.image
+              ? (barber.image.startsWith('barbero-')
+                ? `${process.env.PUBLIC_URL}/assets/images/barberos/${barber.image}`
+                : `http://localhost:3001/uploads/barberos/${barber.image}`)
+              : 'https://via.placeholder.com/300x400?text=Barbero'
+          }
+          alt={barber.name}
+          onError={(e) => { e.target.src = 'https://via.placeholder.com/300x400?text=Barbero'; }}
         />
         <div className="barber-overlay">
           <div className="specialties">
