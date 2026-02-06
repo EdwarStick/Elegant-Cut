@@ -29,6 +29,7 @@ import SettingsTab from './Componentes/SettingsTab'
 // Importar componentes de Barber
 import BarberPanel from './Paginas/BarberPanel'
 import BarberAppointments from './Paginas/BarberAppointments'
+import BarberSettings from './Paginas/BarberSettings'
 
 function App() {
   return (
@@ -64,6 +65,7 @@ function App() {
         >
           <Route index element={<Navigate to="/barber/appointments" replace />} />
           <Route path="appointments" element={<BarberAppointments />} />
+          <Route path="configuracion" element={<BarberSettings />} />
         </Route>
 
         <Route path="/*" element={

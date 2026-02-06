@@ -1,68 +1,35 @@
 const User = require('../models/User.model');
 
 class UserController {
-    static async getAll(req, res, next) {
+    static async uploadProfilePhoto(req, res, next) {
         try {
-            const users = await User.findAll();
-            res.json({ success: true, data: users });
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    static async getById(req, res, next) {
-        try {
-            const user = await User.findById(req.params.id);
-
-            if (!user) {
-                return res.status(404).json({
+            if (!req.file) {
+                return res.status(400).json({
                     success: false,
-                    message: 'Usuario no encontrado'
+                    message: 'No se ha subido ninguna imagen'
                 });
             }
 
-            res.json({ success: true, data: user });
-        } catch (error) {
-            next(error);
-        }
-    }
+            const userId = req.user.id;
+            // Guardar solo el nombre del archivo relativo a uploads/profiles
+            const photoPath = `profiles/${req.file.filename}`;
 
-    static async create(req, res, next) {
-        try {
-            const user = await User.create(req.body);
+            // Actualizar en base de datos
+            const updated = await User.updateProfilePhoto(userId, photoPath);
 
-            res.status(201).json({
-                success: true,
-                message: 'Usuario creado exitosamente',
-                data: user
-            });
-        } catch (error) {
-            next(error);
-        }
-    }
+            if (updated) {
+                res.json({
+                    success: true,
+                    message: 'Foto de perfil actualizada correctamente',
+                    photoUrl: photoPath
+                });
+            } else {
+                res.status(500).json({
+                    success: false,
+                    message: 'Error al actualizar la referencia en base de datos'
+                });
+            }
 
-    static async update(req, res, next) {
-        try {
-            const user = await User.update(req.params.id, req.body);
-
-            res.json({
-                success: true,
-                message: 'Usuario actualizado exitosamente',
-                data: user
-            });
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    static async delete(req, res, next) {
-        try {
-            await User.delete(req.params.id);
-
-            res.json({
-                success: true,
-                message: 'Usuario eliminado exitosamente'
-            });
         } catch (error) {
             next(error);
         }

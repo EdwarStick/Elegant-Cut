@@ -1,9 +1,8 @@
 const jwt = require('jsonwebtoken');
-const EmailService = require('../../emailService');
+const EmailService = require('../../emailService'); // Importar el servicio correcto desde la raíz
 
 const User = require('../models/User.model');
 const jwtConfig = require('../config/jwt');
-const emailService = require('../services/email.service');
 
 class AuthController {
     // Login con username (compatible con frontend actual)
@@ -143,7 +142,7 @@ class AuthController {
         }
     }
 
-    // Recuperar contraseña
+    // Recuperar contraseña (Legacy - username param)
     static async forgotPassword(req, res, next) {
         try {
             const { username, newPassword } = req.body;
@@ -192,6 +191,116 @@ class AuthController {
             next(error);
         }
     }
+
+    // --- NUEVO FLUJO DE RECUPERACIÓN (Email + Código) ---
+
+    // 1. Solicitar código de recuperación
+    static async solicitarRecuperacion(req, res, next) {
+        try {
+            const { email } = req.body;
+
+            if (!email) {
+                return res.status(400).json({ success: false, message: 'El email es requerido' });
+            }
+
+            // Verificar si el usuario existe
+            const user = await User.findByEmail(email);
+            if (!user) {
+                // Por seguridad, no decimos si el email existe o no, pero logueamos
+                console.log('Intento de recuperación para email no registrado:', email);
+                return res.json({ success: true, message: 'Si el correo existe, se enviará un código.' });
+            }
+
+            // Generar código
+            const codigo = EmailService.generarCodigo();
+
+            // Guardar en memoria
+            await EmailService.guardarCodigo(email, codigo, 'recuperacion');
+
+            // Enviar email
+            const enviado = await EmailService.enviarCodigoRecuperacion(email, codigo);
+
+            if (enviado) {
+                res.json({ success: true, message: 'Código enviado correctamente' });
+            } else {
+                res.status(500).json({ success: false, error: 'Error al enviar el email' });
+            }
+        } catch (error) {
+            console.error('Error en solicitarRecuperacion:', error);
+            next(error);
+        }
+    }
+
+    // 2. Verificar código
+    static async verificarCodigo(req, res, next) {
+        try {
+            const { email, codigo } = req.body;
+
+            if (!email || !codigo) {
+                return res.status(400).json({ success: false, message: 'Email y código son requeridos' });
+            }
+
+            // Verificar código (Nota: verificarCodigo borra el código si es exitoso,
+            // pero para este flujo necesitamos que persista hasta el cambio de contraseña
+            // O podemos confiar en que el frontend enviará el cambio inmediatamente.
+            // MODIFICACIÓN: En EmailService.verificarCodigo, si es válido, SE BORRA.
+            // Para cambiar contraseña, necesitaremos volver a verificar o confiar en la sesión client-side.
+            // Mejor opción: Permitir verificar sin borrar, o borrar solo al cambiar pass.
+            // Por simplicidad, usaremos verificarCodigo y si es OK, retornamos success.
+            // EL frontend deberá pedir cambiar la contraseña inmediatamente.
+            // *NOTA IMPORTANTE*: Idealmente generaríamos un token temporal de cambio de pass aqui.
+
+            const resultado = await EmailService.verificarCodigo(email, codigo, 'recuperacion');
+
+            if (resultado.valido) {
+                // Volvemos a guardar el código temporalmente (hack para permitir el siguiente paso) 
+                // O mejor aun, simplemente retornamos éxito y en el paso de cambiar contraseña 
+                // pedimos el código nuevamente pero esta vez "quemándolo".
+
+                // Re-guardamos para que esté disponible para el paso final
+                await EmailService.guardarCodigo(email, codigo, 'recuperacion');
+
+                res.json({ success: true, message: 'Código verificado correctamente' });
+            } else {
+                res.status(400).json({ success: false, error: resultado.mensaje });
+            }
+        } catch (error) {
+            console.error('Error en verificarCodigo:', error);
+            next(error);
+        }
+    }
+
+    // 3. Restablecer contraseña con código valido
+    static async restablecerContrasena(req, res, next) {
+        try {
+            const { email, codigo, newPassword } = req.body;
+
+            if (!email || !codigo || !newPassword) {
+                return res.status(400).json({ success: false, message: 'Faltan datos requeridos' });
+            }
+
+            // Verificar código nuevamente (y esta vez dejar que se borre o borrarlo explicitamente)
+            const resultado = await EmailService.verificarCodigo(email, codigo, 'recuperacion');
+
+            if (!resultado.valido) {
+                return res.status(400).json({ success: false, error: resultado.mensaje });
+            }
+
+            // Actualizar contraseña
+            const updated = await User.updatePassword(email, newPassword, true); // true = buscar por email
+
+            if (updated) {
+                res.json({ success: true, message: 'Contraseña actualizada exitosamente' });
+            } else {
+                res.status(500).json({ success: false, error: 'Error al actualizar la contraseña' });
+            }
+
+        } catch (error) {
+            console.error('Error en restablecerContrasena:', error);
+            next(error);
+        }
+    }
+
 
     // Obtener usuario autenticado
     static async me(req, res, next) {

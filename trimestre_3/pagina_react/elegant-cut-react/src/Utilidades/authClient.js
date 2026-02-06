@@ -36,6 +36,39 @@ export class AuthClient {
     }
   }
 
+  // Subir foto de perfil
+  static async uploadProfilePhoto(formData) {
+    try {
+      const token = this.getToken();
+      if (!token) return { success: false, error: 'No autenticado' };
+
+      const response = await fetch('http://localhost:3001/api/users/profile-photo', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Actualizar datos locales del usuario con la nueva foto
+        const userData = this.getUser();
+        if (userData) {
+          userData.photoUrl = data.photoUrl;
+          localStorage.setItem('user_data', JSON.stringify(userData));
+        }
+        return { success: true, photoUrl: data.photoUrl };
+      } else {
+        return { success: false, error: data.message || 'Error al subir imagen' };
+      }
+    } catch (error) {
+      console.error('Error subiendo foto:', error);
+      return { success: false, error: 'Error de conexión' };
+    }
+  }
+
   // Función para hacer login
   static async login(username, password) {
     try {
@@ -109,12 +142,12 @@ export class AuthClient {
     try {
       console.log('🔐 Verificando código para:', email);
 
-      const response = await fetch('http://localhost:3001/auth/verificar-codigo-recuperacion', {
+      const response = await fetch('http://localhost:3001/auth/restablecer-contrasena', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, codigo, nuevaContrasena }),
+        body: JSON.stringify({ email, codigo, newPassword: nuevaContrasena }),
       });
 
       const data = await response.json();

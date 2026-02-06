@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Calendar, LogOut, User } from 'lucide-react';
+import { Calendar, LogOut, User, Settings } from 'lucide-react';
 import { AuthClient } from '../Utilidades/authClient';
 
 const BarberSidebar = () => {
@@ -15,6 +15,7 @@ const BarberSidebar = () => {
 
     const menuItems = [
         { path: '/barber/appointments', icon: Calendar, label: 'Mis Citas' },
+        { path: '/barber/configuracion', icon: Settings, label: 'Configuración' },
     ];
 
     return (

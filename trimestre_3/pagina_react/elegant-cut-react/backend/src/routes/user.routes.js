@@ -4,7 +4,14 @@ const User = require('../models/User.model');
 const { authenticate } = require('../middleware/auth.middleware');
 const { requireAdmin } = require('../middleware/admin.middleware');
 
-// Todas las rutas requieren autenticación y rol admin
+// Middleware general para todas las rutas
+const upload = require('../middleware/upload.middleware');
+const UserController = require('../controllers/user.controller');
+
+// Ruta para subir foto de perfil (Accesible para cualquier usuario autenticado)
+router.post('/profile-photo', authenticate, upload.single('image'), UserController.uploadProfilePhoto);
+
+// Rutas de administración (Requieren ser admin)
 router.use(authenticate, requireAdmin);
 
 // Obtener todos los usuarios

@@ -11,8 +11,8 @@ class EmailService {
     return nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'jn147860@gmail.com', // Tu Gmail
-        pass: 'tjgd gzri mlkn npew' // Contraseña de aplicación
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
       }
     });
   }
@@ -78,7 +78,7 @@ class EmailService {
       const transporter = this.crearTransporter();
 
       const info = await transporter.sendMail({
-        from: '"ElegantCut Barbería" <jn147860@gmail.com>', // Tu Gmail
+        from: `"ElegantCut Barbería" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: 'Recupera tu contraseña - ElegantCut',
         html: `

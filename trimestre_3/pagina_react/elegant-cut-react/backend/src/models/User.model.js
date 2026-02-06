@@ -238,6 +238,19 @@ VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
     static async verifyPassword(plainPassword, hashedPassword) {
         return await bcrypt.compare(plainPassword, hashedPassword);
     }
+    // Actualizar foto de perfil
+    static async updateProfilePhoto(userId, photoPath) {
+        try {
+            const [result] = await pool.execute(
+                'UPDATE usuarios SET foto_perfil = ? WHERE id_usuario = ?',
+                [photoPath, userId]
+            );
+            return result.affectedRows > 0;
+        } catch (error) {
+            console.error('Error actualizando foto de perfil:', error);
+            throw error;
+        }
+    }
 }
 
 module.exports = User;
