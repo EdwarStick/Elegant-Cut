@@ -5,6 +5,19 @@
     --Rojo: #bc2041;
 }
 
+.text-rojo {
+    color: var(--Rojo) !important;
+}
+
+.bg-rojo {
+    background-color: var(--Rojo) !important;
+}
+
+.text-negro {
+    color: var(--Negro) !important;
+}
+
+/*Es el menú hamburguesa*/
 /*Barra lateral*/
 .sidebar {
     width: 260px;
@@ -15,10 +28,11 @@
     top: 0;
     display: flex;
     flex-direction: column;
-    box-shadow: 2px 0 10px var(--Negro);
+    box-shadow: 2px 0 10px var(--Rojo);
     z-index: 1000;
     padding: 1.5rem 0;
     transition: transform 0.3s ease-in-out;
+    /*hace que la barra lateral se desplace suavemente (ease-in-out), empieza lento acelera y termina lento*/
 }
 
 

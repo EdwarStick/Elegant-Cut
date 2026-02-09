@@ -60,15 +60,15 @@
         transform: translateY(-50%) scale(1.1);
     }
 
-    /* Menú móvil - CORREGIDO PARA QUE SE DESPLIEGUE */
+    /* Menú móvil - ESTILO BLANCO (TIPO SIDEBAR) */
     .nav {
         position: fixed;
         top: 0;
         left: -100%;
-        /* Comienza fuera de la pantalla */
         width: 100%;
         height: 100vh;
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        background: var(--Blanco);
+        /* Fondo blanco */
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -77,12 +77,13 @@
         transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         opacity: 1;
         visibility: visible;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        /* Sombra suave */
     }
 
-    /* Menú visible - CORREGIDO */
+    /* Menú visible */
     .nav.visible {
         left: 0;
-        /* Se despliega desde la izquierda */
     }
 
     /* Quitar scroll del body cuando el menú está abierto */
@@ -90,7 +91,7 @@
         overflow: hidden !important;
     }
 
-    /* Botón cerrar - Estilo mejorado */
+    /* Botón cerrar */
     .cerrar-menu {
         position: absolute;
         top: 1.5rem;
@@ -106,15 +107,13 @@
         border-radius: 50%;
     }
 
-    /* Sin fondo gris al hover y con leve animación */
     .cerrar-menu:hover {
         background-color: transparent !important;
-        /*para que se vea el color negro, pero no completamente*/
         color: var(--Rojo);
         transform: scale(1.2);
     }
 
-    /* ========== LOGO ARRIBA DEL TODO - ESTILO MEJORADO ========== */
+    /* ========== LOGO ========== */
     .mobile-brand {
         display: flex;
         flex-direction: column;
@@ -123,19 +122,20 @@
         padding: 3.5rem 1rem 1.5rem;
         width: 100%;
         background: var(--Blanco);
-        border-bottom: 2px solid var(--Blanco);
+        /* Eliminar borde o hacerlo muy sutil */
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         backdrop-filter: blur(10px);
     }
 
-    /*Logo del menú jhamburguesa*/
     .mobile-logo-small {
         width: 80px;
         height: 80px;
         border-radius: 50%;
         object-fit: cover;
-        border: 3px solid var(--RojoVino);
+        border: 3px solid var(--Rojo);
+        /* Borde Rojo */
         display: block;
-        box-shadow: 0 4px 15px rgba(188, 32, 65, 0.3);
+        box-shadow: 0 4px 15px rgba(188, 32, 65, 0.2);
         transition: transform 0.3s ease;
     }
 
@@ -150,35 +150,37 @@
         letter-spacing: 2px;
         text-align: center;
         text-transform: uppercase;
-        text-shadow: 0 5px 5px rgb(117, 117, 117);
+        /* Quitar sombra oscura si se ve mal en blanco, o suavizarla */
+        text-shadow: none;
     }
 
     .mobile-slogan {
         font-size: 0.9rem;
-        color: var(--RojoVino);
-        text-shadow: 0 5px 5px var(--RojoVino);
+        color: var(--Rojo);
         font-weight: 500;
         text-align: center;
         font-style: italic;
         letter-spacing: 1px;
+        text-shadow: none;
     }
 
-    /* ========== CONTENEDOR DE BOTONES CON SCROLL VERTICAL - ESTILO MEJORADO ========== */
+    /* ========== CONTENEDOR DE BOTONES ========== */
     .menu-icons-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1rem;
+        gap: 0.5rem;
+        /* Menos espacio entre items, como en sidebar */
         width: 100%;
         padding: 2rem 1rem;
         overflow-y: auto;
         flex: 1;
         max-height: calc(100vh - 250px);
         scrollbar-width: thin;
-        scrollbar-color: var(--RojoVino) transparent;
+        scrollbar-color: var(--Rojo) transparent;
     }
 
-    /* Personalizar scrollbar */
+    /* Scrollbar */
     .menu-icons-container::-webkit-scrollbar {
         width: 4px;
     }
@@ -192,96 +194,105 @@
         border-radius: 10px;
     }
 
-    /* Botones de navegación en menú móvil - Estilo mejorado */
+    /* Botones de navegación - ESTILO SIDEBAR (Limpio) */
     .menu-nav-button {
         width: 100%;
         max-width: 280px;
-        height: 55px;
+        height: 50px;
+        /* Un poco más compactos */
         display: flex;
         align-items: center;
         gap: 1rem;
         padding: 0 1.5rem;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        color: var(--Blanco);
+
+        /* Fondo transparente y sin bordes */
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+        /* Bordes menos redondeados */
+
+        /* Texto Negro */
+        color: var(--Negro);
         text-decoration: none;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+        transition: all 0.2s ease;
         cursor: pointer;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        backdrop-filter: none;
+        box-shadow: none;
+
+        font-weight: 500;
+        font-size: 1rem;
     }
 
     .menu-nav-button:hover {
-        background: rgba(188, 32, 65, 0.3);
-        border-color: var(--RojoVino);
-        transform: translateX(8px);
-        color: var(--RojoVino);
-        box-shadow: 0 6px 20px rgba(188, 32, 65, 0.3);
+        /* Hoover gris suave */
+        background-color: #f8f9fa;
+        color: var(--Rojo);
+        transform: translateX(4px);
+        /* Movimiento sutil */
+        box-shadow: none;
+        border: none;
     }
 
+    /* Iconos en Rojo */
     .menu-nav-button i {
         font-size: 1.2rem;
         width: 25px;
         text-align: center;
         transition: transform 0.3s ease;
+        color: var(--Rojo);
+        /* Iconos SIEMPRE rojos */
     }
 
     .menu-nav-button:hover i {
-        transform: scale(1.2);
+        transform: scale(1.1);
     }
 
     .menu-nav-label {
-        font-size: 1rem;
-        font-weight: 600;
-        color: var(--Blanco);
+        /* El color se hereda del botón (Negro -> Rojo al hover) */
         transition: all 0.3s ease;
         letter-spacing: 0.5px;
     }
 
-    .menu-nav-button:hover .menu-nav-label {
-        color: var(--RojoVino);
-        font-weight: 700;
+    /* Botones específicos (Login/Logout) */
+    .logout-mobile {
+        margin-top: 1rem;
+        /* Opcional: un borde rojo sutil para separar la acción de salir */
+        border: 1px solid rgba(188, 32, 65, 0.2);
     }
 
-    /* Botones de login/logout específicos - Estilo mejorado */
-    .logout-mobile {
-        background: rgba(188, 32, 65, 0.2) !important;
-        border-color: rgba(188, 32, 65, 0.5) !important;
-        margin-top: 1rem;
+    .logout-mobile:hover {
+        background: rgba(188, 32, 65, 0.1);
     }
 
     .login-mobile {
-        background: rgba(255, 215, 0, 0.15) !important;
-        border-color: rgba(255, 215, 0, 0.4) !important;
         margin-top: 1rem;
+        background: rgba(0, 0, 0, 0.05);
+        /* Un fondo suave para resaltar 'Iniciar Sesión' */
     }
 
-    .login-mobile:hover {
-        background: rgba(255, 215, 0, 0.25) !important;
-        border-color: var(--Dorado) !important;
-        color: var(--Dorado) !important;
-    }
-
-    /* User info en móvil - AL FINAL - Estilo mejorado */
+    /* User info en móvil - ESTILO CLARO */
     .user-info-mobile {
         display: flex;
         align-items: center;
         gap: 1rem;
-        padding: 1rem;
-        background: rgba(255, 255, 255, 0.08);
+        padding: 0.8rem 1rem;
+
+        /* Fondo gris muy claro */
+        background: #f8f9fa;
         border-radius: 12px;
+
         margin-top: auto;
         margin-bottom: 2rem;
         width: 100%;
         max-width: 280px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        backdrop-filter: none;
     }
 
     .user-avatar {
         font-size: 1.5rem;
-        color: var(--RojoVino);
+        color: var(--Rojo);
         transition: transform 0.3s ease;
     }
 
@@ -292,19 +303,19 @@
     .user-details {
         display: flex;
         flex-direction: column;
-        gap: 0.2rem;
+        gap: 0.1rem;
     }
 
     .user-name {
         font-weight: 600;
-        color: var(--Blanco);
+        color: var(--Negro);
         font-size: 0.9rem;
-        letter-spacing: 0.5px;
     }
 
     .user-role {
         font-size: 0.8rem;
-        color: var(--Dorado);
+        color: #666;
+        /* Gris para el rol */
         font-weight: 500;
     }
 }
@@ -321,14 +332,14 @@
         display: flex !important;
     }
 
-    /* Reset completo para eliminar cualquier conflicto */
+    /* Reset completo para eliminar cualquier conflicto - ACTUALIZADO A BLANCO */
     .nav {
         position: fixed !important;
         top: 0 !important;
         left: -100% !important;
         width: 100% !important;
         height: 100vh !important;
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+        background: var(--Blanco) !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
