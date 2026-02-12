@@ -27,8 +27,8 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
       <div className="sidebar-header">
         <div className="d-flex justify-content-between align-items-center w-100">
           <div className="logo-container">
-            <i className="bi bi-scissors text-primary fs-2"></i>
-            <h3 className="ms-2 mb-0">Elegant Cut</h3>
+            <i className="bi bi-scissors text-rojo fs-2"></i>
+            <h3 className="ms-2 mb-0 text-negro">Elegant Cut</h3>
           </div>
           <button className="btn-close-sidebar d-md-none" onClick={closeSidebar}>
             <i className="bi bi-x-lg"></i>
@@ -39,7 +39,7 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
 
       <div className="user-profile mb-4 px-3">
         <div className="d-flex align-items-center p-2 bg-light rounded">
-          <div className="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px' }}>
+          <div className="avatar bg-rojo text-white rounded-circle d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px' }}>
             {user.name ? user.name.charAt(0).toUpperCase() : 'A'}
           </div>
           <div className="ms-2 overflow-hidden">
