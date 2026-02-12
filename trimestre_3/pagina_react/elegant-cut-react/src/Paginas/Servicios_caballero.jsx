@@ -1,10 +1,15 @@
 import React, { useState } from "react"; // Estos son cajistas de memoria
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/UseAuth";
 
 function Servicios_caballero() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [activeCategory, setActiveCategory] = useState("todos"); //esto guarda qué categoría esta sellecionada
   const [cart, setCart] = useState([]);// acá se guardan todos los servicios que se van agregando al carrito; el "=useState ([]), significa que ese carrito está vacío"
   const [isCartOpen, setIsCartOpen] = useState(false);// acá se controla si el carrito está abierto o cerrado
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [loginAlertVisible, setLoginAlertVisible] = useState(false);
 
   const servicesData = [
     {
@@ -237,6 +242,25 @@ function Servicios_caballero() {
       <main>
         <div className={`menu-overlay ${isCartOpen ? 'active' : ''}`} id="overlay" onClick={() => setIsCartOpen(false)}></div>
 
+        {/* ALERTA FLOTANTE DE LOGIN */}
+        {loginAlertVisible && (
+          <div
+            className="alert alert-warning alert-dismissible fade show"
+            role="alert"
+            style={{
+              position: 'fixed',
+              top: '20px',
+              right: '20px',
+              zIndex: 9999,
+              width: '300px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+            }}
+          >
+            <strong>¡Atención!</strong> Debes iniciar sesión o crear una cuenta para agendar una cita.
+            <button type="button" className="btn-close" onClick={() => setLoginAlertVisible(false)}></button>
+          </div>
+        )}
+
         {/* CARRUSEL */}
         <div className="carousel-container">
           <div
@@ -405,6 +429,13 @@ function Servicios_caballero() {
               <i className="bi bi-x-lg close-cart" onClick={() => setIsCartOpen(false)}></i>
             </div>
 
+            {alertVisible && (
+              <div className="alert alert-danger text-center m-3" role="alert">
+                <i className="bi bi-exclamation-circle-fill me-2"></i>
+                Tu carrito está vacío. Agrega servicios antes de agendar.
+              </div>
+            )}
+
             <div className="cart-items">
               {cart.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
@@ -441,9 +472,23 @@ function Servicios_caballero() {
             </div>
 
             <div style={{ padding: '0 30px 30px 30px' }}>
-              <Link to="/Form_agenda" onClick={() => setIsCartOpen(false)}>
-                <button id="agendarBtn">AGENDAR CITA AHORA</button>
-              </Link>
+              <button
+                id="agendarBtn"
+                onClick={() => {
+                  if (cart.length === 0) {
+                    setAlertVisible(true);
+                    setTimeout(() => setAlertVisible(false), 3000);
+                  } else if (!isAuthenticated) {
+                    setLoginAlertVisible(true);
+                    setTimeout(() => setLoginAlertVisible(false), 5000);
+                  } else {
+                    setIsCartOpen(false);
+                    navigate('/Form_agenda');
+                  }
+                }}
+              >
+                AGENDAR CITA AHORA
+              </button>
               <button
                 onClick={() => setIsCartOpen(false)}
                 style={{ width: '100%', marginTop: '10px', padding: '10px', background: 'transparent', border: 'none', color: '#666', cursor: 'pointer', textDecoration: 'underline' }}

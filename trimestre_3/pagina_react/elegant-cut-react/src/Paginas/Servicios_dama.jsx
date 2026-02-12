@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/UseAuth';
 
 function Servicios_dama() {
+    const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
     const [cartOpen, setCartOpen] = useState(false);
     const [cartItems, setCartItems] = useState([]);
+    const [alertVisible, setAlertVisible] = useState(false); // Alerta de carrito vacío (dentro del modal)
+    const [loginAlertVisible, setLoginAlertVisible] = useState(false); // Alerta de login (flotante)
     const [activeCategory, setActiveCategory] = useState('uñas');
 
     // Calcular total y cantidad
@@ -11,18 +16,19 @@ function Servicios_dama() {
     const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);
 
     // Agregar producto al carrito
-    const addToCart = (name, price) => {
+    const addToCart = (product) => {
         setCartItems(prevItems => {
-            const existingItem = prevItems.find(item => item.name === name);
+            const existingItem = prevItems.find(item => item.name === product.name);
 
             if (existingItem) {
                 return prevItems.map(item =>
-                    item.name === name ? { ...item, quantity: item.quantity + 1 } : item
+                    item.name === product.name ? { ...item, quantity: item.quantity + 1 } : item
                 );
             } else {
-                return [...prevItems, { name, price, quantity: 1 }];
+                return [...prevItems, { ...product, quantity: 1 }]; // Agregamos todo el producto (incluyendo imagen)
             }
         });
+        setCartOpen(true);
     };
 
     // Eliminar producto del carrito
@@ -64,7 +70,9 @@ function Servicios_dama() {
             price: 10000,
             image: '/assets/images/servicios_dama/Uñas/ManicureSinDiseño.png',
             oldPrice: 12000,
-            description: 'Manicure básico sin Diseño'
+            description: 'Manicure básico sin Diseño',
+            features: ['Limpieza', 'Esmalte', '30 min'],
+            categoryLabel: 'Uñas'
         },
         {
             category: 'uñas',
@@ -72,7 +80,9 @@ function Servicios_dama() {
             price: 11000,
             image: '/assets/images/servicios_dama/Uñas/ManicureConColor.png',
             oldPrice: 13000,
-            description: 'Manicure Básico con Color'
+            description: 'Manicure Básico con Color',
+            features: ['Limpieza', 'Color', '35 min'],
+            categoryLabel: 'Uñas'
         },
         {
             category: 'uñas',
@@ -80,7 +90,9 @@ function Servicios_dama() {
             price: 15000,
             image: '/assets/images/servicios_dama/Uñas/ManicureConDiseño.png',
             oldPrice: 18000,
-            description: 'Uñas Básicas con diseño sencillo'
+            description: 'Uñas Básicas con diseño sencillo',
+            features: ['Diseño', 'Arte', '45 min'],
+            categoryLabel: 'Uñas'
         },
         {
             category: 'uñas',
@@ -88,7 +100,9 @@ function Servicios_dama() {
             price: 25000,
             image: '/assets/images/servicios_dama/Uñas/UñasAcrilicasMedio.png',
             oldPrice: 35000,
-            description: 'Uñas acrílicas básicas'
+            description: 'Uñas acrílicas básicas',
+            features: ['Acrílico', 'Duración', '90 min'],
+            categoryLabel: 'Uñas'
         },
         {
             category: 'uñas',
@@ -96,7 +110,9 @@ function Servicios_dama() {
             price: 40000,
             image: '/assets/images/servicios_dama/Uñas/Uñas AcrilicasLargas.png',
             oldPrice: 45000,
-            description: 'Uñas acrílicas largas'
+            description: 'Uñas acrílicas largas',
+            features: ['Extensión', 'Estilo', '120 min'],
+            categoryLabel: 'Uñas'
         },
         // Cortes Largo
         {
@@ -105,7 +121,9 @@ function Servicios_dama() {
             price: 18000,
             image: '/assets/images/servicios_dama/Corte Largo/Corte Pariposa.png',
             oldPrice: 22000,
-            description: 'Corte en capas estilo Mariposa'
+            description: 'Corte en capas estilo Mariposa',
+            features: ['Volumen', 'Capas', '60 min'],
+            categoryLabel: 'Corte'
         },
         {
             category: 'largo',
@@ -113,7 +131,9 @@ function Servicios_dama() {
             price: 15000,
             image: '/assets/images/servicios_dama/Corte Largo/Corte Recto.png',
             oldPrice: 18000,
-            description: 'Corte recto clásico para puntas sanas'
+            description: 'Corte recto clásico para puntas sanas',
+            features: ['Puntas', 'Sano', '45 min'],
+            categoryLabel: 'Corte'
         },
         {
             category: 'largo',
@@ -121,7 +141,9 @@ function Servicios_dama() {
             price: 16000,
             image: '/assets/images/servicios_dama/Corte Largo/Corte v.png',
             oldPrice: 20000,
-            description: 'Corte en V para dar movimiento'
+            description: 'Corte en V para dar movimiento',
+            features: ['Movimiento', 'Estilo', '50 min'],
+            categoryLabel: 'Corte'
         },
         // Cortes Corto
         {
@@ -130,7 +152,9 @@ function Servicios_dama() {
             price: 20000,
             image: '/assets/images/servicios_dama/Corte Corto/Bob Clasico.png',
             oldPrice: 25000,
-            description: 'Estilo Bob elegante y atemporal'
+            description: 'Estilo Bob elegante y atemporal',
+            features: ['Elegancia', 'Corto', '50 min'],
+            categoryLabel: 'Corte'
         },
         {
             category: 'corto',
@@ -138,34 +162,42 @@ function Servicios_dama() {
             price: 22000,
             image: '/assets/images/servicios_dama/Corte Corto/Pixie.png',
             oldPrice: 28000,
-            description: 'Estilo Pixie moderno y audaz'
+            description: 'Estilo Pixie moderno y audaz',
+            features: ['Audaz', 'Moderno', '45 min'],
+            categoryLabel: 'Corte'
         },
-        // Peinados (Usando placeholders por ahora ya que no hay carpeta específica)
+        // Peinados
         {
             category: 'peinados',
             name: 'Peinado Especial',
             price: 25000,
             image: '/assets/images/servicios_dama/Corte Largo/Corte Pariposa.png',
             oldPrice: 30000,
-            description: 'Peinado para ocasiones especiales'
+            description: 'Peinado para ocasiones especiales',
+            features: ['Fiesta', 'Elegante', '60 min'],
+            categoryLabel: 'Peinados'
         },
-        // Mascarillas (Usando placeholders)
+        // Mascarillas
         {
             category: 'mascarillas',
             name: 'Hidratación Profunda',
             price: 35000,
             image: '/assets/images/servicios_dama/Corte Largo/Corte Recto.png',
             oldPrice: 45000,
-            description: 'Mascarilla capilar restauradora'
+            description: 'Mascarilla capilar restauradora',
+            features: ['Hidratación', 'Brillo', '40 min'],
+            categoryLabel: 'Tratamiento'
         },
-        // Tintes (Usando placeholders)
+        // Tintes
         {
             category: 'tinte',
             name: 'Tinte Completo',
             price: 60000,
             image: '/assets/images/servicios_dama/Corte Largo/Corte v.png',
             oldPrice: 75000,
-            description: 'Aplicación de tinte completo'
+            description: 'Aplicación de tinte completo',
+            features: ['Color', 'Cambio', '120 min'],
+            categoryLabel: 'Color'
         }
     ];
 
@@ -178,6 +210,25 @@ function Servicios_dama() {
         <div>
             <main>
                 <div className={`menu-overlay ${cartOpen ? 'active' : ''}`} id="overlay" onClick={() => setCartOpen(false)}></div>
+
+                {/* ALERTA FLOTANTE DE LOGIN */}
+                {loginAlertVisible && (
+                    <div
+                        className="alert alert-warning alert-dismissible fade show"
+                        role="alert"
+                        style={{
+                            position: 'fixed',
+                            top: '20px',
+                            right: '20px',
+                            zIndex: 9999,
+                            width: '300px',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                        }}
+                    >
+                        <strong>¡Atención!</strong> Debes iniciar sesión o crear una cuenta para agendar una cita.
+                        <button type="button" className="btn-close" onClick={() => setLoginAlertVisible(false)}></button>
+                    </div>
+                )}
 
                 {/* CARRUSEL BOOTSTRAP */}
                 <div className="carousel-container">
@@ -268,53 +319,109 @@ function Servicios_dama() {
                             className="product-card"
                             data-category={product.category}
                         >
+                            <div className="category-indicator">{product.categoryLabel}</div>
                             <img src={product.image} alt={product.description} />
-                            <h3>{product.name}</h3>
-                            <p className="service-description">{product.description}</p>
-                            <div className="price-old">${product.oldPrice?.toLocaleString()}</div>
-                            <div className="price-new">${product.price.toLocaleString()}</div>
-                            <button
-                                className="add-btn"
-                                onClick={() => addToCart(product.name, product.price)}
-                            >
-                                Agregar al carrito
-                            </button>
+
+                            <div className="service-content">
+                                <h3>{product.name}</h3>
+                                <div className="price-container">
+                                    <div className="price-new">${product.price.toLocaleString()}</div>
+                                    <div className="price-old">${product.oldPrice?.toLocaleString()}</div>
+                                </div>
+                                <p className="service-description">{product.description}</p>
+                                <div className="service-features">
+                                    {product.features && product.features.map((feature, idx) => (
+                                        <span key={idx} className="feature-tag">{feature}</span>
+                                    ))}
+                                </div>
+                                <button
+                                    className="add-btn"
+                                    onClick={() => addToCart(product)}
+                                >
+                                    Agregar al carrito
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>
 
-                {/* CARRITO */}
-                <div id="cart" className={cartOpen ? 'active' : ''} style={{ right: cartOpen ? '0' : '-400px' }}>
-                    <div className="cart-header">
-                        Carrito
-                        <i
-                            className="bi bi-x-lg close-cart"
-                            onClick={() => setCartOpen(false)}
-                        ></i>
-                    </div>
-                    <div className="cart-items">
-                        {cartItems.length === 0 ? (
-                            <p style={{ padding: '20px', textAlign: 'center' }}>El carrito está vacío</p>
-                        ) : (
-                            cartItems.map((item, index) => (
-                                <div key={index} className="cart-item" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #eee' }}>
-                                    <div>
-                                        <h4>{item.name}</h4>
-                                        <p>${item.price.toLocaleString()} x {item.quantity}</p>
-                                    </div>
-                                    <button onClick={() => removeFromCart(item.name)} style={{ background: 'none', border: 'none', color: 'red', cursor: 'pointer' }}>
-                                        <i className="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                            ))
+                {/* CARRITO - VISTA APARTE / MODAL */}
+                <div id="cart" className={cartOpen ? 'active' : ''}>
+                    <div className="cart-content">
+                        <div className="cart-header">
+                            <span>Tu Carrito</span>
+                            <i className="bi bi-x-lg close-cart" onClick={() => setCartOpen(false)}></i>
+                        </div>
+
+                        {alertVisible && (
+                            <div className="alert alert-danger text-center m-3" role="alert">
+                                <i className="bi bi-exclamation-circle-fill me-2"></i>
+                                Tu carrito está vacío. Agrega servicios antes de agendar.
+                            </div>
                         )}
+
+                        <div className="cart-items">
+                            {cartItems.length === 0 ? (
+                                <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
+                                    <i className="bi bi-cart-x" style={{ fontSize: '3rem', marginBottom: '10px', display: 'block' }}></i>
+                                    <p>No has añadido servicios aún.</p>
+                                </div>
+                            ) : (
+                                cartItems.map((item, index) => (
+                                    <div key={index} className="cart-item">
+                                        <div className="cart-item-info">
+                                            {/* Usamos item.image si existe, si no un placeholder o nada */}
+                                            {item.image && <img src={item.image} alt={item.name} className="cart-item-img" />}
+                                            <div>
+                                                <h4 style={{ margin: '0 0 5px 0', fontSize: '1rem' }}>{item.name}</h4>
+                                                <p style={{ margin: 0, color: '#bc2041', fontWeight: 'bold' }}>
+                                                    ${item.price.toLocaleString()} x {item.quantity}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => removeFromCart(item.name)}
+                                            style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: '1.2rem' }}
+                                            title="Eliminar servicio"
+                                        >
+                                            <i className="bi bi-trash-fill"></i>
+                                        </button>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+
+                        <div className="cart-total">
+                            <span>Total a Pagar:</span>
+                            <span>${cartTotal.toLocaleString()}</span>
+                        </div>
+
+                        <div style={{ padding: '0 30px 30px 30px' }}>
+                            <button
+                                id="agendarBtn"
+                                onClick={() => {
+                                    if (cartItems.length === 0) {
+                                        setAlertVisible(true);
+                                        setTimeout(() => setAlertVisible(false), 3000);
+                                    } else if (!isAuthenticated) {
+                                        setLoginAlertVisible(true);
+                                        setTimeout(() => setLoginAlertVisible(false), 5000);
+                                    } else {
+                                        setCartOpen(false);
+                                        navigate('/Form_agenda');
+                                    }
+                                }}
+                            >
+                                AGENDAR CITA AHORA
+                            </button>
+                            <button
+                                onClick={() => setCartOpen(false)}
+                                style={{ width: '100%', marginTop: '10px', padding: '10px', background: 'transparent', border: 'none', color: '#666', cursor: 'pointer', textDecoration: 'underline' }}
+                            >
+                                Seguir viendo servicios
+                            </button>
+                        </div>
                     </div>
-                    <div className="cart-total">
-                        Total: <span id="cartTotal">${cartTotal.toLocaleString()}</span>
-                    </div>
-                    <Link to="/Form_agenda">
-                        <button id="agendarBtn" style={{ width: '100%' }}>AGENDAR CITA</button>
-                    </Link>
                 </div>
 
                 {/* BOTÓN FLOTANTE DEL CARRITO */}
