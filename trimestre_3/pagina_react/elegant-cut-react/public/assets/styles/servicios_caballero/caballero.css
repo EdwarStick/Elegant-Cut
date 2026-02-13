@@ -102,13 +102,16 @@ FILTROS DE LOS SERVICIOS
   flex-wrap: wrap;
   gap: 15px;
   padding: 30px 20px;
-  background: var(--NegroMedio);
+  background: transparent;
+  /* Changed from var(--NegroMedio) */
 }
 
 .category-btn {
   background: transparent;
-  border: 2px solid var(--Blanco);
-  color: var(--Blanco);
+  border: 2px solid var(--Negro);
+  /* Changed to Negro for better visibility on light backgrounds if needed, or keep styles */
+  color: var(--Negro);
+  /* Changed to Negro to be safe if background is white */
   padding: 10px 25px;
   border-radius: 30px;
   font-weight: 600;
@@ -118,10 +121,10 @@ FILTROS DE LOS SERVICIOS
 
 .category-btn:hover,
 .category-btn.active {
-  background: var(--Blanco);
-  color: var(--Negro);
+  background: var(--Rojo);
+  color: var(--Blanco);
+  border-color: var(--Rojo);
   transform: scale(1.05);
-  /*Para que aumente el tamaño "sin rem"*/
 }
 
 /* --------------------------------------------------
@@ -303,7 +306,7 @@ FILTROS DE LOS SERVICIOS
 .cart-content {
   background: var(--Blanco);
   width: 90%;
-  max-width: 600px;
+  max-width: 400px;
   max-height: 80vh;
   border-radius: 15px;
   display: flex;
@@ -416,7 +419,8 @@ FILTROS DE LOS SERVICIOS
   position: fixed;
   bottom: 30px;
   right: 30px;
-  background: var(--primary);
+  background: #111205;
+  /* var(--Negro) fallback */
   color: white;
   width: 60px;
   height: 60px;
@@ -433,8 +437,9 @@ FILTROS DE LOS SERVICIOS
   position: absolute;
   top: -5px;
   right: -5px;
-  background: var(--secondary);
-  color: var(--primary);
+  background: #bc2041;
+  /* var(--Rojo) fallback */
+  color: white;
   width: 25px;
   height: 25px;
   border-radius: 50%;
