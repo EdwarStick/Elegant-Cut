@@ -12,10 +12,10 @@ class EmailService {
     }
 
     async sendVerificationCode(email, code) {
+        // ... (existing code for verification) ... 
         try {
             console.log(`[EMAIL MOCK] Enviando código ${code} a ${email}`);
 
-            // Si no hay credenciales reales, solo loguear (modo desarrollo)
             if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
                 console.log('⚠️ No hay credenciales de email configuradas. El código se muestra arriba.');
                 return true;
@@ -40,8 +40,47 @@ class EmailService {
             return true;
         } catch (error) {
             console.error('Error enviando email:', error);
-            // En desarrollo retornamos true aunque falle el email real, para no bloquear
             return true;
+        }
+    }
+
+    async sendPqrsConfirmation(email, userName, radicado, type) {
+        try {
+            console.log(`[EMAIL] Enviando confirmación PQRS ${radicado} a ${email}`);
+
+            if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+                console.log('⚠️ No hay credenciales de email. Simulación exitosa.');
+                return true;
+            }
+
+            const subjectType = type.charAt(0).toUpperCase() + type.slice(1);
+            const message = type === 'peticion' ? '¡Tu petición fue exitosa!' :
+                type === 'queja' ? '¡Tu queja fue exitosa!' :
+                    `Tu ${type} ha sido radicada exitosamente.`;
+
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: `Confirmación de PQRS - ${radicado}`,
+                html: `
+                    <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #e1e1e1; border-radius: 5px;">
+                        <h2 style="color: #BC2041;">Elegant Cut</h2>
+                        <h3>${message}</h3>
+                        <p>Hola <strong>${userName}</strong>,</p>
+                        <p>Hemos recibido tu solicitud correctamente.</p>
+                        <p><strong>Número de Radicado:</strong> ${radicado}</p>
+                        <p>Puedes consultar el estado de tu solicitud en nuestra plataforma web en la sección "Consultar Estado" usando este número.</p>
+                        <br>
+                        <p>Gracias por contactarnos.</p>
+                    </div>
+                `
+            };
+
+            await this.transporter.sendMail(mailOptions);
+            return true;
+        } catch (error) {
+            console.error('Error enviando email confirmación PQRS:', error);
+            return true; // No bloquear el flujo si falla el email
         }
     }
 }

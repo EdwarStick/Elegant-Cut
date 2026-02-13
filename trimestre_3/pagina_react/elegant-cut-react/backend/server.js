@@ -31,8 +31,14 @@ CREATE TABLE IF NOT EXISTS pqrs (
 const JWT_SECRET = "Clave-secreta-elegant-cut-2025";
 const PORT = 3001;
 
+// Inicializar la tabla PQRS
+pool.execute(CREATE_PQRS_TABLE)
+    .then(() => console.log('Tabla PQRS verificada/creada'))
+    .catch(err => console.error('Error creando tabla PQRS:', err));
+
 const http = require('http');
 const server = http.createServer(async (req, res) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
     // CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');

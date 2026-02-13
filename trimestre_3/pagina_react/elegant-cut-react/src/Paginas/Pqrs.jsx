@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import '../Estilos/pqrs/pqrs.css';
+import { AuthClient } from '../Utilidades/authClient';
 
 export default function Pqrs() {
   const [formData, setFormData] = useState({
@@ -13,7 +15,56 @@ export default function Pqrs() {
     responseMedium: 'email'
   });
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("form-tab"); // pestaña por defecto
+  const [radicadoSearch, setRadicadoSearch] = useState('');
+  const [trackResult, setTrackResult] = useState(null);
+  const [activeTab, setActiveTab] = useState("form-tab");
+  const [currentUser, setCurrentUser] = useState(null);
+  const [showAuthError, setShowAuthError] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  // Verificar sesión al cargar
+  useEffect(() => {
+    const user = AuthClient.getUser();
+    if (user) {
+      setCurrentUser(user);
+      setFormData(prev => ({
+        ...prev,
+        userName: user.name || user.prim_nombre + ' ' + (user.apellido1 || ''),
+        userEmail: user.email || user.username,
+        userPhone: user.telefono || '',
+        userId: user.userId || user.id || ''
+      }));
+    }
+  }, []);
+
+
+
+
+
+
+
+
+  const consultPqrsStatus = async () => {
+    if (!radicadoSearch.trim()) {
+      alert('Por favor ingrese un número de radicado');
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3001/api/pqrs/status/${radicadoSearch}`);
+      const result = await response.json();
+
+      if (result.success) {
+        setTrackResult(result.data);
+      } else {
+        setTrackResult(null);
+        alert('No se encontró el radicado: ' + result.error);
+      }
+    } catch (error) {
+      console.error("Error consultando estado:", error);
+      alert('Error al consultar el estado');
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -25,6 +76,14 @@ export default function Pqrs() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // si no hay usuario logueado, no se puede enviar la pqrs
+    if (!currentUser) {
+      setShowAuthError(true);
+      window.scrollTo(0, 200); // Scroll hacia arriba para ver la alerta
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -37,7 +96,8 @@ export default function Pqrs() {
       const result = await response.json();
 
       if (result.success) {
-        alert(`PQRS enviada con éxito. Su radicado es: ${result.radicado}`);
+        setSuccessMessage(`PQRS enviada con éxito. Su radicado es: ${result.radicado}`);
+        window.scrollTo(0, 200); // Scroll arriba
         setFormData({
           requestType: '',
           userName: '',
@@ -62,6 +122,7 @@ export default function Pqrs() {
   return (
     <div>
       <main>
+
         {/* Botones de pestañas */}
         <div className="Botones-pqrs">
           <button
@@ -76,12 +137,7 @@ export default function Pqrs() {
           >
             Consultar Estado
           </button>
-          <button
-            className={`tab-btn ${activeTab === "history-tab" ? "active" : ""}`}
-            onClick={() => setActiveTab("history-tab")}
-          >
-            Historial
-          </button>
+
           <button
             className={`tab-btn ${activeTab === "info-tab" ? "active" : ""}`}
             onClick={() => setActiveTab("info-tab")}
@@ -93,6 +149,24 @@ export default function Pqrs() {
         {/* Contenido de las pestañas */}
         <section className={`tab-content ${activeTab === "form-tab" ? "active" : ""}`} id="form-tab">
           <h2>Formulario de PQRS</h2>
+
+          {showAuthError && (
+            <div className="alert alert-login alert-dismissible fade show" role="alert">
+              <strong>¡Atención!</strong> Para enviar una PQRS debes iniciar sesión primero.
+              <button type="button" className="btn-close" onClick={() => setShowAuthError(false)} aria-label="Close"></button>
+              <div className="mt-2">
+                <Link to="/login" className="btn btn-sm btn-outline-danger">Iniciar Sesión</Link>
+              </div>
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="alert alert-success-custom alert-dismissible fade show" role="alert">
+              <strong>¡Éxito!</strong> {successMessage}
+              <button type="button" className="btn-close" onClick={() => setSuccessMessage("")} aria-label="Close"></button>
+            </div>
+          )}
+
           <form id="pqrs-form" onSubmit={handleSubmit}>
             {/* Tipo de solicitud */}
             <div className="form-group">
@@ -257,21 +331,36 @@ export default function Pqrs() {
           <div className="track-form">
             <div className="form-group">
               <label htmlFor="tracking-number">Número de radicado</label>
-              <input type="text" id="tracking-number" name="tracking-number" placeholder="Ej: PQRS-2023-001234" />
-              <button id="track-btn" className="btn btn-primary">Consultar</button>
+              <input
+                type="text"
+                id="tracking-number"
+                name="tracking-number"
+                placeholder="Ej: PQRS-2023-001234"
+                value={radicadoSearch}
+                onChange={(e) => setRadicadoSearch(e.target.value)}
+              />
+              <button id="track-btn" className="btn btn-primary" onClick={consultPqrsStatus}>Consultar</button>
             </div>
           </div>
-          <div id="tracking-result" className="tracking-result"></div>
+
+          {trackResult && (
+            <div id="tracking-result" className="tracking-result" style={{ display: 'block' }}>
+              <h3>Estado de su solicitud</h3>
+              <p><strong>Radicado:</strong> {radicadoSearch}</p>
+              <p><strong>Fecha:</strong> {new Date(trackResult.fecha_creacion).toLocaleDateString()}</p>
+              <p><strong>Estado:</strong> <span className={`status-badge status-${trackResult.estado}`}>{trackResult.estado.replace('_', ' ')}</span></p>
+              {trackResult.respuesta && (
+                <div style={{ marginTop: '15px', padding: '10px', background: '#e9ecef', borderRadius: '5px' }}>
+                  <strong>Respuesta:</strong>
+                  <p>{trackResult.respuesta}</p>
+                  <small className="text-muted">Fecha respuesta: {new Date(trackResult.fecha_respuesta).toLocaleDateString()}</small>
+                </div>
+              )}
+            </div>
+          )}
         </section>
 
-        {/* Historial */}
-        <section className={`tab-content ${activeTab === "history-tab" ? "active" : ""}`} id="history-tab">
-          <h2>Historial de PQRS</h2>
-          <div className="history-container">
-            <p className="info-message">Para ver su historial de PQRS, por favor inicie sesión en el sistema.</p>
-            <button id="login-btn" className="btn btn-primary" >Iniciar Sesión</button>
-          </div>
-        </section>
+
 
         {/* Información */}
         <section className={`tab-content ${activeTab === "info-tab" ? "active" : ""}`} id="info-tab">
@@ -291,7 +380,7 @@ export default function Pqrs() {
               <ul>
                 <li><strong>Teléfono:</strong> (01) 800-123-4567</li>
                 <li><strong>Correo electrónico:</strong> pqrs@empresa.com</li>
-                <li><strong>Dirección:</strong> Calle 123 #45-67, Ciudad</li>
+                <li><strong>Dirección:</strong> Cra. 6 Este #90 d - 34 sur, Bogotá</li>
                 <li><strong>Horario de atención:</strong> Lunes a Viernes 8:00 AM - 6:00 PM</li>
               </ul>
             </div>

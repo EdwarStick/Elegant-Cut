@@ -1,7 +1,11 @@
 require('dotenv').config();
 const app = require('./app');
+const Pqrs = require('./models/Pqrs.model');
 
 const PORT = process.env.PORT || 3001;
+
+// Inicializar tablas
+Pqrs.initTable();
 
 app.listen(PORT, () => {
     console.log('='.repeat(50));

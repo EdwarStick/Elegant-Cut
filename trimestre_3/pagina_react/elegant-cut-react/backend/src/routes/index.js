@@ -11,6 +11,7 @@ const dashboardRoutes = require('./dashboard.routes');
 const adminRoutes = require('./admin.routes');
 const horarioRoutes = require('./horario.routes');
 const barberPanelRoutes = require('./barberPanel.routes');
+const pqrsRoutes = require('./pqrs.routes');
 
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
@@ -22,6 +23,7 @@ router.use('/dashboard', dashboardRoutes);
 router.use('/admin', adminRoutes);
 router.use('/horarios', horarioRoutes);
 router.use('/barber-panel', barberPanelRoutes);
+router.use('/pqrs', pqrsRoutes);
 
 // Health check
 router.get('/health', (req, res) => {
