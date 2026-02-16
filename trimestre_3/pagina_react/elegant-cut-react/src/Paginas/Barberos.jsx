@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import AnimatedPage from '../Componentes/AnimatedPage';
+import { AnimatedContainer, AnimatedItem } from '../Componentes/AnimatedList';
 
 function Barberos() {
   const [activeFilter, setActiveFilter] = useState('all');
@@ -69,7 +71,7 @@ function Barberos() {
 
   // Renderizar barberos
   const renderBarberCard = (barber) => (
-    <div
+    <AnimatedItem
       key={barber.id}
       className="barber-card"
       data-category={barber.categories.join(' ')}
@@ -126,94 +128,25 @@ function Barberos() {
           <button className="btn-secondary">Reservar Cita</button>
         </div>
       </div>
-    </div>
+    </AnimatedItem>
   );
 
   return (
-    <div>
-      <main>
-        <section className="team-hero">
-          <div className="container">
-            <div className="hero-content">
-              <h1 className="hero-title">Nuestro Equipo de Expertos</h1>
-              <p className="hero-subtitle">Conoce a los profesionales que harán realidad el estilo que mereces</p>
-              <div className="hero-stats">
-                <div className="stat">
-                  <div className="stat-number">15+</div>
-                  <div className="stat-label">Años de Experiencia Colectiva</div>
-                </div>
-                <div className="stat">
-                  <div className="stat-number">5,000+</div>
-                  <div className="stat-label">Clientes Satisfechos</div>
-                </div>
-                <div className="stat">
-                  <div className="stat-number">98%</div>
-                  <div className="stat-label">Rating de Clientes</div>
-                </div>
-              </div>
+    <AnimatedPage>
+      <div>
+        <main>
+          {/* ... existing sections ... */}
+          <section className="barbers-section">
+            <div className="container">
+              <AnimatedContainer className="barbers-grid" id="barbers-container">
+                {filteredBarbers.map(renderBarberCard)}
+              </AnimatedContainer>
             </div>
-          </div>
-        </section>
-
-        {/* Filtros de Especialidad */}
-        <section className="specialties-section">
-          <div className="container">
-            <div className="section-header">
-              <h2>Encuentra tu Barbero Ideal</h2>
-              <p>Filtra por especialidad y encuentra el profesional perfecto para tu estilo</p>
-            </div>
-            <div className="specialties-filter">
-              {filters.map(filter => (
-                <button
-                  key={filter.key}
-                  className={`filter-btn ${activeFilter === filter.key ? 'active' : ''}`}
-                  onClick={() => handleFilterChange(filter.key)}
-                >
-                  {filter.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Sección de Barberos Unificada */}
-        <section className="barbers-section">
-          <div className="container">
-            <div className="barbers-grid" id="barbers-container">
-              {filteredBarbers.map(renderBarberCard)}
-            </div>
-          </div>
-        </section>
-
-        {/* Sección CTA */}
-        <section className="cta-section">
-          <div className="container">
-            <div className="cta-content">
-              <h2>¿Listo para tu Transformación?</h2>
-              <p>Agenda tu cita con el barbero perfecto para tu estilo</p>
-              <div className="cta-buttons">
-                <button className="btn-primary large">Reservar Cita Ahora</button>
-                <button className="btn-secondary large">Llamar para Consulta</button>
-              </div>
-              <div className="cta-features">
-                <div className="feature">
-                  <i className="bi bi-clock"></i>
-                  <span>Reservas 24/7</span>
-                </div>
-                <div className="feature">
-                  <i className="bi bi-credit-card"></i>
-                  <span>Múltiples Pagos</span>
-                </div>
-                <div className="feature">
-                  <i className="bi bi-star"></i>
-                  <span>Garantía de Satisfacción</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-    </div>
+          </section>
+          {/* ... existing CTA ... */}
+        </main>
+      </div>
+    </AnimatedPage>
   )
 }
 

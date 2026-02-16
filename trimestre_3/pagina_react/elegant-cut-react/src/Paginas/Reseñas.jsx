@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/UseAuth';
+import AnimatedPage from '../Componentes/AnimatedPage';
+import { AnimatedContainer, AnimatedItem } from '../Componentes/AnimatedList';
 import './Reseñas.css';
 
 const Reseñas = () => {
@@ -123,130 +125,152 @@ const Reseñas = () => {
   };
 
   return (
-    <div className="reviews-page">
-      <div className="reviews-main-container">
-        {/* LEFT SIDE - REVIEWS LIST */}
-        <section className="reviews-section">
-          <h2>Todas las Reseñas</h2>
+    <AnimatedPage>
+      <div className="reviews-page">
+        <div className="reviews-main-container">
+          {/* LEFT SIDE - REVIEWS LIST */}
+          <section className="reviews-section">
+            <h2>Todas las Reseñas</h2>
 
-          {loading ? (
-            <div className="loading-spinner">Cargando reseñas...</div>
-          ) : (
-            <div className="reviews-grid">
-              {reviews.length > 0 ? (
-                reviews.map((review) => {
-                  try {
-                    if (!review || !review.id_resena) return null;
-                    const nombre = review.nombre_cliente || 'Cliente Anónimo';
+            {loading ? (
+              <div className="loading-spinner">Cargando reseñas...</div>
+            ) : (
+              <AnimatedContainer className="reviews-grid">
+                {reviews.length > 0 ? (
+                  reviews.map((review) => {
+                    try {
+                      if (!review || !review.id_resena) return null;
+                      const nombre = review.nombre_cliente || 'Cliente Anónimo';
 
-                    return (
-                      <div key={review.id_resena} className="review-card">
-                        <div className="review-header">
-                          <div className="reviewer-avatar">
-                            {nombre.charAt(0).toUpperCase()}
+                      return (
+                        <AnimatedItem key={review.id_resena} className="review-card">
+                          <div className="review-header">
+                            <div className="reviewer-avatar">
+                              {nombre.charAt(0).toUpperCase()}
+                            </div>
+                            <div className="reviewer-info">
+                              <span className="reviewer-name">{nombre}</span>
+                              <span className="review-date">
+                                {formatDate(review.fecha_resena)}
+                              </span>
+                            </div>
                           </div>
-                          <div className="reviewer-info">
-                            <span className="reviewer-name">{nombre}</span>
-                            <span className="review-date">
-                              {formatDate(review.fecha_resena)}
-                            </span>
+                          <div className="review-rating">
+                            {renderStars(review.calificacion)}
                           </div>
-                        </div>
-                        <div className="review-rating">
-                          {renderStars(review.calificacion)}
-                        </div>
-                        <p className="review-comment">{review.comentario || 'Sin comentario'}</p>
-                      </div>
-                    );
-                  } catch (e) {
-                    console.error('Error rendering individual review:', e);
-                    return null;
-                  }
-                })
-              ) : (
-                <div className="no-reviews">
-                  <p>Aún no hay reseñas.</p>
-                  <p>¡Sé el primero en compartir tu experiencia!</p>
+                          <p className="review-comment">{review.comentario || 'Sin comentario'}</p>
+                        </AnimatedItem>
+                      );
+                    } catch (e) {
+                      console.error('Error rendering individual review:', e);
+                      return null;
+                    }
+                  })
+                ) : (
+                  <div className="no-reviews">
+                    <p>Aún no hay reseñas.</p>
+                    <p>¡Sé el primero en compartir tu experiencia!</p>
+                  </div>
+                )}
+              </AnimatedContainer>
+            )}
+          </section>
+
+          {/* RIGHT SIDE - REVIEW FORM */}
+          <aside className="form-section">
+            <h2>Deja tu Reseña</h2>
+
+            {!isAuthenticated && (
+              <div className="alert alert-warning shadow-sm border-0 mb-4" role="alert">
+                <div className="d-flex align-items-center">
+                  <i className="bi bi-exclamation-triangle-fill me-2 fs-4"></i>
+                  <div>
+                    <strong>¡Inicia sesión para comentar!</strong><br />
+                    Para poder publicar una reseña, necesitas <a href="/login" className="alert-link">iniciar sesión</a> o <a href="/login" className="alert-link">crear una cuenta</a>.
+                  </div>
                 </div>
-              )}
-            </div>
-          )}
-        </section>
+              </div>
+            )}
 
-        {/* RIGHT SIDE - REVIEW FORM */}
-        <aside className="form-section">
-          <h2>Deja tu Reseña</h2>
+            {status.message && (
+              <div className={`status-message ${status.type}`}>
+                {status.message}
+              </div>
+            )}
 
-          {status.message && (
-            <div className={`status-message ${status.type}`}>
-              {status.message}
-            </div>
-          )}
+            <form onSubmit={handleSubmit} className={`review-form ${!isAuthenticated ? 'form-disabled' : ''}`}>
+              <div className="form-group">
+                <label htmlFor="nombre_cliente">Nombre Completo</label>
+                <input
+                  type="text"
+                  id="nombre_cliente"
+                  name="nombre_cliente"
+                  value={formData.nombre_cliente}
+                  onChange={handleChange}
+                  required
+                  readOnly={!isAuthenticated || !!user?.name}
+                  disabled={!isAuthenticated}
+                  placeholder="Tu nombre"
+                />
+              </div>
 
-          <form onSubmit={handleSubmit} className="review-form">
-            <div className="form-group">
-              <label htmlFor="nombre_cliente">Nombre Completo</label>
-              <input
-                type="text"
-                id="nombre_cliente"
-                name="nombre_cliente"
-                value={formData.nombre_cliente}
-                onChange={handleChange}
-                required
-                readOnly={!!user?.name}
-                placeholder="Tu nombre"
-              />
-            </div>
+              <div className="form-group">
+                <label htmlFor="email_cliente">Correo Electrónico</label>
+                <input
+                  type="email"
+                  id="email_cliente"
+                  name="email_cliente"
+                  value={formData.email_cliente}
+                  onChange={handleChange}
+                  required
+                  readOnly={!isAuthenticated || !!user?.email}
+                  disabled={!isAuthenticated}
+                  placeholder="tu@email.com"
+                />
+              </div>
 
-            <div className="form-group">
-              <label htmlFor="email_cliente">Correo Electrónico</label>
-              <input
-                type="email"
-                id="email_cliente"
-                name="email_cliente"
-                value={formData.email_cliente}
-                onChange={handleChange}
-                required
-                readOnly={!!user?.email}
-                placeholder="tu@email.com"
-              />
-            </div>
+              <div className="form-group">
+                <label htmlFor="calificacion">Calificación</label>
+                <select
+                  id="calificacion"
+                  name="calificacion"
+                  value={formData.calificacion}
+                  onChange={handleChange}
+                  disabled={!isAuthenticated}
+                >
+                  <option value="5">★★★★★ Excelente</option>
+                  <option value="4">★★★★☆ Muy Bueno</option>
+                  <option value="3">★★★☆☆ Bueno</option>
+                  <option value="2">★★☆☆☆ Regular</option>
+                  <option value="1">★☆☆☆☆ Malo</option>
+                </select>
+              </div>
 
-            <div className="form-group">
-              <label htmlFor="calificacion">Calificación</label>
-              <select
-                id="calificacion"
-                name="calificacion"
-                value={formData.calificacion}
-                onChange={handleChange}
+              <div className="form-group">
+                <label htmlFor="comentario">Tu Reseña</label>
+                <textarea
+                  id="comentario"
+                  name="comentario"
+                  value={formData.comentario}
+                  onChange={handleChange}
+                  required
+                  disabled={!isAuthenticated}
+                  placeholder={isAuthenticated ? "Cuéntanos sobre tu experiencia..." : "Inicia sesión para escribir tu reseña..."}
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                className="review-submit-btn"
+                disabled={status.type === 'loading' || !isAuthenticated}
               >
-                <option value="5">★★★★★ Excelente</option>
-                <option value="4">★★★★☆ Muy Bueno</option>
-                <option value="3">★★★☆☆ Bueno</option>
-                <option value="2">★★☆☆☆ Regular</option>
-                <option value="1">★☆☆☆☆ Malo</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="comentario">Tu Reseña</label>
-              <textarea
-                id="comentario"
-                name="comentario"
-                value={formData.comentario}
-                onChange={handleChange}
-                required
-                placeholder="Cuéntanos sobre tu experiencia..."
-              ></textarea>
-            </div>
-
-            <button type="submit" className="review-submit-btn" disabled={status.type === 'loading'}>
-              {status.type === 'loading' ? 'Enviando...' : 'Publicar Reseña'}
-            </button>
-          </form>
-        </aside>
+                {status.type === 'loading' ? 'Enviando...' : 'Publicar Reseña'}
+              </button>
+            </form>
+          </aside>
+        </div>
       </div>
-    </div>
+    </AnimatedPage>
   );
 };
 

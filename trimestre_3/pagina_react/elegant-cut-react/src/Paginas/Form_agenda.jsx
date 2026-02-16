@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Scissors, Calendar, Clock, User, Phone, Mail, CreditCard, FileText, Star, MapPin, Award } from 'lucide-react';
+import AnimatedPage from '../Componentes/AnimatedPage';
+import { AnimatedContainer, AnimatedItem } from '../Componentes/AnimatedList';
 
 function Form_agenda() {
   const [formData, setFormData] = useState({
@@ -212,29 +215,52 @@ function Form_agenda() {
   }
 
   return (
-    <div className="form-agenda-container">
+    <AnimatedPage className="form-agenda-container">
       {/* HERO HEADER */}
       <div className="hero-header">
         <div className="hero-overlay"></div>
         <div className="hero-content">
-          <div className="hero-icon">
+          <motion.div
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: "spring", damping: 12, stiffness: 200 }}
+            className="hero-icon"
+          >
             <Scissors size={48} />
-          </div>
-          <h1 className="hero-title">Elegant Cut</h1>
-          <p className="hero-subtitle">Reserva tu cita con los mejores profesionales</p>
+          </motion.div>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="hero-title"
+          >
+            Elegant Cut
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="hero-subtitle"
+          >
+            Reserva tu cita con los mejores profesionales
+          </motion.p>
           <div className="hero-features">
-            <div className="hero-feature">
-              <Award size={20} />
-              <span>Barberos Certificados</span>
-            </div>
-            <div className="hero-feature">
-              <Star size={20} />
-              <span>+1000 Clientes Satisfechos</span>
-            </div>
-            <div className="hero-feature">
-              <MapPin size={20} />
-              <span>Bogotá, Colombia</span>
-            </div>
+            {[
+              { icon: Award, text: "Barberos Certificados" },
+              { icon: Star, text: "+1000 Clientes Satisfechos" },
+              { icon: MapPin, text: "Bogotá, Colombia" }
+            ].map((feature, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4 + (i * 0.1) }}
+                className="hero-feature"
+              >
+                <feature.icon size={20} />
+                <span>{feature.text}</span>
+              </motion.div>
+            ))}
           </div>
         </div>
       </div>
@@ -243,89 +269,114 @@ function Form_agenda() {
         <div className="form-wrapper">
           {/* INFORMACIÓN DE LA BARBERÍA */}
           <div className="info-sidebar">
-            <div className="info-card">
-              <h3>¿Por qué elegirnos?</h3>
-              <ul className="benefits-list">
-                <li>
-                  <Star className="benefit-icon" size={18} />
-                  <div>
-                    <strong>Calidad garantizada</strong>
-                    <p>Profesionales con más de 10 años de experiencia</p>
-                  </div>
-                </li>
-                <li>
-                  <Scissors className="benefit-icon" size={18} />
-                  <div>
-                    <strong>Técnicas modernas</strong>
-                    <p>Equipos de última generación y productos premium</p>
-                  </div>
-                </li>
-                <li>
-                  <Clock className="benefit-icon" size={18} />
-                  <div>
-                    <strong>Puntualidad</strong>
-                    <p>Respetamos tu tiempo, sin esperas innecesarias</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
+            <AnimatedContainer>
+              <AnimatedItem className="info-card">
+                <h3>¿Por qué elegirnos?</h3>
+                <ul className="benefits-list">
+                  <li>
+                    <Star className="benefit-icon" size={18} />
+                    <div>
+                      <strong>Calidad garantizada</strong>
+                      <p>Profesionales con más de 10 años de experiencia</p>
+                    </div>
+                  </li>
+                  <li>
+                    <Scissors className="benefit-icon" size={18} />
+                    <div>
+                      <strong>Técnicas modernas</strong>
+                      <p>Equipos de última generación y productos premium</p>
+                    </div>
+                  </li>
+                  <li>
+                    <Clock className="benefit-icon" size={18} />
+                    <div>
+                      <strong>Puntualidad</strong>
+                      <p>Respetamos tu tiempo, sin esperas innecesarias</p>
+                    </div>
+                  </li>
+                </ul>
+              </AnimatedItem>
 
-            <div className="info-card contact-card">
-              <h3>Contáctanos</h3>
-              <div className="contact-info">
-                <div className="contact-item">
-                  <Phone size={18} />
-                  <span>+57 310 123 4567</span>
+              <AnimatedItem className="info-card contact-card">
+                <h3>Contáctanos</h3>
+                <div className="contact-info">
+                  <div className="contact-item">
+                    <Phone size={18} />
+                    <span>+57 310 123 4567</span>
+                  </div>
+                  <div className="contact-item">
+                    <Mail size={18} />
+                    <span>info@elegantcut.co</span>
+                  </div>
+                  <div className="contact-item">
+                    <MapPin size={18} />
+                    <span>Calle 123 #45-67, Bogotá</span>
+                  </div>
                 </div>
-                <div className="contact-item">
-                  <Mail size={18} />
-                  <span>info@elegantcut.co</span>
-                </div>
-                <div className="contact-item">
-                  <MapPin size={18} />
-                  <span>Calle 123 #45-67, Bogotá</span>
-                </div>
-              </div>
-            </div>
+              </AnimatedItem>
 
-            {/* RESUMEN DE RESERVA */}
-            {(selectedService || selectedBarber) && (
-              <div className="info-card summary-card">
-                <h3>Resumen de tu cita</h3>
-                {selectedService && (
-                  <div className="summary-item">
-                    <span className="summary-label">Servicio:</span>
-                    <span className="summary-value">{selectedService.nombre}</span>
-                    <span className="summary-price">${selectedService.precio?.toLocaleString()}</span>
-                    <span className="summary-duration">{selectedService.duracion} min</span>
-                  </div>
+              {/* RESUMEN DE RESERVA */}
+              <AnimatePresence>
+                {(selectedService || selectedBarber) && (
+                  <AnimatedItem className="info-card summary-card">
+                    <motion.h3
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
+                      Resumen de tu cita
+                    </motion.h3>
+                    <AnimatePresence mode="wait">
+                      {selectedService && (
+                        <motion.div
+                          key={`service-${selectedService.id_servicio}`}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 10 }}
+                          className="summary-item"
+                        >
+                          <span className="summary-label">Servicio:</span>
+                          <span className="summary-value">{selectedService.nombre}</span>
+                          <span className="summary-price">${selectedService.precio?.toLocaleString()}</span>
+                          <span className="summary-duration">{selectedService.duracion} min</span>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                    <AnimatePresence mode="wait">
+                      {selectedBarber && (
+                        <motion.div
+                          key={`barber-${selectedBarber.id_usuario}`}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 10 }}
+                          className="summary-item"
+                        >
+                          <span className="summary-label">Barbero:</span>
+                          <span className="summary-value">
+                            {selectedBarber.prim_nombre} {selectedBarber.apellido1}
+                          </span>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                    {formData.date && (
+                      <div className="summary-item">
+                        <span className="summary-label">Fecha:</span>
+                        <span className="summary-value">{formatDate(formData.date)}</span>
+                      </div>
+                    )}
+                    {formData.time && (
+                      <div className="summary-item">
+                        <span className="summary-label">Hora:</span>
+                        <span className="summary-value">{formData.time}</span>
+                      </div>
+                    )}
+                  </AnimatedItem>
                 )}
-                {selectedBarber && (
-                  <div className="summary-item">
-                    <span className="summary-label">Barbero:</span>
-                    <span className="summary-value">
-                      {selectedBarber.prim_nombre} {selectedBarber.apellido1}
-                    </span>
-                  </div>
-                )}
-                {formData.date && (
-                  <div className="summary-item">
-                    <span className="summary-label">Fecha:</span>
-                    <span className="summary-value">{formatDate(formData.date)}</span>
-                  </div>
-                )}
-                {formData.time && (
-                  <div className="summary-item">
-                    <span className="summary-label">Hora:</span>
-                    <span className="summary-value">{formData.time}</span>
-                  </div>
-                )}
-              </div>
-            )}
+              </AnimatePresence>
+            </AnimatedContainer>
           </div>
 
           {/* FORMULARIO PRINCIPAL */}
-          <div className="form-main">
+          <AnimatedContainer className="form-main">
             <div className="form-header">
               <h2>Agenda tu cita</h2>
               <p>Completa el formulario y confirma tu reserva</p>
@@ -334,7 +385,7 @@ function Form_agenda() {
             <div className="appointment-form">
 
               {/* INFORMACIÓN PERSONAL */}
-              <div className="form-section">
+              <AnimatedItem className="form-section">
                 <div className="section-header">
                   <User className="section-icon" size={24} />
                   <h3>Información Personal</h3>
@@ -392,10 +443,10 @@ function Form_agenda() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </AnimatedItem>
 
               {/* SERVICIO Y BARBERO */}
-              <div className="form-section">
+              <AnimatedItem className="form-section">
                 <div className="section-header">
                   <Scissors className="section-icon" size={24} />
                   <h3>Servicio y Profesional</h3>
@@ -447,10 +498,10 @@ function Form_agenda() {
                     )}
                   </div>
                 </div>
-              </div>
+              </AnimatedItem>
 
               {/* FECHA Y HORA */}
-              <div className="form-section">
+              <AnimatedItem className="form-section">
                 <div className="section-header">
                   <Calendar className="section-icon" size={24} />
                   <h3>Fecha y Horario</h3>
@@ -495,10 +546,10 @@ function Form_agenda() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </AnimatedItem>
 
               {/* NOTAS ADICIONALES */}
-              <div className="form-section">
+              <AnimatedItem className="form-section">
                 <div className="section-header">
                   <FileText className="section-icon" size={24} />
                   <h3>Información Adicional</h3>
@@ -515,16 +566,20 @@ function Form_agenda() {
                     disabled={loading}
                   />
                 </div>
-              </div>
+              </AnimatedItem>
 
               {/* MÉTODO DE PAGO */}
-              <div className="form-section">
+              <AnimatedItem className="form-section">
                 <div className="section-header">
                   <CreditCard className="section-icon" size={24} />
                   <h3>Método de Pago</h3>
                 </div>
                 <div className="payment-options">
-                  <label className={`payment-option ${formData.paymentMethod === 'efectivo' ? 'active' : ''}`}>
+                  <motion.label
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`payment-option ${formData.paymentMethod === 'efectivo' ? 'active' : ''}`}
+                  >
                     <input
                       type="radio"
                       name="paymentMethod"
@@ -538,9 +593,13 @@ function Form_agenda() {
                       <span>Efectivo</span>
                       <p>Paga en la barbería</p>
                     </div>
-                  </label>
+                  </motion.label>
 
-                  <label className={`payment-option ${formData.paymentMethod === 'transferencia' ? 'active' : ''}`}>
+                  <motion.label
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`payment-option ${formData.paymentMethod === 'transferencia' ? 'active' : ''}`}
+                  >
                     <input
                       type="radio"
                       name="paymentMethod"
@@ -554,28 +613,30 @@ function Form_agenda() {
                       <span>Transferencia</span>
                       <p>Nequi, Bancolombia</p>
                     </div>
-                  </label>
+                  </motion.label>
                 </div>
-              </div>
+              </AnimatedItem>
 
               {/* BOTÓN DE ENVÍO */}
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={handleSubmit}
                 className="submit-btn"
                 disabled={loading}
               >
                 <Calendar size={20} />
                 {loading ? 'Agendando cita...' : 'Confirmar mi cita'}
-              </button>
+              </motion.button>
 
               <p className="form-disclaimer">
                 Al confirmar tu cita, aceptas recibir recordatorios por WhatsApp o SMS
               </p>
             </div>
-          </div>
+          </AnimatedContainer>
         </div>
       </main>
-    </div>
+    </AnimatedPage>
   );
 }
 

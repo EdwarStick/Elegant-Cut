@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AnimatedContainer, AnimatedItem } from './AnimatedList';
 
 const ClientsTab = () => {
   const [clients, setClients] = useState([]);
@@ -60,14 +61,14 @@ const ClientsTab = () => {
                 <th>Acciones</th>
               </tr>
             </thead>
-            <tbody>
+            <AnimatedContainer component="tbody">
               {clients.length === 0 ? (
-                <tr>
+                <AnimatedItem tag="tr">
                   <td colSpan="4" className="text-center py-4">No hay clientes registrados</td>
-                </tr>
+                </AnimatedItem>
               ) : (
                 clients.map(client => (
-                  <tr key={client.id_usuario}>
+                  <AnimatedItem tag="tr" key={client.id_usuario}>
                     <td>
                       <div className="fw-bold">{client.prim_nombre} {client.apellido1}</div>
                       <div className="small text-muted">ID: {client.id_usuario}</div>
@@ -86,10 +87,10 @@ const ClientsTab = () => {
                         <i className="bi bi-trash"></i>
                       </button>
                     </td>
-                  </tr>
+                  </AnimatedItem>
                 ))
               )}
-            </tbody>
+            </AnimatedContainer>
           </table>
         </div>
       </div>

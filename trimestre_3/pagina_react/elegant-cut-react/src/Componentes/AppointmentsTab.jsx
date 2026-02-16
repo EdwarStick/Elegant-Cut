@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AnimatedContainer, AnimatedItem } from './AnimatedList';
 
 const AppointmentsTab = () => {
   const [appointments, setAppointments] = useState([]);
@@ -55,9 +56,9 @@ const AppointmentsTab = () => {
                 <th>Acciones</th>
               </tr>
             </thead>
-            <tbody>
+            <AnimatedContainer component="tbody">
               {appointments.map(apt => (
-                <tr key={apt.id_reservas}>
+                <AnimatedItem tag="tr" key={apt.id_reservas}>
                   <td>
                     <div>{new Date(apt.fecha).toLocaleDateString()}</div>
                     <div className="small text-muted">{apt.hora_inicio}</div>
@@ -66,7 +67,7 @@ const AppointmentsTab = () => {
                   <td>{apt.servicio}</td>
                   <td>
                     <span className={`badge ${apt.estado === 'Completada' ? 'bg-success' :
-                        apt.estado === 'Cancelada' ? 'bg-danger' : 'bg-warning'
+                      apt.estado === 'Cancelada' ? 'bg-danger' : 'bg-warning'
                       }`}>{apt.estado}</span>
                   </td>
                   <td>
@@ -81,9 +82,9 @@ const AppointmentsTab = () => {
                       </>
                     )}
                   </td>
-                </tr>
+                </AnimatedItem>
               ))}
-            </tbody>
+            </AnimatedContainer>
           </table>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { NavLink, useNavigate } from 'react-router-dom';
 import '../Estilos/Sidebar.css';
 import { AuthClient } from '../Utilidades/authClient';
@@ -24,7 +25,11 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
   ];
 
   return (
-    <div className={`sidebar ${isOpen ? 'open' : ''}`}>
+    <motion.div
+      className={`sidebar ${isOpen ? 'open' : ''}`}
+      animate={isOpen ? { x: 0 } : {}}
+      transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+    >
       <div className="sidebar-header">
         <div className="d-flex justify-content-between align-items-center w-100">
           <div className="logo-container">
@@ -51,16 +56,22 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
       </div>
 
       <nav className="sidebar-nav">
-        {menuItems.map((item) => (
-          <NavLink
+        {menuItems.map((item, idx) => (
+          <motion.div
             key={item.id}
-            to={item.path}
-            className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-            onClick={() => window.innerWidth < 768 && closeSidebar()} // Close menu on selection on mobile
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 + idx * 0.05 }}
           >
-            <i className={`bi ${item.icon} me-3`}></i>
-            {item.label}
-          </NavLink>
+            <NavLink
+              to={item.path}
+              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+              onClick={() => window.innerWidth < 768 && closeSidebar()}
+            >
+              <i className={`bi ${item.icon} me-3`}></i>
+              {item.label}
+            </NavLink>
+          </motion.div>
         ))}
       </nav>
 
@@ -70,7 +81,7 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
           Cerrar Sesión
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

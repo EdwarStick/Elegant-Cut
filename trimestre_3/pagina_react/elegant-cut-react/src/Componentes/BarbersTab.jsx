@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatedContainer, AnimatedItem } from './AnimatedList';
+
+// Note: Assuming AnimatedList is in the same directory or adjust path accordingly. 
+// Since BarbersTab is in Componentes, and AnimatedList is in Componentes.
 
 const BarbersTab = () => {
   const [barbers, setBarbers] = useState([]);
@@ -134,9 +139,9 @@ const BarbersTab = () => {
                 <th>Acciones</th>
               </tr>
             </thead>
-            <tbody>
+            <AnimatedContainer component="tbody">
               {barbers.map(barber => (
-                <tr key={barber.id_usuario}>
+                <AnimatedItem tag="tr" key={barber.id_usuario}>
                   <td>
                     <div className="fw-bold">{barber.prim_nombre} {barber.apellido1}</div>
                     <div className="small text-muted">{barber.email}</div>
@@ -156,73 +161,87 @@ const BarbersTab = () => {
                       <i className={`bi ${barber.estado ? 'bi-person-slash' : 'bi-person-check'}`}></i>
                     </button>
                   </td>
-                </tr>
+                </AnimatedItem>
               ))}
-            </tbody>
+            </AnimatedContainer>
           </table>
         </div>
       </div>
 
       {/* Modal para Nuevo Barbero */}
-      {showModal && (
-        <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Agregar Nuevo Barbero</h5>
-                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
-              </div>
-              <form onSubmit={handleAddBarber}>
-                <div className="modal-body">
-                  <div className="row g-3">
-                    <div className="col-md-6">
-                      <label className="form-label">Username *</label>
-                      <input type="text" className="form-control" name="username" value={newBarber.username} onChange={handleInputChange} required />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label">Contraseña *</label>
-                      <input type="password" className="form-control" name="password" value={newBarber.password} onChange={handleInputChange} required />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label">Email *</label>
-                      <input type="email" className="form-control" name="email" value={newBarber.email} onChange={handleInputChange} required />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label">Teléfono</label>
-                      <input type="text" className="form-control" name="telefono" value={newBarber.telefono} onChange={handleInputChange} />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label">Primer Nombre *</label>
-                      <input type="text" className="form-control" name="prim_nombre" value={newBarber.prim_nombre} onChange={handleInputChange} required />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label">Segundo Nombre</label>
-                      <input type="text" className="form-control" name="seg_nombre" value={newBarber.seg_nombre} onChange={handleInputChange} />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label">Primer Apellido *</label>
-                      <input type="text" className="form-control" name="apellido1" value={newBarber.apellido1} onChange={handleInputChange} required />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label">Segundo Apellido</label>
-                      <input type="text" className="form-control" name="apellido2" value={newBarber.apellido2} onChange={handleInputChange} />
-                    </div>
-                    <div className="col-12">
-                      <label className="form-label">Foto de Perfil</label>
-                      <input type="file" className="form-control" accept="image/*" onChange={handleFileChange} />
-                      <div className="form-text">Formatos: JPG, PNG. Máx 5MB.</div>
+      <AnimatePresence>
+        {showModal && (
+          <motion.div
+            className="modal show d-block"
+            style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="modal-dialog modal-lg"
+              initial={{ opacity: 0, y: 50, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 50, scale: 0.95 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            >
+              <div className="modal-content border-0 shadow-lg">
+                <div className="modal-header">
+                  <h5 className="modal-title">Agregar Nuevo Barbero</h5>
+                  <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                </div>
+                <form onSubmit={handleAddBarber}>
+                  <div className="modal-body">
+                    <div className="row g-3">
+                      <div className="col-md-6">
+                        <label className="form-label">Username *</label>
+                        <input type="text" className="form-control" name="username" value={newBarber.username} onChange={handleInputChange} required />
+                      </div>
+                      <div className="col-md-6">
+                        <label className="form-label">Contraseña *</label>
+                        <input type="password" className="form-control" name="password" value={newBarber.password} onChange={handleInputChange} required />
+                      </div>
+                      <div className="col-md-6">
+                        <label className="form-label">Email *</label>
+                        <input type="email" className="form-control" name="email" value={newBarber.email} onChange={handleInputChange} required />
+                      </div>
+                      <div className="col-md-6">
+                        <label className="form-label">Teléfono</label>
+                        <input type="text" className="form-control" name="telefono" value={newBarber.telefono} onChange={handleInputChange} />
+                      </div>
+                      <div className="col-md-6">
+                        <label className="form-label">Primer Nombre *</label>
+                        <input type="text" className="form-control" name="prim_nombre" value={newBarber.prim_nombre} onChange={handleInputChange} required />
+                      </div>
+                      <div className="col-md-6">
+                        <label className="form-label">Segundo Nombre</label>
+                        <input type="text" className="form-control" name="seg_nombre" value={newBarber.seg_nombre} onChange={handleInputChange} />
+                      </div>
+                      <div className="col-md-6">
+                        <label className="form-label">Primer Apellido *</label>
+                        <input type="text" className="form-control" name="apellido1" value={newBarber.apellido1} onChange={handleInputChange} required />
+                      </div>
+                      <div className="col-md-6">
+                        <label className="form-label">Segundo Apellido</label>
+                        <input type="text" className="form-control" name="apellido2" value={newBarber.apellido2} onChange={handleInputChange} />
+                      </div>
+                      <div className="col-12">
+                        <label className="form-label">Foto de Perfil</label>
+                        <input type="file" className="form-control" accept="image/*" onChange={handleFileChange} />
+                        <div className="form-text">Formatos: JPG, PNG. Máx 5MB.</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancelar</button>
-                  <button type="submit" className="btn btn-primary">Guardar Barbero</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancelar</button>
+                    <button type="submit" className="btn btn-primary">Guardar Barbero</button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

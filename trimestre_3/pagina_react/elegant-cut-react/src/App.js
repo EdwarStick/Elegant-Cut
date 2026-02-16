@@ -1,5 +1,5 @@
-import React from 'react'
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, Navigate, useLocation } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 import Home from './Paginas/Home'
 import Reseñas from './Paginas/Reseñas'
 import Header from './Componentes/Header'
@@ -32,10 +32,12 @@ import BarberPanel from './Paginas/BarberPanel'
 import BarberAppointments from './Paginas/BarberAppointments'
 import BarberSettings from './Paginas/BarberSettings'
 
-function App() {
+const AnimatedRoutes = () => {
+  const location = useLocation();
+
   return (
-    <BrowserRouter>
-      <Routes>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
         <Route path="/login" element={<LoginForm />} />
 
         <Route
@@ -73,23 +75,33 @@ function App() {
         <Route path="/*" element={
           <>
             <Header />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/barberos" element={<Barberos />} />
-              <Route path="/reseñas" element={<Reseñas />} />
-              <Route path="/Servicios_dama" element={<Servicios_dama />} />
-              <Route path="/Servicios_caballero" element={<Servicios_caballero />} />
-              <Route path="/Form_agenda" element={<Form_agenda />} />
-              <Route path="/Pqrs" element={<Pqrs />} />
-              <Route path="/ejemplo-db" element={<EjemploDB />} />
-              <Route path="/perfil" element={<Perfil />} />
-              <Route path="/unauthorized" element={<Unauthorized />} />
-            </Routes>
+            <AnimatePresence mode="wait">
+              <Routes location={location} key={location.pathname}>
+                <Route path="/" element={<Home />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/barberos" element={<Barberos />} />
+                <Route path="/reseñas" element={<Reseñas />} />
+                <Route path="/Servicios_dama" element={<Servicios_dama />} />
+                <Route path="/Servicios_caballero" element={<Servicios_caballero />} />
+                <Route path="/Form_agenda" element={<Form_agenda />} />
+                <Route path="/Pqrs" element={<Pqrs />} />
+                <Route path="/ejemplo-db" element={<EjemploDB />} />
+                <Route path="/perfil" element={<Perfil />} />
+                <Route path="/unauthorized" element={<Unauthorized />} />
+              </Routes>
+            </AnimatePresence>
             <Footer />
           </>
         } />
       </Routes>
+    </AnimatePresence>
+  );
+};
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AnimatedRoutes />
     </BrowserRouter>
   )
 }
