@@ -119,7 +119,7 @@ function Servicios_dama() {
             category: 'largo',
             name: 'Corte Mariposa',
             price: 18000,
-            image: '/assets/images/servicios_dama/Corte Largo/Corte Pariposa.png',
+            image: '/assets/images/servicios_dama/Corte Largo/corte_mariposa.png',
             oldPrice: 22000,
             description: 'Corte en capas estilo Mariposa',
             features: ['Volumen', 'Capas', '60 min'],
@@ -129,7 +129,7 @@ function Servicios_dama() {
             category: 'largo',
             name: 'Corte Recto',
             price: 15000,
-            image: '/assets/images/servicios_dama/Corte Largo/Corte Recto.png',
+            image: '/assets/images/servicios_dama/Corte Largo/corte_recto.png',
             oldPrice: 18000,
             description: 'Corte recto clásico para puntas sanas',
             features: ['Puntas', 'Sano', '45 min'],
@@ -139,10 +139,40 @@ function Servicios_dama() {
             category: 'largo',
             name: 'Corte en V',
             price: 16000,
-            image: '/assets/images/servicios_dama/Corte Largo/Corte v.png',
+            image: '/assets/images/servicios_dama/Corte Largo/corte_v.png',
             oldPrice: 20000,
             description: 'Corte en V para dar movimiento',
             features: ['Movimiento', 'Estilo', '50 min'],
+            categoryLabel: 'Corte'
+        },
+        {
+            category: 'largo',
+            name: 'Corte en Capas',
+            price: 17000,
+            image: '/assets/images/servicios_dama/Corte Largo/corte_capas.png',
+            oldPrice: 21000,
+            description: 'Corte en capas para dar movimiento',
+            features: ['Movimiento', 'Estilo', '55 min'],
+            categoryLabel: 'Corte'
+        },
+        {
+            category: 'largo',
+            name: 'Desfilado',
+            price: 17000,
+            image: '/assets/images/servicios_dama/Corte Largo/corte_desfilado.png',
+            oldPrice: 21000,
+            description: 'Corte desfilado para dar movimiento',
+            features: ['Movimiento', 'Estilo', '55 min'],
+            categoryLabel: 'Corte'
+        },
+        {
+            category: 'largo',
+            name: 'corte con Flequillo',
+            price: 17000,
+            image: '/assets/images/servicios_dama/Corte Largo/corte_flequillo.png',
+            oldPrice: 21000,
+            description: 'Corte con Flequillo para dar movimiento',
+            features: ['Movimiento', 'Estilo', '55 min'],
             categoryLabel: 'Corte'
         },
         // Cortes Corto
@@ -166,12 +196,82 @@ function Servicios_dama() {
             features: ['Audaz', 'Moderno', '45 min'],
             categoryLabel: 'Corte'
         },
+        {
+            category: 'corto',
+            name: 'Bob Capas Cortas',
+            price: 20000,
+            image: '/assets/images/servicios_dama/Corte Corto/bob_capas_cortas.png',
+            oldPrice: 25000,
+            description: 'Estilo Bob elegante y atemporal',
+            features: ['Elegancia', 'Corto', '50 min'],
+            categoryLabel: 'Corte'
+        },
+        {
+            category: 'corto',
+            name: 'Bixie Cut',
+            price: 22000,
+            image: '/assets/images/servicios_dama/Corte Corto/bixie_cut.png',
+            oldPrice: 26000,
+            description: 'Fusión moderna entre Bob y Pixie',
+            features: ['Textura', 'Híbrido', '50 min'],
+            categoryLabel: 'Corte'
+        },
+        {
+            category: 'corto',
+            name: 'Bob Asimétrico',
+            price: 21000,
+            image: '/assets/images/servicios_dama/Corte Corto/bob_asimétrico.png',
+            oldPrice: 25000,
+            description: 'Bob con longitudes desiguales',
+            features: ['Moderno', 'Atrevido', '50 min'],
+            categoryLabel: 'Corte'
+        },
+        {
+            category: 'corto',
+            name: 'Bob Invertido',
+            price: 21000,
+            image: '/assets/images/servicios_dama/Corte Corto/bob_invertido.png',
+            oldPrice: 25000,
+            description: 'Más corto atrás, largo adelante',
+            features: ['Volumen', 'Estilo', '55 min'],
+            categoryLabel: 'Corte'
+        },
+        {
+            category: 'corto',
+            name: 'Corte Garçon',
+            price: 19000,
+            image: '/assets/images/servicios_dama/Corte Corto/corte_garçon.png',
+            oldPrice: 23000,
+            description: 'Estilo clásico a lo chico',
+            features: ['Clásico', 'Práctico', '45 min'],
+            categoryLabel: 'Corte'
+        },
+        {
+            category: 'corto',
+            name: 'Micro Bob',
+            price: 20000,
+            image: '/assets/images/servicios_dama/Corte Corto/micro_bob.png',
+            oldPrice: 24000,
+            description: 'Versión ultra corta del Bob',
+            features: ['Chic', 'Minimalista', '45 min'],
+            categoryLabel: 'Corte'
+        },
+        {
+            category: 'corto',
+            name: 'Pixie Largo',
+            price: 23000,
+            image: '/assets/images/servicios_dama/Corte Corto/pixie_largo.png',
+            oldPrice: 27000,
+            description: 'Pixie con capas más largas',
+            features: ['Versátil', 'Textura', '50 min'],
+            categoryLabel: 'Corte'
+        },
         // Peinados
         {
             category: 'peinados',
             name: 'Peinado Especial',
             price: 25000,
-            image: '/assets/images/servicios_dama/Corte Largo/Corte Pariposa.png',
+            image: '/assets/images/servicios_dama/Peinados/peinado_especial.png',
             oldPrice: 30000,
             description: 'Peinado para ocasiones especiales',
             features: ['Fiesta', 'Elegante', '60 min'],
