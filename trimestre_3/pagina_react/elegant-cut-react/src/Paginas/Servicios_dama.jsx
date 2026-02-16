@@ -56,7 +56,7 @@ function Servicios_dama() {
         { id: 'uñas', name: 'Uñas' },
         { id: 'largo', name: 'Cortes Cabello Largo' },
         { id: 'corto', name: 'Cortes Cabello Corto' },
-        { id: 'tinte', name: 'Color / Tintes' },
+        { id: 'tintes', name: 'Color / Tintes' },
         { id: 'peinados', name: 'Peinados' },
         { id: 'mascarillas', name: 'Mascarillas' }
     ];
@@ -290,13 +290,83 @@ function Servicios_dama() {
         },
         // Tintes
         {
-            category: 'tinte',
-            name: 'Tinte Completo',
+            category: 'tintes',
+            name: 'Tinte Miel',
             price: 60000,
-            image: '/assets/images/servicios_dama/Corte Largo/Corte v.png',
+            image: '/assets/images/servicios_dama/tintes/tinte_miel.png',
             oldPrice: 75000,
-            description: 'Aplicación de tinte completo',
+            description: 'Tono color miel',
             features: ['Color', 'Cambio', '120 min'],
+            categoryLabel: 'Color'
+        },
+        {
+            category: 'tintes',
+            name: 'Tinte Cobre',
+            price: 60000,
+            image: '/assets/images/servicios_dama/tintes/tinte_cobre.png',
+            oldPrice: 75000,
+            description: 'Tono color cobre',
+            features: ['Color', 'Cambio', '120 min'],
+            categoryLabel: 'Color'
+        },
+        {
+            category: 'tintes',
+            name: 'Tinte Avellana',
+            price: 60000,
+            image: '/assets/images/servicios_dama/tintes/avellana.png',
+            oldPrice: 75000,
+            description: 'Tono color avellana',
+            features: ['Color', 'Cambio', '120 min'],
+            categoryLabel: 'Color'
+        },
+        {
+            category: 'tintes',
+            name: 'Tinte Castaño Oscuro',
+            price: 60000,
+            image: '/assets/images/servicios_dama/tintes/castaño oscuro.png',
+            oldPrice: 75000,
+            description: 'Tono color castaño oscuro',
+            features: ['Color', 'Cambio', '120 min'],
+            categoryLabel: 'Color'
+        },
+        {
+            category: 'tintes',
+            name: 'Tinte Chocolate',
+            price: 60000,
+            image: '/assets/images/servicios_dama/tintes/chocolate.png',
+            oldPrice: 75000,
+            description: 'Tono color chocolate',
+            features: ['Color', 'Cambio', '120 min'],
+            categoryLabel: 'Color'
+        },
+        {
+            category: 'tintes',
+            name: 'Tinte Negro Natural',
+            price: 60000,
+            image: '/assets/images/servicios_dama/tintes/negro natural.png',
+            oldPrice: 75000,
+            description: 'Tono color negro natural',
+            features: ['Color', 'Cambio', '120 min'],
+            categoryLabel: 'Color'
+        },
+        {
+            category: 'tintes',
+            name: 'Tinte Negro Azulado',
+            price: 60000,
+            image: '/assets/images/servicios_dama/tintes/negro_azulado.png',
+            oldPrice: 75000,
+            description: 'Tono color negro azulado',
+            features: ['Color', 'Cambio', '120 min'],
+            categoryLabel: 'Color'
+        },
+        {
+            category: 'tintes',
+            name: 'Tinte Fantasía',
+            price: 65000,
+            image: '/assets/images/servicios_dama/tintes/tinte_fantasia.png',
+            oldPrice: 80000,
+            description: 'Tono color fantasía',
+            features: ['Color', 'Vibrante', '120 min'],
             categoryLabel: 'Color'
         }
     ];
