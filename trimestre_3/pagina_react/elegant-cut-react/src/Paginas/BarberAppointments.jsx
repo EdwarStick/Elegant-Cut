@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatedContainer, AnimatedItem } from '../Componentes/AnimatedList';
 import { Calendar, Clock, User, Phone, Mail, CheckCircle, XCircle, Edit } from 'lucide-react';
 import { AuthClient } from '../Utilidades/authClient';
 
@@ -157,7 +159,10 @@ const BarberAppointments = () => {
     if (loading) {
         return (
             <div style={{ textAlign: 'center', padding: '3rem' }}>
-                <p>Cargando citas...</p>
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Cargando...</span>
+                </div>
+                <p className="mt-2">Cargando citas...</p>
             </div>
         );
     }
@@ -201,22 +206,24 @@ const BarberAppointments = () => {
 
             {/* Lista de citas */}
             {filteredAppointments.length === 0 ? (
-                <div style={{
-                    textAlign: 'center',
-                    padding: '3rem',
-                    backgroundColor: 'white',
-                    borderRadius: '12px',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                }}>
-                    <Calendar size={48} style={{ color: '#bdc3c7', marginBottom: '1rem' }} />
-                    <p style={{ color: '#7f8c8d', fontSize: '1.125rem' }}>
-                        No tienes citas {filter !== 'all' ? 'en esta categoría' : 'asignadas'}
-                    </p>
-                </div>
+                <AnimatedItem>
+                    <div style={{
+                        textAlign: 'center',
+                        padding: '3rem',
+                        backgroundColor: 'white',
+                        borderRadius: '12px',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                    }}>
+                        <Calendar size={48} style={{ color: '#bdc3c7', marginBottom: '1rem' }} />
+                        <p style={{ color: '#7f8c8d', fontSize: '1.125rem' }}>
+                            No tienes citas {filter !== 'all' ? 'en esta categoría' : 'asignadas'}
+                        </p>
+                    </div>
+                </AnimatedItem>
             ) : (
-                <div style={{ display: 'grid', gap: '1.5rem' }}>
+                <AnimatedContainer style={{ display: 'grid', gap: '1.5rem' }}>
                     {filteredAppointments.map(apt => (
-                        <div
+                        <AnimatedItem
                             key={apt.id_reservas}
                             style={{
                                 backgroundColor: 'white',
@@ -292,7 +299,9 @@ const BarberAppointments = () => {
                                     paddingTop: '1rem',
                                     borderTop: '1px solid #ecf0f1'
                                 }}>
-                                    <button
+                                    <motion.button
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
                                         onClick={() => handleStatusUpdate(apt.id_reservas, 2)}
                                         style={{
                                             flex: 2,
@@ -311,9 +320,11 @@ const BarberAppointments = () => {
                                     >
                                         <CheckCircle size={18} />
                                         Completar
-                                    </button>
+                                    </motion.button>
 
-                                    <button
+                                    <motion.button
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
                                         onClick={() => openRescheduleModal(apt)}
                                         style={{
                                             flex: 1,
@@ -332,9 +343,11 @@ const BarberAppointments = () => {
                                     >
                                         <Edit size={18} />
                                         Aplazar
-                                    </button>
+                                    </motion.button>
 
-                                    <button
+                                    <motion.button
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
                                         onClick={() => handleStatusUpdate(apt.id_reservas, 3)}
                                         style={{
                                             flex: 1,
@@ -353,119 +366,134 @@ const BarberAppointments = () => {
                                     >
                                         <XCircle size={18} />
                                         Cancelar
-                                    </button>
+                                    </motion.button>
                                 </div>
                             )}
-                        </div>
+                        </AnimatedItem>
                     ))}
-                </div>
+                </AnimatedContainer>
             )}
 
             {/* Modal de Reprogramación (Aplazar) */}
-            {showModal && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: 'rgba(0,0,0,0.5)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    zIndex: 1000
-                }}>
-                    <div style={{
-                        backgroundColor: 'white',
-                        padding: '2rem',
-                        borderRadius: '12px',
-                        width: '90%',
-                        maxWidth: '400px',
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
-                    }}>
-                        <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem', fontWeight: 'bold' }}>
-                            Aplazar Cita
-                        </h2>
+            <AnimatePresence>
+                {showModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        style={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 1000
+                        }}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                            style={{
+                                backgroundColor: 'white',
+                                padding: '2rem',
+                                borderRadius: '12px',
+                                width: '90%',
+                                maxWidth: '400px',
+                                boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+                            }}
+                        >
+                            <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem', fontWeight: 'bold' }}>
+                                Aplazar Cita
+                            </h2>
 
-                        <form onSubmit={handleReschedule}>
-                            <div style={{ marginBottom: '1rem' }}>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                                    Nueva Fecha
-                                </label>
-                                <input
-                                    type="date"
-                                    value={newDate}
-                                    onChange={(e) => setNewDate(e.target.value)}
-                                    min={new Date().toISOString().split('T')[0]}
-                                    style={{
-                                        width: '100%',
-                                        padding: '0.75rem',
-                                        borderRadius: '8px',
-                                        border: '1px solid #ddd'
-                                    }}
-                                    required
-                                />
-                            </div>
+                            <form onSubmit={handleReschedule}>
+                                <div style={{ marginBottom: '1rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                                        Nueva Fecha
+                                    </label>
+                                    <input
+                                        type="date"
+                                        value={newDate}
+                                        onChange={(e) => setNewDate(e.target.value)}
+                                        min={new Date().toISOString().split('T')[0]}
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            borderRadius: '8px',
+                                            border: '1px solid #ddd'
+                                        }}
+                                        required
+                                    />
+                                </div>
 
-                            <div style={{ marginBottom: '1.5rem' }}>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                                    Nuevo Horario
-                                </label>
-                                <select
-                                    value={newTime}
-                                    onChange={(e) => setNewTime(e.target.value)}
-                                    style={{
-                                        width: '100%',
-                                        padding: '0.75rem',
-                                        borderRadius: '8px',
-                                        border: '1px solid #ddd'
-                                    }}
-                                    disabled={loadingSlots || !newDate}
-                                    required
-                                >
-                                    <option value="">Selecciona una hora</option>
-                                    {availableSlots.map(slot => (
-                                        <option key={slot} value={slot}>{slot}</option>
-                                    ))}
-                                </select>
-                                {loadingSlots && <p style={{ fontSize: '0.75rem', color: '#666', marginTop: '0.25rem' }}>Cargando disponibilidad...</p>}
-                            </div>
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                                        Nuevo Horario
+                                    </label>
+                                    <select
+                                        value={newTime}
+                                        onChange={(e) => setNewTime(e.target.value)}
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            borderRadius: '8px',
+                                            border: '1px solid #ddd'
+                                        }}
+                                        disabled={loadingSlots || !newDate}
+                                        required
+                                    >
+                                        <option value="">Selecciona una hora</option>
+                                        {availableSlots.map(slot => (
+                                            <option key={slot} value={slot}>{slot}</option>
+                                        ))}
+                                    </select>
+                                    {loadingSlots && <p style={{ fontSize: '0.75rem', color: '#666', marginTop: '0.25rem' }}>Cargando disponibilidad...</p>}
+                                </div>
 
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                <button
-                                    type="button"
-                                    onClick={() => setShowModal(false)}
-                                    style={{
-                                        flex: 1,
-                                        padding: '0.75rem',
-                                        borderRadius: '8px',
-                                        border: '1px solid #ddd',
-                                        backgroundColor: '#f8f9fa',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    Cerrar
-                                </button>
-                                <button
-                                    type="submit"
-                                    style={{
-                                        flex: 1,
-                                        padding: '0.75rem',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        backgroundColor: '#3498db',
-                                        color: 'white',
-                                        fontWeight: 'bold',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    Confirmar
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+                                <div style={{ display: 'flex', gap: '1rem' }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowModal(false)}
+                                        style={{
+                                            flex: 1,
+                                            padding: '0.75rem',
+                                            borderRadius: '8px',
+                                            border: '1px solid #ddd',
+                                            backgroundColor: '#f8f9fa',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        Cerrar
+                                    </button>
+                                    <motion.button
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        type="submit"
+                                        style={{
+                                            flex: 1,
+                                            padding: '0.75rem',
+                                            borderRadius: '8px',
+                                            border: 'none',
+                                            backgroundColor: '#3498db',
+                                            color: 'white',
+                                            fontWeight: 'bold',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        Confirmar
+                                    </motion.button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

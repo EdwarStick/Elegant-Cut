@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatedContainer, AnimatedItem } from './AnimatedList';
 
 const AdminsTab = () => {
     const [admins, setAdmins] = useState([]);
@@ -133,86 +135,99 @@ const AdminsTab = () => {
                 </button>
             </div>
 
-            {showModal && (
-                <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-                    <div className="modal-dialog modal-lg">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">{editingId ? 'Editar Administrador' : 'Nuevo Administrador'}</h5>
-                                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
-                            </div>
-                            <form onSubmit={handleSubmit}>
-                                <div className="modal-body">
-                                    <div className="row g-3">
-                                        <div className="col-md-6">
-                                            <label className="form-label">Usuario *</label>
-                                            <input type="text" className="form-control" required
-                                                value={formData.username}
-                                                onChange={e => setFormData({ ...formData, username: e.target.value })}
-                                            // Removed disabled attribute to allow editing
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label className="form-label">Contraseña {editingId && '(Dejar en blanco para mantener)'}</label>
-                                            <input type="password" className="form-control"
-                                                required={!editingId}
-                                                value={formData.password}
-                                                onChange={e => setFormData({ ...formData, password: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label className="form-label">Primer Nombre *</label>
-                                            <input type="text" className="form-control" required
-                                                value={formData.prim_nombre}
-                                                onChange={e => setFormData({ ...formData, prim_nombre: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label className="form-label">Segundo Nombre</label>
-                                            <input type="text" className="form-control"
-                                                value={formData.seg_nombre}
-                                                onChange={e => setFormData({ ...formData, seg_nombre: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label className="form-label">Primer Apellido *</label>
-                                            <input type="text" className="form-control" required
-                                                value={formData.apellido1}
-                                                onChange={e => setFormData({ ...formData, apellido1: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label className="form-label">Segundo Apellido</label>
-                                            <input type="text" className="form-control"
-                                                value={formData.apellido2}
-                                                onChange={e => setFormData({ ...formData, apellido2: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label className="form-label">Email *</label>
-                                            <input type="email" className="form-control" required
-                                                value={formData.email}
-                                                onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label className="form-label">Teléfono</label>
-                                            <input type="tel" className="form-control"
-                                                value={formData.telefono}
-                                                onChange={e => setFormData({ ...formData, telefono: e.target.value })}
-                                            />
+            <AnimatePresence>
+                {showModal && (
+                    <motion.div
+                        className="modal d-block"
+                        style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div
+                            className="modal-dialog modal-lg"
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                        >
+                            <div className="modal-content border-0 shadow-lg">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">{editingId ? 'Editar Administrador' : 'Nuevo Administrador'}</h5>
+                                    <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                                </div>
+                                <form onSubmit={handleSubmit}>
+                                    <div className="modal-body">
+                                        <div className="row g-3">
+                                            <div className="col-md-6">
+                                                <label className="form-label">Usuario *</label>
+                                                <input type="text" className="form-control" required
+                                                    value={formData.username}
+                                                    onChange={e => setFormData({ ...formData, username: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label className="form-label">Contraseña {editingId && '(Dejar en blanco para mantener)'}</label>
+                                                <input type="password" className="form-control"
+                                                    required={!editingId}
+                                                    value={formData.password}
+                                                    onChange={e => setFormData({ ...formData, password: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label className="form-label">Primer Nombre *</label>
+                                                <input type="text" className="form-control" required
+                                                    value={formData.prim_nombre}
+                                                    onChange={e => setFormData({ ...formData, prim_nombre: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label className="form-label">Segundo Nombre</label>
+                                                <input type="text" className="form-control"
+                                                    value={formData.seg_nombre}
+                                                    onChange={e => setFormData({ ...formData, seg_nombre: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label className="form-label">Primer Apellido *</label>
+                                                <input type="text" className="form-control" required
+                                                    value={formData.apellido1}
+                                                    onChange={e => setFormData({ ...formData, apellido1: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label className="form-label">Segundo Apellido</label>
+                                                <input type="text" className="form-control"
+                                                    value={formData.apellido2}
+                                                    onChange={e => setFormData({ ...formData, apellido2: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label className="form-label">Email *</label>
+                                                <input type="email" className="form-control" required
+                                                    value={formData.email}
+                                                    onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label className="form-label">Teléfono</label>
+                                                <input type="tel" className="form-control"
+                                                    value={formData.telefono}
+                                                    onChange={e => setFormData({ ...formData, telefono: e.target.value })}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancelar</button>
-                                    <button type="submit" className="btn btn-primary">Guardar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            )}
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancelar</button>
+                                        <button type="submit" className="btn btn-primary">Guardar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <div className="card border-0 shadow-sm">
                 <div className="table-responsive">
@@ -225,9 +240,9 @@ const AdminsTab = () => {
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <AnimatedContainer component="tbody">
                             {admins.map(admin => (
-                                <tr key={admin.id_usuario}>
+                                <AnimatedItem tag="tr" key={admin.id_usuario}>
                                     <td>
                                         <div className="fw-bold">{admin.prim_nombre} {admin.apellido1}</div>
                                         <div className="small text-muted">@{admin.username}</div>
@@ -255,9 +270,9 @@ const AdminsTab = () => {
                                             </button>
                                         </div>
                                     </td>
-                                </tr>
+                                </AnimatedItem>
                             ))}
-                        </tbody>
+                        </AnimatedContainer>
                     </table>
                 </div>
             </div>

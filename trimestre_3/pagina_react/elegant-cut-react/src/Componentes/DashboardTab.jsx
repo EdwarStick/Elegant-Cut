@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { AnimatedContainer, AnimatedItem } from './AnimatedList';
+import { motion } from 'framer-motion';
 
 const DashboardTab = () => {
   const [stats, setStats] = useState({
@@ -59,9 +61,9 @@ const DashboardTab = () => {
     <div style={{ padding: '20px' }}>
       <h2 className="mb-4">Panel de Control</h2>
 
-      <div className="row g-4 mb-4">
-        <div className="col-12 col-sm-6 col-md-3">
-          <div className="card border-0 shadow-sm">
+      <AnimatedContainer className="row g-4 mb-4">
+        <AnimatedItem className="col-12 col-sm-6 col-md-3">
+          <div className="card border-0 shadow-sm h-100">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center">
                 <div>
@@ -74,10 +76,10 @@ const DashboardTab = () => {
               </div>
             </div>
           </div>
-        </div>
+        </AnimatedItem>
 
-        <div className="col-12 col-sm-6 col-md-3">
-          <div className="card border-0 shadow-sm">
+        <AnimatedItem className="col-12 col-sm-6 col-md-3">
+          <div className="card border-0 shadow-sm h-100">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center">
                 <div>
@@ -90,10 +92,10 @@ const DashboardTab = () => {
               </div>
             </div>
           </div>
-        </div>
+        </AnimatedItem>
 
-        <div className="col-12 col-sm-6 col-md-3">
-          <div className="card border-0 shadow-sm">
+        <AnimatedItem className="col-12 col-sm-6 col-md-3">
+          <div className="card border-0 shadow-sm h-100">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center">
                 <div>
@@ -106,10 +108,10 @@ const DashboardTab = () => {
               </div>
             </div>
           </div>
-        </div>
+        </AnimatedItem>
 
-        <div className="col-12 col-sm-6 col-md-3">
-          <div className="card border-0 shadow-sm">
+        <AnimatedItem className="col-12 col-sm-6 col-md-3">
+          <div className="card border-0 shadow-sm h-100">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center">
                 <div>
@@ -122,12 +124,12 @@ const DashboardTab = () => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </AnimatedItem>
+      </AnimatedContainer>
 
-      <div className="row g-4">
-        <div className="col-md-8">
-          <div className="card border-0 shadow-sm">
+      <AnimatedContainer className="row g-4">
+        <AnimatedItem className="col-md-8">
+          <div className="card border-0 shadow-sm h-100">
             <div className="card-body">
               <h5 className="card-title mb-4">Resumen del Día</h5>
               <div className="row text-center g-3">
@@ -155,10 +157,10 @@ const DashboardTab = () => {
               </div>
             </div>
           </div>
-        </div>
+        </AnimatedItem>
 
-        <div className="col-md-4">
-          <div className="card border-0 shadow-sm">
+        <AnimatedItem className="col-md-4">
+          <div className="card border-0 shadow-sm h-100">
             <div className="card-body">
               <h5 className="card-title mb-4">Acciones Rápidas</h5>
               <div className="d-grid gap-2">
@@ -174,8 +176,8 @@ const DashboardTab = () => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </AnimatedItem>
+      </AnimatedContainer>
     </div>
   );
 };

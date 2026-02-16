@@ -6,44 +6,90 @@
 main {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 40px 20px 100px;
+    /* Padding extra abajo para que el nav no tape contenido */
 }
 
 /* ============================================
    BOTONES DE PESTAÑAS
    ============================================ */
 
-.Botones-pqrs {
+/* ============================================
+   NUEVA NAVEGACIÓN TIPO IPHONE (FLOAT BOTTOM)
+   ============================================ */
+
+.floating-nav-container {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
     display: flex;
-    gap: 10px;
-    margin-bottom: 30px;
-    border-bottom: 2px solid #e1e1e1;
-    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 0 20px;
+    pointer-events: none;
 }
 
-.tab-btn {
-    padding: 12px 24px;
-    background: white;
+.iphone-nav {
+    pointer-events: auto;
+    display: flex;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(25px) saturate(200%);
+    -webkit-backdrop-filter: blur(25px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50px;
+    padding: 4px 6px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    gap: 4px;
+    max-width: 450px;
+    width: auto;
+    /* Ancho automático basado en contenido */
+    min-width: 140px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: row;
+    /* Cambio a fila para ahorrar espacio vertical */
+    align-items: center;
+    justify-content: center;
+    background: transparent;
     border: none;
-    border-bottom: 3px solid transparent;
-    color: #666;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
+    color: #636366;
+    padding: 6px 12px;
+    border-radius: 40px;
     transition: all 0.3s ease;
-    position: relative;
-    bottom: -2px;
+    gap: 8px;
+    cursor: pointer;
+    white-space: nowrap;
 }
 
-.tab-btn:hover {
-    color: #BC2041;
-    background-color: rgba(188, 32, 65, 0.05);
+.nav-item i {
+    font-size: 18px;
 }
 
-.tab-btn.active {
-    color: #BC2041;
-    border-bottom-color: #BC2041;
+.nav-item span {
+    font-size: 12px;
     font-weight: 600;
+    overflow: hidden;
+}
+
+.nav-item:hover {
+    color: #BC2041;
+}
+
+.nav-item.active {
+    background: #BC2041;
+    color: white;
+    box-shadow: 0 4px 12px rgba(188, 32, 65, 0.25);
+}
+
+.minimized-pill,
+.scroll-up-hint {
+    display: none;
+    /* Ya no usamos el pill separado */
 }
 
 /* ============================================

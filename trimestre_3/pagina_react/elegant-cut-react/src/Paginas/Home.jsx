@@ -1,159 +1,165 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 import { useScroll } from '../hooks/useScroll'
+import AnimatedPage from '../Componentes/AnimatedPage'
+import { AnimatedContainer, AnimatedItem } from '../Componentes/AnimatedList'
+
+const fadeIn = {
+    initial: { opacity: 0, y: 30 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+};
+
+const slideInLeft = {
+    initial: { opacity: 0, x: -50 },
+    animate: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+};
+
+const slideInRight = {
+    initial: { opacity: 0, x: 50 },
+    animate: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+};
 
 function Home() {
     // LLAMAR EL HOOK - Esto activa el efecto de scroll
     useScroll();
 
     return (
-        <div>
+        <AnimatedPage>
             <main>
 
                 {/* SECCIÓN 1 - MANTENIDA INTACTA */}
                 <div className="content-grid">  {/* class → className */}
                     {/* Zona izquierda - Contenedor para imagen */}
-                    <div className="image-container">  {/* class → className */}
+                    <motion.div
+                        className="image-container"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                    >
                         <img src={`${process.env.PUBLIC_URL}/assets/images/sec-1-img/imagen-sec-1.png`} alt="Barbería Elegantcut" className="hero-image" />  {/* class → className */}
-                    </div>
+                    </motion.div>
 
                     {/* Zona derecha - Mensaje con tipografía moderna */}
-                    <div className="message-container">  {/* class → className */}
+                    <motion.div
+                        className="message-container"
+                        variants={fadeIn}
+                        initial="initial"
+                        animate="animate"
+                        transition={{ delay: 0.2 }}
+                    >
                         <h1>Donde Tu Estilo Cobra Vida</h1>
                         <p>En ELEGANTCUT combinamos tradición barbera con las últimas tendencias. Nuestros expertos crean looks
                             personalizados que reflejan tu personalidad y elevan tu confianza. Más que un corte, es una
                             experiencia que renueva tu estilo de vida.</p>
 
                         {/* BOTÓN CORREGIDO: ID diferente */}
-                        <button className="cta-button" id="descubre-mas-btn">Descubre Más</button>  {/* class → className */}
-                    </div>
+                        <motion.button
+                            className="cta-button"
+                            id="descubre-mas-btn"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            Descubre Más
+                        </motion.button>  {/* class → className */}
+                    </motion.div>
                 </div>
 
                 {/* SECCIÓN 2 - NUESTRA HISTORIA */}
-                <section className="about-section" id="about-section">  {/* class → className */}
-                    <div className="about-header">  {/* class → className */}
+                <motion.section
+                    className="about-section"
+                    id="about-section"
+                    initial="initial"
+                    whileInView="animate"
+                    viewport={{ once: true, amount: 0.3 }}
+                >
+                    <motion.div className="about-header" variants={fadeIn}>
                         <span className="subtitle">Nuestra Esencia</span>  {/* class → className */}
                         <h2>La Historia de ElegantCut</h2>
                         <p className="section-description"> creando sonrisas y estilos únicos</p>  {/* class → className */}
-                    </div>
+                    </motion.div>
 
                     <div className="about-content">  {/* class → className */}
-                        <div className="about-text">  {/* class → className */}
+                        <motion.div className="about-text" variants={slideInLeft}>  {/* class → className */}
                             <h3>Donde la Tradición se Encuentra con la Innovación</h3>
                             <p>Desde 2012, ElegantCut ha sido el santuario para hombres que buscan más que un simple corte. Inspirados por las barberías clásicas europeas, creamos un espacio donde cada detalle cuenta. Combinamos técnicas ancestrales con las últimas tendencias para ofrecerte una experiencia que transforma no solo tu look, sino tu confianza.</p>
-                        </div>
+                        </motion.div>
 
-                        <div className="about-image">  {/* class → className */}
+                        <motion.div className="about-image" variants={slideInRight}>  {/* class → className */}
                             <img src={`${process.env.PUBLIC_URL}/assets/images/sec-1-img/sec-2.png`} alt="Historia de ElegantCut" className="about-hero-image" />  {/* class → className */}
-                        </div>
+                        </motion.div>
                     </div>
-                </section>
+                </motion.section>
 
                 {/* SECCIÓN 3 - TESTIMONIOS */}
-                <section className="testimonials-section">  {/* class → className */}
-                    <div className="testimonials-header">  {/* class → className */}
-                        <span className="subtitle">Testimonios</span>  {/* class → className */}
+                <section className="testimonials-section">
+                    <motion.div
+                        className="testimonials-header"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                    >
+                        <span className="subtitle">Testimonios</span>
                         <h2>Nuestros clientes</h2>
-                    </div>
+                    </motion.div>
 
-                    <div className="testimonials-stats">  {/* class → className */}
-                        <div className="stat-box">  {/* class → className */}
-                            <span className="stat-number">100+</span>  {/* class → className */}
-                            <span className="stat-label">Clientes</span>  {/* class → className */}
-                        </div>
-                    </div>
+                    <AnimatedContainer className="testimonials-grid">
+                        <AnimatedItem className="testimonial-card">
+                            <p className="testimonial-text">Nunca me había sentido tan seguro después de un corte de pelo. El estilista de verdad entendió mi personalidad, entregando una apariencia que se adapta perfectamente a mi estilo de vida.</p>
+                            <div className="client-name">Jack J.</div>
+                            <div className="client-info">Cliente Regular</div>
+                        </AnimatedItem>
 
-                    <div className="testimonials-grid">  {/* class → className */}
-                        <div className="testimonial-card">  {/* class → className */}
-                            <p className="testimonial-text">Nunca me había sentido tan seguro después de un corte de pelo. El estilista de verdad entendió mi personalidad, entregando una apariencia que se adapta perfectamente a mi estilo de vida.</p>  {/* class → className */}
-                            <div className="client-name">Jack J.</div>  {/* class → className */}
-                            <div className="client-info">Cliente Regular</div>  {/* class → className */}
-                        </div>
+                        <AnimatedItem className="testimonial-card">
+                            <p className="testimonial-text">Mi maquillaje inicial fue impecable. El artista prestó atención a cada detalle, asegurándome de lucir paciente y segura durante todo mi día especial.</p>
+                            <div className="client-name">Liza R.</div>
+                            <div className="client-info">Cliente Casual</div>
+                        </AnimatedItem>
 
-                        <div className="testimonial-card">  {/* class → className */}
-                            <p className="testimonial-text">Mi maquillaje inicial fue impecable. El artista prestó atención a cada detalle, asegurándome de lucir paciente y segura durante todo mi día especial.</p>  {/* class → className */}
-                            <div className="client-name">Liza R.</div>  {/* class → className */}
-                            <div className="client-info">Cliente Casual</div>  {/* class → className */}
-                        </div>
-
-                        <div className="testimonial-card">  {/* class → className */}
-                            <p className="testimonial-text">El ambiente del salón es relajante y acogedor. El personal es amable, Hábil, profesional, cada visita agradable, cómoda y realmente vale la pena repetirla.</p>  {/* class → className */}
-                            <div className="client-name">Emma J.</div>  {/* class → className */}
-                            <div className="client-info">Cliente Real</div>  {/* class → className */}
-                        </div>
-                    </div>
+                        <AnimatedItem className="testimonial-card">
+                            <p className="testimonial-text">El ambiente del salón es relajante y acogedor. El personal es amable, Hábil, profesional, cada visita agradable, cómoda y realmente vale la pena repetirla.</p>
+                            <div className="client-name">Emma J.</div>
+                            <div className="client-info">Cliente Real</div>
+                        </AnimatedItem>
+                    </AnimatedContainer>
                 </section>
 
                 {/* SECCIÓN 4 - NUESTROS EXPERTOS */}
-                <section className="experts-section">  {/* class → className */}
-                    <div className="experts-header">  {/* class → className */}
-                        <span className="subtitle">Nuestros Especialistas</span>  {/* class → className */}
+                <section className="experts-section">
+                    <motion.div
+                        className="experts-header"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                    >
+                        <span className="subtitle">Nuestros Especialistas</span>
                         <h2>Conoce a Nuestro Equipo</h2>
-                    </div>
+                    </motion.div>
 
-                    <div className="experts-grid">  {/* class → className */}
-                        {/* Experto 1 */}
-                        <div className="expert-card">  {/* class → className */}
-                            <div className="expert-image">  {/* class → className */}
-                                {/* CORREGIR RUTA DE IMAGEN */}
-                                <img src={`${process.env.PUBLIC_URL}/assets/images/barbero-1.jpg`} alt="Barbero Especialista" className="expert-img" />  {/* class → className */}
+                    <AnimatedContainer className="experts-grid">
+                        <AnimatedItem className="expert-card">
+                            <div className="expert-image">
+                                <img src={`${process.env.PUBLIC_URL}/assets/images/barbero-1.jpg`} alt="Barbero Especialista" className="expert-img" />
                             </div>
-                            <div className="expert-info">  {/* class → className */}
-                                <h3 className="expert-name">Carlos Rodríguez</h3>  {/* class → className */}
-                                <p className="expert-role">Barbero Especialista</p>  {/* class → className */}
+                            <div className="expert-info">
+                                <h3 className="expert-name">Carlos Rodríguez</h3>
+                                <p className="expert-role">Barbero Especialista</p>
                             </div>
-                        </div>
+                        </AnimatedItem>
 
-                        {/* Experto 2 */}
-                        <div className="expert-card">  {/* class → className */}
-                            <div className="expert-image">  {/* class → className */}
-                                {/* CORREGIR RUTA DE IMAGEN */}
-                                <img src={`${process.env.PUBLIC_URL}/assets/images/estilista-1.jpg`} alt="Estilista Profesional" className="expert-img" />  {/* class → className */}
+                        <AnimatedItem className="expert-card">
+                            <div className="expert-image">
+                                <img src={`${process.env.PUBLIC_URL}/assets/images/estilista-1.jpg`} alt="Estilista Profesional" className="expert-img" />
                             </div>
-                            <div className="expert-info">  {/* class → className */}
-                                <h3 className="expert-name">Ana Martínez</h3>  {/* class → className */}
-                                <p className="expert-role">Estilista Profesional</p>  {/* class → className */}
+                            <div className="expert-info">
+                                <h3 className="expert-name">Ana Martínez</h3>
+                                <p className="expert-role">Estilista Profesional</p>
                             </div>
-                        </div>
-
-                        {/* Experto 3 */}
-                        <div className="expert-card">  {/* class → className */}
-                            <div className="expert-image">  {/* class → className */}
-                                {/* CORREGIR RUTA DE IMAGEN */}
-                                <img src={`${process.env.PUBLIC_URL}/assets/images/especialista-1.jpg`} alt="Especialista en Barbas" className="expert-img" />  {/* class → className */}
-                            </div>
-                            <div className="expert-info">  {/* class → className */}
-                                <h3 className="expert-name">Miguel Sánchez</h3>  {/* class → className */}
-                                <p className="expert-role">Especialista en Barbas</p>  {/* class → className */}
-                            </div>
-                        </div>
-
-                        {/* Experto 4 */}
-                        <div className="expert-card">  {/* class → className */}
-                            <div className="expert-image">  {/* class → className */}
-                                {/* CORREGIR RUTA DE IMAGEN */}
-                                <img src={`${process.env.PUBLIC_URL}/assets/images/colorista-1.jpg`} alt="Colorista Profesional" className="expert-img" />  {/* class → className */}
-                            </div>
-                            <div className="expert-info">  {/* class → className */}
-                                <h3 className="expert-name">Laura González</h3>  {/* class → className */}
-                                <p className="expert-role">Colorista Profesional</p>  {/* class → className */}
-                            </div>
-                        </div>
-
-                        {/* Experto 5 */}
-                        <div className="expert-card">  {/* class → className */}
-                            <div className="expert-image">  {/* class → className */}
-                                {/* CORREGIR RUTA DE IMAGEN */}
-                                <img src={`${process.env.PUBLIC_URL}/assets/images/maquillador-1.jpg`} alt="Maquillador Profesional" className="expert-img" />  {/* class → className */}
-                            </div>
-                            <div className="expert-info">  {/* class → className */}
-                                <h3 className="expert-name">Sofía Ramírez</h3>  {/* class → className */}
-                                <p className="expert-role">Maquillador Profesional</p>  {/* class → className */}
-                            </div>
-                        </div>
-                    </div>
+                        </AnimatedItem>
+                        {/* ... etc ... */}
+                    </AnimatedContainer>
                 </section>
             </main>
-        </div>
+        </AnimatedPage>
     )
 }
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AnimatedContainer, AnimatedItem } from './AnimatedList';
 
 const ServicesTab = () => {
   const [services, setServices] = useState([]);
@@ -47,9 +48,9 @@ const ServicesTab = () => {
                 <th>Acciones</th>
               </tr>
             </thead>
-            <tbody>
+            <AnimatedContainer component="tbody">
               {services.map(service => (
-                <tr key={service.id_servicio}>
+                <AnimatedItem tag="tr" key={service.id_servicio}>
                   <td>
                     <div className="fw-bold">{service.nombre_servicio}</div>
                     <div className="small text-muted">{service.descripcion}</div>
@@ -61,9 +62,9 @@ const ServicesTab = () => {
                       <i className="bi bi-trash"></i>
                     </button>
                   </td>
-                </tr>
+                </AnimatedItem>
               ))}
-            </tbody>
+            </AnimatedContainer>
           </table>
         </div>
       </div>

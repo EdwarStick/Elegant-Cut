@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/UseAuth';
+import { motion, AnimatePresence } from 'framer-motion';
+import AnimatedPage from '../Componentes/AnimatedPage';
+import { AnimatedContainer, AnimatedItem } from '../Componentes/AnimatedList';
 
 function Servicios_dama() {
     const navigate = useNavigate();
@@ -377,7 +380,7 @@ function Servicios_dama() {
         : products.filter(product => product.category === activeCategory);
 
     return (
-        <div>
+        <AnimatedPage>
             <main>
                 <div className={`menu-overlay ${cartOpen ? 'active' : ''}`} id="overlay" onClick={() => setCartOpen(false)}></div>
 
@@ -481,126 +484,162 @@ function Servicios_dama() {
                     ))}
                 </div>
 
-                {/* CATALOGO DE PRODUCTOS */}
-                <div className="catalog-container" id="catalog">
-                    {filteredProducts.map((product, index) => (
-                        <div
-                            key={index}
-                            className="product-card"
-                            data-category={product.category}
-                        >
-                            <div className="category-indicator">{product.categoryLabel}</div>
-                            <img src={product.image} alt={product.description} />
+                <AnimatedContainer className="catalog-container" id="catalog">
+                    <AnimatePresence mode="popLayout">
+                        {filteredProducts.map((product, index) => (
+                            <AnimatedItem
+                                key={product.name}
+                                className="product-card"
+                                data-category={product.category}
+                            >
+                                <div className="category-indicator">{product.categoryLabel}</div>
+                                <img src={product.image} alt={product.description} />
 
-                            <div className="service-content">
-                                <h3>{product.name}</h3>
-                                <div className="price-container">
-                                    <div className="price-new">${product.price.toLocaleString()}</div>
-                                    <div className="price-old">${product.oldPrice?.toLocaleString()}</div>
+                                <div className="service-content">
+                                    <h3>{product.name}</h3>
+                                    <div className="price-container">
+                                        <div className="price-new">${product.price.toLocaleString()}</div>
+                                        <div className="price-old">${product.oldPrice?.toLocaleString()}</div>
+                                    </div>
+                                    <p className="service-description">{product.description}</p>
+                                    <div className="service-features">
+                                        {product.features && product.features.map((feature, idx) => (
+                                            <span key={idx} className="feature-tag">{feature}</span>
+                                        ))}
+                                    </div>
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="add-btn"
+                                        onClick={() => addToCart(product)}
+                                    >
+                                        Agregar al carrito
+                                    </motion.button>
                                 </div>
-                                <p className="service-description">{product.description}</p>
-                                <div className="service-features">
-                                    {product.features && product.features.map((feature, idx) => (
-                                        <span key={idx} className="feature-tag">{feature}</span>
-                                    ))}
-                                </div>
-                                <button
-                                    className="add-btn"
-                                    onClick={() => addToCart(product)}
-                                >
-                                    Agregar al carrito
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                            </AnimatedItem>
+                        ))}
+                    </AnimatePresence>
+                </AnimatedContainer>
 
                 {/* CARRITO - VISTA APARTE / MODAL */}
-                <div id="cart" className={cartOpen ? 'active' : ''}>
-                    <div className="cart-content">
-                        <div className="cart-header">
-                            <span>Tu Carrito</span>
-                            <i className="bi bi-x-lg close-cart" onClick={() => setCartOpen(false)}></i>
-                        </div>
-
-                        {alertVisible && (
-                            <div className="alert alert-danger text-center m-3" role="alert">
-                                <i className="bi bi-exclamation-circle-fill me-2"></i>
-                                Tu carrito está vacío. Agrega servicios antes de agendar.
-                            </div>
-                        )}
-
-                        <div className="cart-items">
-                            {cartItems.length === 0 ? (
-                                <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
-                                    <i className="bi bi-cart-x" style={{ fontSize: '3rem', marginBottom: '10px', display: 'block' }}></i>
-                                    <p>No has añadido servicios aún.</p>
+                <AnimatePresence>
+                    {cartOpen && (
+                        <motion.div
+                            id="cart"
+                            className="active"
+                            initial={{ x: '100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '100%' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                        >
+                            <div className="cart-content">
+                                <div className="cart-header">
+                                    <span>Tu Carrito</span>
+                                    <i className="bi bi-x-lg close-cart" onClick={() => setCartOpen(false)}></i>
                                 </div>
-                            ) : (
-                                cartItems.map((item, index) => (
-                                    <div key={index} className="cart-item">
-                                        <div className="cart-item-info">
-                                            {/* Usamos item.image si existe, si no un placeholder o nada */}
-                                            {item.image && <img src={item.image} alt={item.name} className="cart-item-img" />}
-                                            <div>
-                                                <h4 style={{ margin: '0 0 5px 0', fontSize: '1rem' }}>{item.name}</h4>
-                                                <p style={{ margin: 0, color: '#bc2041', fontWeight: 'bold' }}>
-                                                    ${item.price.toLocaleString()} x {item.quantity}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <button
-                                            onClick={() => removeFromCart(item.name)}
-                                            style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: '1.2rem' }}
-                                            title="Eliminar servicio"
+
+                                <AnimatePresence>
+                                    {alertVisible && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -20 }}
+                                            className="alert alert-danger text-center m-3"
+                                            role="alert"
                                         >
-                                            <i className="bi bi-trash-fill"></i>
-                                        </button>
-                                    </div>
-                                ))
-                            )}
-                        </div>
+                                            <i className="bi bi-exclamation-circle-fill me-2"></i>
+                                            Tu carrito está vacío. Agrega servicios antes de agendar.
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
 
-                        <div className="cart-total">
-                            <span>Total a Pagar:</span>
-                            <span>${cartTotal.toLocaleString()}</span>
-                        </div>
+                                <div className="cart-items">
+                                    <AnimatedContainer>
+                                        {cartItems.length === 0 ? (
+                                            <AnimatedItem key="empty">
+                                                <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
+                                                    <i className="bi bi-cart-x" style={{ fontSize: '3rem', marginBottom: '10px', display: 'block' }}></i>
+                                                    <p>No has añadido servicios aún.</p>
+                                                </div>
+                                            </AnimatedItem>
+                                        ) : (
+                                            cartItems.map((item, index) => (
+                                                <AnimatedItem key={item.name} className="cart-item">
+                                                    <div className="cart-item-info">
+                                                        {item.image && <img src={item.image} alt={item.name} className="cart-item-img" />}
+                                                        <div>
+                                                            <h4 style={{ margin: '0 0 5px 0', fontSize: '1rem' }}>{item.name}</h4>
+                                                            <p style={{ margin: 0, color: '#bc2041', fontWeight: 'bold' }}>
+                                                                ${item.price.toLocaleString()} x {item.quantity}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.1, color: '#bc2041' }}
+                                                        whileTap={{ scale: 0.9 }}
+                                                        onClick={() => removeFromCart(item.name)}
+                                                        style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: '1.2rem' }}
+                                                        title="Eliminar servicio"
+                                                    >
+                                                        <i className="bi bi-trash-fill"></i>
+                                                    </motion.button>
+                                                </AnimatedItem>
+                                            ))
+                                        )}
+                                    </AnimatedContainer>
+                                </div>
 
-                        <div style={{ padding: '0 30px 30px 30px' }}>
-                            <button
-                                id="agendarBtn"
-                                onClick={() => {
-                                    if (cartItems.length === 0) {
-                                        setAlertVisible(true);
-                                        setTimeout(() => setAlertVisible(false), 3000);
-                                    } else if (!isAuthenticated) {
-                                        setLoginAlertVisible(true);
-                                        setTimeout(() => setLoginAlertVisible(false), 5000);
-                                    } else {
-                                        setCartOpen(false);
-                                        navigate('/Form_agenda');
-                                    }
-                                }}
-                            >
-                                AGENDAR CITA AHORA
-                            </button>
-                            <button
-                                onClick={() => setCartOpen(false)}
-                                style={{ width: '100%', marginTop: '10px', padding: '10px', background: 'transparent', border: 'none', color: '#666', cursor: 'pointer', textDecoration: 'underline' }}
-                            >
-                                Seguir viendo servicios
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                                <div className="cart-total">
+                                    <span>Total a Pagar:</span>
+                                    <span>${cartTotal.toLocaleString()}</span>
+                                </div>
+
+                                <div style={{ padding: '0 30px 30px 30px' }}>
+                                    <motion.button
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        id="agendarBtn"
+                                        onClick={() => {
+                                            if (cartItems.length === 0) {
+                                                setAlertVisible(true);
+                                                setTimeout(() => setAlertVisible(false), 3000);
+                                            } else if (!isAuthenticated) {
+                                                setLoginAlertVisible(true);
+                                                setTimeout(() => setLoginAlertVisible(false), 5000);
+                                            } else {
+                                                setCartOpen(false);
+                                                navigate('/Form_agenda');
+                                            }
+                                        }}
+                                    >
+                                        AGENDAR CITA AHORA
+                                    </motion.button>
+                                    <button
+                                        onClick={() => setCartOpen(false)}
+                                        style={{ width: '100%', marginTop: '10px', padding: '10px', background: 'transparent', border: 'none', color: '#666', cursor: 'pointer', textDecoration: 'underline' }}
+                                    >
+                                        Seguir viendo servicios
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 {/* BOTÓN FLOTANTE DEL CARRITO */}
-                <div id="cartToggle" onClick={() => setCartOpen(!cartOpen)}>
+                <motion.div
+                    id="cartToggle"
+                    onClick={() => setCartOpen(!cartOpen)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                >
                     <i className="bi bi-cart-fill" style={{ fontSize: '1.5rem' }}></i>
                     <span className="cart-count">{cartCount}</span>
-                </div>
+                </motion.div>
             </main>
-        </div>
+        </AnimatedPage>
     );
 }
 

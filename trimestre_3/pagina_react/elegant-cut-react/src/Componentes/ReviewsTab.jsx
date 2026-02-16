@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { AnimatedContainer, AnimatedItem } from './AnimatedList';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const ReviewsTab = () => {
     const [reviews, setReviews] = useState([]);
@@ -135,9 +137,9 @@ const ReviewsTab = () => {
                                     <th style={{ padding: '12px', borderBottom: `2px solid ${COLORS.borde}` }}>Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <AnimatedContainer tag="tbody">
                                 {filtered.map(r => (
-                                    <tr key={r.id_resena} style={{ borderBottom: `1px solid ${COLORS.borde}` }}>
+                                    <AnimatedItem tag="tr" key={r.id_resena} style={{ borderBottom: `1px solid ${COLORS.borde}` }}>
                                         <td style={{ padding: '12px' }}>
                                             <div style={{ fontWeight: '600' }}>{r.nombre_cliente || 'Anónimo'}</div>
                                             <div style={{ fontSize: '0.8rem', color: COLORS.gris }}>{r.email_cliente}</div>
@@ -162,9 +164,9 @@ const ReviewsTab = () => {
                                                 </button>
                                             </div>
                                         </td>
-                                    </tr>
+                                    </AnimatedItem>
                                 ))}
-                            </tbody>
+                            </AnimatedContainer>
                         </table>
                         {filtered.length === 0 && <div style={{ padding: '40px', textAlign: 'center', color: COLORS.gris }}>No hay reseñas que coincidan.</div>}
                     </div>

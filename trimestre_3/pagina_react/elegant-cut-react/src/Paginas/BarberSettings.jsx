@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AuthClient } from '../Utilidades/authClient';
 import { Camera, Save, AlertCircle, CheckCircle } from 'lucide-react';
 
@@ -47,20 +48,36 @@ const BarberSettings = () => {
 
     return (
         <div style={{ padding: '2rem' }}>
-            <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '2rem', color: '#2c3e50' }}>Configuración de Perfil</h1>
+            <motion.h1
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '2rem', color: '#2c3e50' }}
+            >
+                Configuración de Perfil
+            </motion.h1>
 
-            <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', maxWidth: '600px' }}>
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', maxWidth: '600px' }}
+            >
                 <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1.5rem' }}>Cambiar Foto de Perfil</h2>
 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem' }}>
 
                     <div style={{ position: 'relative', width: '150px', height: '150px' }}>
-                        <img
+                        <motion.img
+                            key={preview || user?.photoUrl}
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
                             src={preview || (user?.photoUrl ? `http://localhost:3001/uploads/${user.photoUrl}` : 'https://via.placeholder.com/150')}
                             alt="Profile Preview"
                             style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', border: '4px solid #f8f9fa' }}
                         />
-                        <label
+                        <motion.label
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
                             htmlFor="photo-upload"
                             style={{
                                 position: 'absolute', bottom: '5px', right: '5px',
@@ -70,7 +87,7 @@ const BarberSettings = () => {
                             }}
                         >
                             <Camera size={20} />
-                        </label>
+                        </motion.label>
                         <input
                             id="photo-upload"
                             type="file"
@@ -81,19 +98,29 @@ const BarberSettings = () => {
                     </div>
 
                     <div style={{ width: '100%' }}>
-                        {message.text && (
-                            <div style={{
-                                padding: '1rem', borderRadius: '8px', marginBottom: '1rem',
-                                backgroundColor: message.type === 'error' ? '#fee2e2' : '#dcfce7',
-                                color: message.type === 'error' ? '#ef4444' : '#22c55e',
-                                display: 'flex', alignItems: 'center', gap: '0.5rem'
-                            }}>
-                                {message.type === 'error' ? <AlertCircle size={20} /> : <CheckCircle size={20} />}
-                                {message.text}
-                            </div>
-                        )}
+                        <AnimatePresence mode="wait">
+                            {message.text && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    style={{
+                                        padding: '1rem', borderRadius: '8px', marginBottom: '1rem',
+                                        backgroundColor: message.type === 'error' ? '#fee2e2' : '#dcfce7',
+                                        color: message.type === 'error' ? '#ef4444' : '#22c55e',
+                                        display: 'flex', alignItems: 'center', gap: '0.5rem',
+                                        overflow: 'hidden'
+                                    }}
+                                >
+                                    {message.type === 'error' ? <AlertCircle size={20} /> : <CheckCircle size={20} />}
+                                    {message.text}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
 
-                        <button
+                        <motion.button
+                            whileHover={{ scale: selectedFile && !loading ? 1.02 : 1 }}
+                            whileTap={{ scale: selectedFile && !loading ? 0.98 : 1 }}
                             onClick={handleUpload}
                             disabled={!selectedFile || loading}
                             style={{
@@ -112,10 +139,10 @@ const BarberSettings = () => {
                         >
                             <Save size={20} />
                             {loading ? 'Subiendo...' : 'Guardar Cambios'}
-                        </button>
+                        </motion.button>
                     </div>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 };
