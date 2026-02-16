@@ -107,24 +107,30 @@ FILTROS DE LOS SERVICIOS
 }
 
 .category-btn {
-  background: transparent;
-  border: 2px solid var(--Negro);
-  /* Changed to Negro for better visibility on light backgrounds if needed, or keep styles */
-  color: var(--Negro);
-  /* Changed to Negro to be safe if background is white */
-  padding: 10px 25px;
-  border-radius: 30px;
-  font-weight: 600;
+  background: white;
+  border: 2px solid #e2e8f0;
+  color: #4a5568;
+  padding: 0.8rem 1.7rem;
+  border-radius: 2rem;
+  font-weight: 500;
+  font-size: 0.95rem;
   transition: all 0.3s ease;
   cursor: pointer;
+  white-space: nowrap;
 }
 
-.category-btn:hover,
+.category-btn:hover {
+  border-color: var(--Rojo);
+  color: var(--Rojo);
+  transform: translateY(-2px);
+}
+
 .category-btn.active {
   background: var(--Rojo);
   color: var(--Blanco);
   border-color: var(--Rojo);
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(188, 32, 65, 0.2);
 }
 
 /* --------------------------------------------------
