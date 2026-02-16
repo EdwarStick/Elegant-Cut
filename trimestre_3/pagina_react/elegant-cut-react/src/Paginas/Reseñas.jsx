@@ -1,153 +1,253 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../hooks/UseAuth';
+import './Reseñas.css';
 
-function Reseñas() {
+const Reseñas = () => {
+  const { isAuthenticated, user } = useAuth();
+  const [reviews, setReviews] = useState([]);
+  const [formData, setFormData] = useState({
+    nombre_cliente: '',
+    email_cliente: '',
+    calificacion: '5',
+    comentario: ''
+  });
+  const [status, setStatus] = useState({ type: '', message: '' });
+  const [loading, setLoading] = useState(true);
+
+  // Fetch reviews
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  // Pre-fill form if user is logged in
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setFormData(prev => ({
+        ...prev,
+        nombre_cliente: user.name || '',
+        email_cliente: user.email || ''
+      }));
+    }
+  }, [isAuthenticated, user]);
+
+  const fetchReviews = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/reviews');
+      if (response.ok) {
+        const data = await response.json();
+        setReviews(data);
+      } else {
+        console.error('Error fetching reviews');
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus({ type: 'loading', message: '' });
+
+    try {
+      const response = await fetch('http://localhost:3001/api/reviews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setStatus({ type: 'success', message: '¡Gracias por tu reseña!' });
+        setFormData({
+          nombre_cliente: (isAuthenticated && user?.name) || '',
+          email_cliente: (isAuthenticated && user?.email) || '',
+          calificacion: '5',
+          comentario: ''
+        });
+        fetchReviews();
+
+        setTimeout(() => {
+          setStatus({ type: '', message: '' });
+        }, 3000);
+      } else {
+        setStatus({ type: 'error', message: 'Error al enviar la reseña' });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setStatus({ type: 'error', message: 'Error de conexión' });
+    }
+  };
+
+  const renderStars = (rating) => {
+    try {
+      const stars = [];
+      const numRating = parseInt(rating) || 0;
+      const validRating = Math.min(5, Math.max(0, numRating));
+      for (let i = 1; i <= 5; i++) {
+        stars.push(
+          <span key={i} className={`star ${i <= validRating ? '' : 'empty'}`}>
+            ★
+          </span>
+        );
+      }
+      return stars;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return 'Sin fecha';
+    try {
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return 'Fecha inválida';
+      return date.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch (e) {
+      return 'Error fecha';
+    }
+  };
+
   return (
-    <div>
-      <main className="reviews-main">
-        {/* Banner de oferta exclusiva */}
-        <section className="exclusive-offer">
-          <div className="offer-container">
-            <span className="offer-badge">Oferta Exclusiva</span>
-            <h1 className="offer-title">15% OFF</h1>
-            <h2 className="offer-subtitle">En tu primer corte de cabello</h2>
-            <p className="offer-text">Solo esta semana... ¡No te lo pierdas!</p>
-            <button className="cta-button">Reservar Ahora →</button>
-          </div>
+    <div className="reviews-page">
+      <div className="reviews-main-container">
+        {/* LEFT SIDE - REVIEWS LIST */}
+        <section className="reviews-section">
+          <h2>Todas las Reseñas</h2>
+
+          {loading ? (
+            <div className="loading-spinner">Cargando reseñas...</div>
+          ) : (
+            <div className="reviews-grid">
+              {reviews.length > 0 ? (
+                reviews.map((review) => {
+                  try {
+                    if (!review || !review.id_resena) return null;
+                    const nombre = review.nombre_cliente || 'Cliente Anónimo';
+
+                    return (
+                      <div key={review.id_resena} className="review-card">
+                        <div className="review-header">
+                          <div className="reviewer-avatar">
+                            {nombre.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="reviewer-info">
+                            <span className="reviewer-name">{nombre}</span>
+                            <span className="review-date">
+                              {formatDate(review.fecha_resena)}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="review-rating">
+                          {renderStars(review.calificacion)}
+                        </div>
+                        <p className="review-comment">{review.comentario || 'Sin comentario'}</p>
+                      </div>
+                    );
+                  } catch (e) {
+                    console.error('Error rendering individual review:', e);
+                    return null;
+                  }
+                })
+              ) : (
+                <div className="no-reviews">
+                  <p>Aún no hay reseñas.</p>
+                  <p>¡Sé el primero en compartir tu experiencia!</p>
+                </div>
+              )}
+            </div>
+          )}
         </section>
 
-        {/* Oferta regular */}
-        <section className="regular-offer">
-          <div className="offer-container">
-            <h3 className="regular-title">Oferta Regular</h3>
-            <p className="regular-text">10% de cashback en cuidado personal</p>
-            <p className="cashback-info">Cashback máximo: $12. Código: BARBER12</p>
-            <button className="secondary-button">Ver Servicios →</button>
-          </div>
-        </section>
+        {/* RIGHT SIDE - REVIEW FORM */}
+        <aside className="form-section">
+          <h2>Deja tu Reseña</h2>
 
-        {/* Título de reseñas */}
-        <section className="reviews-header">
-          <div className="container">
-            <span className="section-subtitle">Testimonios</span>
-            <h2 className="reviews-title">No nos creas, mira lo que dicen nuestros clientes</h2>
-          </div>
-        </section>
+          {status.message && (
+            <div className={`status-message ${status.type}`}>
+              {status.message}
+            </div>
+          )}
 
-        {/* Reseñas de clientes con carousel */}
-        <section className="customer-reviews">
-          <div className="container">
-            <div className="reviews-carousel">
-              <div className="review-card">
-                <div className="review-content">
-                  <div className="rating-stars">
-                    <i className="bi bi-star-fill"></i>
-                    <i className="bi bi-star-fill"></i>
-                    <i className="bi bi-star-fill"></i>
-                    <i className="bi bi-star-fill"></i>
-                    <i className="bi bi-star-fill"></i>
-                  </div>
-                  <p className="review-text">"Excelente servicio en la barbería. Los barberos son muy
-                    profesionales y el ambiente es increíble. Siempre salgo satisfecho con mi corte."</p>
-                  <div className="review-author">
-                    <strong>Carlos M.</strong>
-                    <span>- Ciudad de México</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="review-card">
-                <div className="review-content">
-                  <div className="rating-stars">
-                    <i className="bi bi-star-fill"></i>
-                    <i className="bi bi-star-fill"></i>
-                    <i className="bi bi-star-fill"></i>
-                    <i className="bi bi-star-fill"></i>
-                    <i className="bi bi-star-half"></i>
-                  </div>
-                  <p className="review-text">"La mejor experiencia de corte que he tenido. Atención personalizada
-                    y resultados exactamente como quería. ¡Altamente recomendados!"</p>
-                  <div className="review-author">
-                    <strong>Miguel R.</strong>
-                    <span>- Guadalajara, JAL</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="review-card">
-                <div className="review-content">
-                  <div className="rating-stars">
-                    <i className="bi bi-star-fill"></i>
-                    <i className="bi bi-star-fill"></i>
-                    <i className="bi bi-star-fill"></i>
-                    <i className="bi bi-star-fill"></i>
-                    <i className="bi bi-star-fill"></i>
-                  </div>
-                  <p className="review-text">"Increíble atención al cliente y resultados impecables. Los productos
-                    que usan son de primera calidad. Mi barbería de confianza."</p>
-                  <div className="review-author">
-                    <strong>Javier L.</strong>
-                    <span>- Monterrey, NL</span>
-                  </div>
-                </div>
-              </div>
+          <form onSubmit={handleSubmit} className="review-form">
+            <div className="form-group">
+              <label htmlFor="nombre_cliente">Nombre Completo</label>
+              <input
+                type="text"
+                id="nombre_cliente"
+                name="nombre_cliente"
+                value={formData.nombre_cliente}
+                onChange={handleChange}
+                required
+                readOnly={!!user?.name}
+                placeholder="Tu nombre"
+              />
             </div>
 
-            {/* Indicadores del carousel */}
-            <div className="carousel-indicators">
-              <span className="carousel-indicator active"></span>
-              <span className="carousel-indicator"></span>
-              <span className="carousel-indicator"></span>
+            <div className="form-group">
+              <label htmlFor="email_cliente">Correo Electrónico</label>
+              <input
+                type="email"
+                id="email_cliente"
+                name="email_cliente"
+                value={formData.email_cliente}
+                onChange={handleChange}
+                required
+                readOnly={!!user?.email}
+                placeholder="tu@email.com"
+              />
             </div>
-          </div>
-        </section>
 
-        {/* FORMULARIO DE RESEÑAS */}
-        <section className="review-form-section">
-          <div className="container">
-            <h2>Deja tu reseña</h2>
-            <form className="review-form">
-              <div className="form-group">
-                <label htmlFor="name">Nombre completo</label>
-                <input type="text" id="name" name="name" required/>
-              </div>
-              <div className="form-group">
-                <label htmlFor="email">Correo electrónico</label>
-                <input type="email" id="email" name="email" required/>
-              </div>
-              <div className="form-group">
-                <label htmlFor="rating">Calificación</label>
-                <select id="rating" name="rating" required>
-                  <option value="">Selecciona una calificación</option>
-                  <option value="5">★★★★★ Excelente</option>
-                  <option value="4">★★★★ Muy Bueno</option>
-                  <option value="3">★★★ Bueno</option>
-                  <option value="2">★★ Regular</option>
-                  <option value="1">★ Malo</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label htmlFor="review">Tu reseña</label>
-                <textarea id="review" name="review" rows="5" required></textarea>
-              </div>
-              <button type="submit" className="submit-button">
-                <div className="svg-wrapper-1">
-                  <div className="svg-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                      <path fill="none" d="M0 0h24v24H0z"></path>
-                      <path fill="currentColor"
-                        d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z">
-                      </path>
-                    </svg>
-                  </div>
-                </div>
-                <span>Enviar</span>
-              </button>
-            </form>
-          </div>
-        </section>
-      </main>
+            <div className="form-group">
+              <label htmlFor="calificacion">Calificación</label>
+              <select
+                id="calificacion"
+                name="calificacion"
+                value={formData.calificacion}
+                onChange={handleChange}
+              >
+                <option value="5">★★★★★ Excelente</option>
+                <option value="4">★★★★☆ Muy Bueno</option>
+                <option value="3">★★★☆☆ Bueno</option>
+                <option value="2">★★☆☆☆ Regular</option>
+                <option value="1">★☆☆☆☆ Malo</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="comentario">Tu Reseña</label>
+              <textarea
+                id="comentario"
+                name="comentario"
+                value={formData.comentario}
+                onChange={handleChange}
+                required
+                placeholder="Cuéntanos sobre tu experiencia..."
+              ></textarea>
+            </div>
+
+            <button type="submit" className="review-submit-btn" disabled={status.type === 'loading'}>
+              {status.type === 'loading' ? 'Enviando...' : 'Publicar Reseña'}
+            </button>
+          </form>
+        </aside>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Reseñas
+export default Reseñas;

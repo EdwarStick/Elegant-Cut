@@ -5,6 +5,7 @@ require('dotenv').config();
 const routes = require('./routes');
 const authRoutes = require('./routes/auth.routes');
 const adminShimRoutes = require('./routes/adminShim.routes'); // Compatibility layer
+const reviewRoutes = require('./routes/review.routes');
 const errorHandler = require('./middleware/error.middleware');
 
 const app = express();
@@ -35,6 +36,7 @@ app.use('/auth', authRoutes);
 app.use('/admin', adminShimRoutes);
 
 // API Routes
+app.use('/api/reviews', reviewRoutes);
 app.use('/api', routes);
 
 // Root endpoint
@@ -63,3 +65,4 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 module.exports = app;
+

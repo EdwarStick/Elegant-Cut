@@ -60,7 +60,7 @@ const DashboardTab = () => {
       <h2 className="mb-4">Panel de Control</h2>
 
       <div className="row g-4 mb-4">
-        <div className="col-md-3">
+        <div className="col-12 col-sm-6 col-md-3">
           <div className="card border-0 shadow-sm">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center">
@@ -76,7 +76,7 @@ const DashboardTab = () => {
           </div>
         </div>
 
-        <div className="col-md-3">
+        <div className="col-12 col-sm-6 col-md-3">
           <div className="card border-0 shadow-sm">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center">
@@ -92,7 +92,7 @@ const DashboardTab = () => {
           </div>
         </div>
 
-        <div className="col-md-3">
+        <div className="col-12 col-sm-6 col-md-3">
           <div className="card border-0 shadow-sm">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center">
@@ -108,7 +108,7 @@ const DashboardTab = () => {
           </div>
         </div>
 
-        <div className="col-md-3">
+        <div className="col-12 col-sm-6 col-md-3">
           <div className="card border-0 shadow-sm">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center">
@@ -130,22 +130,22 @@ const DashboardTab = () => {
           <div className="card border-0 shadow-sm">
             <div className="card-body">
               <h5 className="card-title mb-4">Resumen del Día</h5>
-              <div className="row text-center">
-                <div className="col-4">
+              <div className="row text-center g-3">
+                <div className="col-12 col-sm-4">
                   <div className="mb-2">
                     <i className="bi bi-check-circle text-success fs-3"></i>
                   </div>
                   <h4>{stats.citasCompletadas}</h4>
                   <p className="text-muted small mb-0">Completadas</p>
                 </div>
-                <div className="col-4">
+                <div className="col-12 col-sm-4">
                   <div className="mb-2">
                     <i className="bi bi-hourglass-split text-warning fs-3"></i>
                   </div>
                   <h4>{stats.citasPendientes}</h4>
                   <p className="text-muted small mb-0">Pendientes</p>
                 </div>
-                <div className="col-4">
+                <div className="col-12 col-sm-4">
                   <div className="mb-2">
                     <i className="bi bi-x-circle text-danger fs-3"></i>
                   </div>

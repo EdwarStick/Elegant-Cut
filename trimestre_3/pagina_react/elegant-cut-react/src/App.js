@@ -25,6 +25,7 @@ import AdminsTab from './Componentes/AdminsTab'
 import AppointmentsTab from './Componentes/AppointmentsTab'
 import ClientsTab from './Componentes/ClientsTab'
 import SettingsTab from './Componentes/SettingsTab'
+import ReviewsTab from './Componentes/ReviewsTab'
 
 // Importar componentes de Barber
 import BarberPanel from './Paginas/BarberPanel'
@@ -52,6 +53,7 @@ function App() {
           <Route path="barberos" element={<BarbersTab />} />
           <Route path="administradores" element={<AdminsTab />} />
           <Route path="servicios" element={<ServicesTab />} />
+          <Route path="resenas" element={<ReviewsTab />} />
           <Route path="configuracion" element={<SettingsTab />} />
         </Route>
 
